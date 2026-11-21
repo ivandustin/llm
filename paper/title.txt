@@ -1,1 +1,1 @@
-Position–Token Pooling: A Simple Alternative to Attention in Small Models
+Last-Token-Conditioned Position–Token Pooling for Small Sequence Models
