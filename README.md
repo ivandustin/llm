@@ -1415,3 +1415,65 @@ language / n4: params=91268, accuracy=41.22% +/- 0.51, perplexity=7.49 +/- 0.02
 language / n8: params=89688, accuracy=39.53% +/- 0.32, perplexity=8.00 +/- 0.22
 
 Reproduce via `deep_parallel_mixture_100k.py --architecture n1|n2|n4|n8 --seed 0|1|2`, then `summarize_deep_parallel_mixture.py`. `check_deep_parallel_mixture.py` checks parameter counts, arithmetic-mean probabilities and unit total mass, finite gradients for every branch, and five-step complete compiled-vs-ordinary model/Adam losses/state parity. Stable implementation uses logsumexp over branch log-softmax values minus logN, returning normalized log probabilities to the common CE interface. This is a probability mixture, not the mathematically equivalent wide shallow logit-sum architecture initially discussed. No automatic paper or default-architecture changes made.
+
+## Original six-layer pooling: longer training
+
+Longer training, only original pooled model: d64,h120,six hidden layers.
+GELU,learned token/position embeddings,parameter-free pooled norm,no residual/gate/final norm.
+Query parameters99184; language94473. Three seeds,Adam .001,batch64,no schedule/weight decay.
+Train from the original initialization; the first10k updates reproduce prior loss/accuracy for every task/seed.
+Checkpoints10k/30k/50k are predeclared; no best-step selection. Same validation/test examples as previous experiments.
+Data generated in1000-update chunks, continuous Adam/model state throughout. Only weight files are saved to disk.
+The50k pooled runs use five times the updates/examples of the prior10k Transformer runs; this is not a matched-training Transformer comparison. No Transformer runs or speed benchmark.
+
+position / 10000 updates: accuracy=97.61% +/- 1.38
+position / 30000 updates: accuracy=99.68% +/- 0.11
+position / 50000 updates: accuracy=99.24% +/- 0.26
+single / 10000 updates: accuracy=29.07% +/- 0.80
+single / 30000 updates: accuracy=30.32% +/- 0.13
+single / 50000 updates: accuracy=29.89% +/- 0.60
+multi / 10000 updates: accuracy=34.36% +/- 0.33
+multi / 30000 updates: accuracy=34.57% +/- 0.11
+multi / 50000 updates: accuracy=34.50% +/- 0.15
+language / 10000 updates: accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0.07
+language / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27
+
+Reproduce with `longer_training_100k.py --seed 0|1|2`, then `summarize_longer_training.py`. Predeclared50k updates and data RNG streams match the original first10k batches. All model parameters and Adam accumulators carry between scans, with no checkpoint restart/reset. JSON progress is saved each1000-update chunk; NPZ files at10k/30k/50k contain model weights only. No paper/default-model changes made.
+
+## Longer training of the single-hidden-layer control
+
+Longer training: one hidden layer d64 h576 versus six layers d64 h120.
+Both: learned positions,GELU,parameter-free pooled norm,no residual/gate/final norm.
+Shallow parameters100000 queries/81153 language; deep99184 queries/94473 language.
+Three seeds,Adam .001,batch64,no schedule/weight decay. Continuous model/Adam state in1000-update scans.
+First10k reproduces previous model-specific loss/accuracy in every task/seed. Same generated streams,held-out samples and language splits.
+Checkpoints10k/30k/50k predeclared; no best-checkpoint selection. Deep50k results reused; only shallow newly trained.
+Different hidden shape and initialization layout; language parameter counts not exactly matched. No Transformer runs or speed measurements.
+
+position / shallow / 10000 updates: accuracy=71.20% +/- 0.83
+position / shallow / 30000 updates: accuracy=82.90% +/- 3.92
+position / shallow / 50000 updates: accuracy=88.83% +/- 3.86
+position / deep / 10000 updates: accuracy=97.61% +/- 1.38
+position / deep / 30000 updates: accuracy=99.68% +/- 0.11
+position / deep / 50000 updates: accuracy=99.24% +/- 0.26
+single / shallow / 10000 updates: accuracy=29.15% +/- 0.50
+single / shallow / 30000 updates: accuracy=45.62% +/- 0.25
+single / shallow / 50000 updates: accuracy=46.07% +/- 0.32
+single / deep / 10000 updates: accuracy=29.07% +/- 0.80
+single / deep / 30000 updates: accuracy=30.32% +/- 0.13
+single / deep / 50000 updates: accuracy=29.89% +/- 0.60
+multi / shallow / 10000 updates: accuracy=34.46% +/- 0.13
+multi / shallow / 30000 updates: accuracy=34.65% +/- 0.11
+multi / shallow / 50000 updates: accuracy=34.63% +/- 0.08
+multi / deep / 10000 updates: accuracy=34.36% +/- 0.33
+multi / deep / 30000 updates: accuracy=34.57% +/- 0.11
+multi / deep / 50000 updates: accuracy=34.50% +/- 0.15
+language / shallow / 10000 updates: accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / shallow / 30000 updates: accuracy=46.75% +/- 0.38, perplexity=7.44 +/- 0.25
+language / shallow / 50000 updates: accuracy=47.09% +/- 0.30, perplexity=7.72 +/- 0.24
+language / deep / 10000 updates: accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / deep / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0.07
+language / deep / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27
+
+Reproduce via `longer_training_100k.py --architecture shallow --seed 0|1|2`, then `summarize_longer_shallow.py`. The shallow implementation is the earlier n1 control in `parallel_mixture_100k.py`, with one branch and one hidden layer (h576). Original deep long-run commands remain supported with the default architecture deep. All12 new10k model/task/seed baseline checks must pass. Saved NPZ checkpoints contain weights only, not optimizer state; Adam is uninterrupted in memory. No paper/default-model changes made.

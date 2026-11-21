@@ -1,0 +1,20 @@
+Longer training, only original pooled model: d64,h120,six hidden layers.
+GELU,learned token/position embeddings,parameter-free pooled norm,no residual/gate/final norm.
+Query parameters99184; language94473. Three seeds,Adam .001,batch64,no schedule/weight decay.
+Train from the original initialization; the first10k updates reproduce prior loss/accuracy for every task/seed.
+Checkpoints10k/30k/50k are predeclared; no best-step selection. Same validation/test examples as previous experiments.
+Data generated in1000-update chunks, continuous Adam/model state throughout. Only weight files are saved to disk.
+The50k pooled runs use five times the updates/examples of the prior10k Transformer runs; this is not a matched-training Transformer comparison. No Transformer runs or speed benchmark.
+
+position / 10000 updates: accuracy=97.61% +/- 1.38
+position / 30000 updates: accuracy=99.68% +/- 0.11
+position / 50000 updates: accuracy=99.24% +/- 0.26
+single / 10000 updates: accuracy=29.07% +/- 0.80
+single / 30000 updates: accuracy=30.32% +/- 0.13
+single / 50000 updates: accuracy=29.89% +/- 0.60
+multi / 10000 updates: accuracy=34.36% +/- 0.33
+multi / 30000 updates: accuracy=34.57% +/- 0.11
+multi / 50000 updates: accuracy=34.50% +/- 0.15
+language / 10000 updates: accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0.07
+language / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27

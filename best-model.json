@@ -46,7 +46,30 @@
     "copy_parameters": 99184,
     "language_parameters": 94473,
     "checkpoints": "large-ours-seed-{0,1,2}/{task}.npz",
-    "depth_comparison": "depth100k-results.json"
+    "depth_comparison": "depth100k-results.json",
+    "longer_training": {
+      "results": "longer100k-results.json",
+      "updates": [
+        10000,
+        30000,
+        50000
+      ],
+      "checkpoints": "longer100k-seed-{0,1,2}/{task}-step-{updates}.npz",
+      "optimizer_state_saved": false
+    },
+    "single_hidden_longer_training": {
+      "results": "longer-shallow100k-results.json",
+      "width": 64,
+      "hidden": 576,
+      "hidden_layers": 1,
+      "query_parameters": 100000,
+      "language_parameters": 81153,
+      "updates": [
+        10000,
+        30000,
+        50000
+      ]
+    }
   },
   "default_transformer_reference": {
     "blocks": 2,

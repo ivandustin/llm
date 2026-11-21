@@ -1,0 +1,32 @@
+Longer training: one hidden layer d64 h576 versus six layers d64 h120.
+Both: learned positions,GELU,parameter-free pooled norm,no residual/gate/final norm.
+Shallow parameters100000 queries/81153 language; deep99184 queries/94473 language.
+Three seeds,Adam .001,batch64,no schedule/weight decay. Continuous model/Adam state in1000-update scans.
+First10k reproduces previous model-specific loss/accuracy in every task/seed. Same generated streams,held-out samples and language splits.
+Checkpoints10k/30k/50k predeclared; no best-checkpoint selection. Deep50k results reused; only shallow newly trained.
+Different hidden shape and initialization layout; language parameter counts not exactly matched. No Transformer runs or speed measurements.
+
+position / shallow / 10000 updates: accuracy=71.20% +/- 0.83
+position / shallow / 30000 updates: accuracy=82.90% +/- 3.92
+position / shallow / 50000 updates: accuracy=88.83% +/- 3.86
+position / deep / 10000 updates: accuracy=97.61% +/- 1.38
+position / deep / 30000 updates: accuracy=99.68% +/- 0.11
+position / deep / 50000 updates: accuracy=99.24% +/- 0.26
+single / shallow / 10000 updates: accuracy=29.15% +/- 0.50
+single / shallow / 30000 updates: accuracy=45.62% +/- 0.25
+single / shallow / 50000 updates: accuracy=46.07% +/- 0.32
+single / deep / 10000 updates: accuracy=29.07% +/- 0.80
+single / deep / 30000 updates: accuracy=30.32% +/- 0.13
+single / deep / 50000 updates: accuracy=29.89% +/- 0.60
+multi / shallow / 10000 updates: accuracy=34.46% +/- 0.13
+multi / shallow / 30000 updates: accuracy=34.65% +/- 0.11
+multi / shallow / 50000 updates: accuracy=34.63% +/- 0.08
+multi / deep / 10000 updates: accuracy=34.36% +/- 0.33
+multi / deep / 30000 updates: accuracy=34.57% +/- 0.11
+multi / deep / 50000 updates: accuracy=34.50% +/- 0.15
+language / shallow / 10000 updates: accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / shallow / 30000 updates: accuracy=46.75% +/- 0.38, perplexity=7.44 +/- 0.25
+language / shallow / 50000 updates: accuracy=47.09% +/- 0.30, perplexity=7.72 +/- 0.24
+language / deep / 10000 updates: accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / deep / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0.07
+language / deep / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27
