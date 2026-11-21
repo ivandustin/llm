@@ -1,0 +1,127 @@
+{
+  "config": {
+    "architecture": "transformer",
+    "width": 64,
+    "hidden": 200,
+    "hidden_layers": 1,
+    "blocks": 2,
+    "pooled_norm": "non-learned",
+    "positions": "learned",
+    "residual": true,
+    "final_norm": true,
+    "budget": 100000,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99056,
+      "history": [
+        {
+          "loss": 0.0011393926106393337,
+          "accuracy": 1.0,
+          "step": 1000
+        },
+        {
+          "loss": 0.00014436314813792706,
+          "accuracy": 1.0,
+          "step": 3000
+        },
+        {
+          "loss": 1.984182745218277e-06,
+          "accuracy": 1.0,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.9777799025177956e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.0000019777818583
+      }
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99056,
+      "history": [
+        {
+          "loss": 1.5990407690405846,
+          "accuracy": 0.296142578125,
+          "step": 1000
+        },
+        {
+          "loss": 1.5118779316544533,
+          "accuracy": 0.291015625,
+          "step": 3000
+        },
+        {
+          "loss": 1.485423218458891,
+          "accuracy": 0.2861328125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.484965373761952,
+        "accuracy": 0.2918701171875,
+        "perplexity": 4.4148125417819095
+      }
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 99056,
+      "history": [
+        {
+          "loss": 1.396029431372881,
+          "accuracy": 0.33813477400690317,
+          "step": 1000
+        },
+        {
+          "loss": 1.281406857073307,
+          "accuracy": 0.3402506597340107,
+          "step": 3000
+        },
+        {
+          "loss": 0.0008610691384092206,
+          "accuracy": 0.9998372420668602,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.001954267516566688,
+        "accuracy": 0.9996134494431317,
+        "perplexity": 1.0019561783418818
+      }
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 96081,
+      "history": [
+        {
+          "loss": 2.1926721446216106,
+          "accuracy": 0.37744140625,
+          "step": 1000
+        },
+        {
+          "loss": 1.9851466231048107,
+          "accuracy": 0.419189453125,
+          "step": 3000
+        },
+        {
+          "loss": 1.789261668920517,
+          "accuracy": 0.46728515625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0055806040763855,
+        "accuracy": 0.426513671875,
+        "perplexity": 7.430406769060368
+      }
+    }
+  ]
+}

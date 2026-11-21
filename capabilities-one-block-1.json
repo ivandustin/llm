@@ -1,0 +1,88 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 1,
+    "contexts": [
+      16,
+      64
+    ],
+    "tasks": [
+      "indexed_copy"
+    ],
+    "output": "capabilities-one-block-1.json",
+    "models": [
+      "transformer"
+    ],
+    "width": 16,
+    "lr": 0.001,
+    "seed_start": 1,
+    "resume": false,
+    "depth": 1,
+    "vocab": 96,
+    "batch": 64,
+    "transformer_depth": 1,
+    "test_examples": 4096
+  },
+  "runs": [
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10036,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.118548657745123,
+          "accuracy": 0.708251953125
+        },
+        {
+          "step": 1500,
+          "loss": 0.006744550075381994,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00129324896261096,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00129324896261096,
+      "last_train_loss": 0.0011928677558898926,
+      "training_seconds": 18.076487941001687
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10804,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.784355938434601,
+          "accuracy": 0.07275390625
+        },
+        {
+          "step": 1500,
+          "loss": 2.6688130274415016,
+          "accuracy": 0.13037109375
+        },
+        {
+          "step": 3000,
+          "loss": 0.2041547403205186,
+          "accuracy": 0.939697265625
+        }
+      ],
+      "accuracy": 0.939697265625,
+      "loss": 0.2041547403205186,
+      "last_train_loss": 0.38847100734710693,
+      "training_seconds": 50.00795659698815
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "config": {
+    "seed": 0,
+    "steps": 5,
+    "output": "residual-smoke.json",
+    "context": 16,
+    "vocab": 96,
+    "width": 64,
+    "hidden": 12,
+    "hidden_layers": 6,
+    "parameters": 9976,
+    "budget": 10000,
+    "batch": 64,
+    "lr": 0.001,
+    "evaluation_seed": 700016,
+    "test_examples": 4096,
+    "validation_seed": 20261122,
+    "validation_examples": 16384,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "residual_rule": "h <- h + GELU(W*h+b) at five equal-width hidden transitions; no scaling or extra normalization",
+    "training_mode": "compiled lax.scan for both control and residual; identical pre-generated batches"
+  },
+  "runs": [
+    {
+      "variant": "plain",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 4.551706358790398,
+          "accuracy": 0.02392578125,
+          "step": 5,
+          "compile_seconds": 0.0006284099999902537,
+          "execution_seconds": 0.0024239039994427003,
+          "last_train_loss": 4.550873756408691
+        }
+      ],
+      "final": {
+        "loss": 4.551706358790398,
+        "accuracy": 0.02392578125,
+        "step": 5,
+        "compile_seconds": 0.0006284099999902537,
+        "execution_seconds": 0.0024239039994427003,
+        "last_train_loss": 4.550873756408691
+      },
+      "validation": {
+        "loss": 4.551924552768469,
+        "accuracy": 0.028076171875
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "residual",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 7.415154859423637,
+          "accuracy": 0.014404296875,
+          "step": 5,
+          "compile_seconds": 0.002912190999268205,
+          "execution_seconds": 0.001802247999876272,
+          "last_train_loss": 8.879032135009766
+        }
+      ],
+      "final": {
+        "loss": 7.415154859423637,
+        "accuracy": 0.014404296875,
+        "step": 5,
+        "compile_seconds": 0.002912190999268205,
+        "execution_seconds": 0.001802247999876272,
+        "last_train_loss": 8.879032135009766
+      },
+      "validation": {
+        "loss": 7.430045187473297,
+        "accuracy": 0.0125732421875
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    }
+  ]
+}

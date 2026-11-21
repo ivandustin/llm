@@ -1,0 +1,113 @@
+{
+  "config": {
+    "seed": 0,
+    "steps": 10000,
+    "output": "residual-seed-0.json",
+    "context": 16,
+    "vocab": 96,
+    "width": 64,
+    "hidden": 12,
+    "hidden_layers": 6,
+    "parameters": 9976,
+    "budget": 10000,
+    "batch": 64,
+    "lr": 0.001,
+    "evaluation_seed": 700016,
+    "test_examples": 4096,
+    "validation_seed": 20261122,
+    "validation_examples": 16384,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "residual_rule": "h <- h + GELU(W*h+b) at five equal-width hidden transitions; no scaling or extra normalization",
+    "training_mode": "compiled lax.scan for both control and residual; identical pre-generated batches"
+  },
+  "runs": [
+    {
+      "variant": "plain",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.679549567401409,
+          "accuracy": 0.120849609375,
+          "step": 1000,
+          "compile_seconds": 0.4604677309998806,
+          "execution_seconds": 0.30413236399908783,
+          "last_train_loss": 2.6564173698425293
+        },
+        {
+          "loss": 2.2462682873010635,
+          "accuracy": 0.2490234375,
+          "step": 3000,
+          "compile_seconds": 0.4666545260006387,
+          "execution_seconds": 0.5885515390000364,
+          "last_train_loss": 2.208395481109619
+        },
+        {
+          "loss": 0.14291082695126534,
+          "accuracy": 0.9755859375,
+          "step": 10000,
+          "compile_seconds": 0.44121194400031527,
+          "execution_seconds": 2.066173148999951,
+          "last_train_loss": 0.147538959980011
+        }
+      ],
+      "final": {
+        "loss": 0.14291082695126534,
+        "accuracy": 0.9755859375,
+        "step": 10000,
+        "compile_seconds": 0.44121194400031527,
+        "execution_seconds": 2.066173148999951,
+        "last_train_loss": 0.147538959980011
+      },
+      "validation": {
+        "loss": 0.14557998138479888,
+        "accuracy": 0.97821044921875
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "residual",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.6827624663710594,
+          "accuracy": 0.122802734375,
+          "step": 1000,
+          "compile_seconds": 0.6149443890008115,
+          "execution_seconds": 0.4840296849997685,
+          "last_train_loss": 2.695336103439331
+        },
+        {
+          "loss": 2.56552367657423,
+          "accuracy": 0.154541015625,
+          "step": 3000,
+          "compile_seconds": 0.7897062190004362,
+          "execution_seconds": 0.9201665569999022,
+          "last_train_loss": 2.625412940979004
+        },
+        {
+          "loss": 0.11728834640234709,
+          "accuracy": 0.98388671875,
+          "step": 10000,
+          "compile_seconds": 0.7118077680006536,
+          "execution_seconds": 2.95675392800149,
+          "last_train_loss": 0.1532604694366455
+        }
+      ],
+      "final": {
+        "loss": 0.11728834640234709,
+        "accuracy": 0.98388671875,
+        "step": 10000,
+        "compile_seconds": 0.7118077680006536,
+        "execution_seconds": 2.95675392800149,
+        "last_train_loss": 0.1532604694366455
+      },
+      "validation": {
+        "loss": 0.11329652648419142,
+        "accuracy": 0.98675537109375
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    }
+  ]
+}

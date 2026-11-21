@@ -1,0 +1,68 @@
+{
+  "config": {
+    "architecture": "transformer",
+    "width": 64,
+    "hidden": 536,
+    "hidden_layers": 1,
+    "blocks": 1,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99640,
+      "history": [
+        {
+          "loss": 0.000990578904747963,
+          "accuracy": 1.0,
+          "step": 1000
+        },
+        {
+          "loss": 0.000121360644698143,
+          "accuracy": 1.0,
+          "step": 3000
+        },
+        {
+          "loss": 1.933891326189041e-06,
+          "accuracy": 1.0,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.929642166942358e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.0000019296440288
+      }
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99640,
+      "history": [
+        {
+          "loss": 1.5699923150241375,
+          "accuracy": 0.29931640625,
+          "step": 1000
+        },
+        {
+          "loss": 1.5047131888568401,
+          "accuracy": 0.289306640625,
+          "step": 3000
+        },
+        {
+          "loss": 1.4836442098021507,
+          "accuracy": 0.290283203125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4827757915481925,
+        "accuracy": 0.290771484375,
+        "perplexity": 4.405156521945783
+      }
+    }
+  ]
+}

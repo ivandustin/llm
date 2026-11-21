@@ -1,0 +1,16 @@
+Strict 10,000-total-parameter budget; queried copying, context 16.
+Adam 0.001, batch 64, 10,000 updates; three seeds; mean +/- sample SD.
+Frequency shortcut baseline: 19.19%. Uniform valid-label chance: 6.25%.
+Candidate uses parameter-free normalization + GELU; transformer uses one block.
+
+Model          Dims  Hidden  Parameters  Accuracy (%)
+candidate        16      71       9,911   18.64 +/- 0.41
+candidate        24      59       9,923   18.94 +/- 0.58
+candidate        32      48       9,872   21.31 +/- 3.45
+candidate        40      39       9,919   20.43 +/- 2.33
+candidate        48      31       9,967   22.35 +/- 3.11
+candidate        56      23       9,887   19.95 +/- 1.33
+candidate        64      16       9,840   19.27 +/- 0.40
+candidate        72      10       9,850   17.73 +/- 0.73
+candidate        80       5       9,941   18.26 +/- 0.70
+transformer      16     162       9,970  100.00 +/- 0.00

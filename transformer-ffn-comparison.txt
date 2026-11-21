@@ -1,0 +1,10 @@
+Six feed-forward hidden layers in both models; one attention block in transformer.
+Ours: embedding 64 / hidden 12. Transformer: embedding 16 / hidden 28.
+Queries: ours 9,976 params; transformer 9,608. Language: ours 8,613; transformer 8,841.
+Three seeds, 10,000 Adam updates, batch 64, identical data per task.
+
+Task/metric         Ours              Transformer 1 hidden  Transformer 6 hidden
+position/accuracy   98.08 +/- 0.76    100.00 +/- 0.00       99.99 +/- 0.01
+single/accuracy     23.42 +/- 2.13    30.02 +/- 0.11        30.11 +/- 0.23
+multi/accuracy      29.73 +/- 1.09    31.49 +/- 1.54        32.10 +/- 0.25
+language/perplexity 9.78 +/- 0.04     8.43 +/- 0.16         8.73 +/- 0.11

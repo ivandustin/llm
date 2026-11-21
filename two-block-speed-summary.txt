@@ -1,0 +1,13 @@
+Approximately 100k parameters: pooled model vs two-block standard Transformer.
+Context16, vocab96, FP32 CPU, 22 logical CPUs, seven alternating warmed trials.
+Ours: d64 h120 K6, no residual or final norm, 99184 params; Transformer: d64, FF200, 2 blocks, 4 heads, 99056 params.
+Learned positions in both; seed0 position-copy checkpoints. Two-block checkpoint trained 10000 updates; quality not a three-seed comparison.
+Resident inputs, compilation excluded, synchronized results; no KV cache. First block computes all causal states; final block only supervised outputs.
+Five-step complete model/Adam state and losses match ordinary updates; optimized logits/gradients checked against full Transformer.
+
+inference_batch_1: ours 1.570 ms, TF 2.587 ms, speedup 1.65x
+inference_batch_64: ours 1.970 ms, TF 4.211 ms, speedup 2.14x
+python_training_batch_64: ours 3.357 ms, TF 8.977 ms, speedup 2.67x
+compiled_training_batch_64: ours 1.415 ms, TF 7.445 ms, speedup 5.26x
+
+Batch1 inference trial variation: ours 0.800-1.690 ms, TF 1.651-2.660 ms. Absolute timings differ from earlier runs; compare models within this run. These are per-update/request timings, not time to equal quality. No long-context or cache/memory measurements.

@@ -1,0 +1,143 @@
+{
+  "config": {
+    "widths": [
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80
+    ],
+    "budget": 10000,
+    "steps": 10000,
+    "seeds": 3,
+    "seed_start": 0,
+    "output": "depth-budget-results.json",
+    "hidden_layers": 2,
+    "skip_reference": true,
+    "context": 16,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "test_examples": 4096,
+    "task": "indexed_copy",
+    "variant": "normalized_GELU",
+    "transformer_depth": 1,
+    "evaluation_seed": 700016,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "execution_note": "Seeds run concurrently. One-hidden-layer and transformer controls reused from budget-results.json; identical task, batches, evaluation and optimizer."
+  },
+  "rows": [
+    {
+      "width": 16,
+      "shallow_hidden": 71,
+      "deep_hidden": 49,
+      "shallow_parameters": 9911,
+      "deep_parameters": 9875,
+      "shallow_accuracy": 18.636067708333332,
+      "shallow_sd": 0.4116744749329993,
+      "deep_accuracy": 18.465169270833332,
+      "deep_sd": 0.07848023080235152
+    },
+    {
+      "width": 24,
+      "shallow_hidden": 59,
+      "deep_hidden": 43,
+      "shallow_parameters": 9923,
+      "deep_parameters": 9879,
+      "shallow_accuracy": 18.937174479166668,
+      "shallow_sd": 0.578944544656003,
+      "deep_accuracy": 19.669596354166668,
+      "deep_sd": 1.6691673909320806
+    },
+    {
+      "width": 32,
+      "shallow_hidden": 48,
+      "deep_hidden": 37,
+      "shallow_parameters": 9872,
+      "deep_parameters": 9859,
+      "shallow_accuracy": 21.3134765625,
+      "shallow_sd": 3.451202133382846,
+      "deep_accuracy": 19.222005208333332,
+      "deep_sd": 0.07458619295175521
+    },
+    {
+      "width": 40,
+      "shallow_hidden": 39,
+      "deep_hidden": 31,
+      "shallow_parameters": 9919,
+      "deep_parameters": 9815,
+      "shallow_accuracy": 20.426432291666668,
+      "shallow_sd": 2.332064851468735,
+      "deep_accuracy": 20.100911458333332,
+      "deep_sd": 2.3476039142244307
+    },
+    {
+      "width": 48,
+      "shallow_hidden": 31,
+      "deep_hidden": 26,
+      "shallow_parameters": 9967,
+      "deep_parameters": 9944,
+      "shallow_accuracy": 22.347005208333332,
+      "shallow_sd": 3.1051322066888614,
+      "deep_accuracy": 24.430338541666668,
+      "deep_sd": 1.022577210536986
+    },
+    {
+      "width": 56,
+      "shallow_hidden": 23,
+      "deep_hidden": 20,
+      "shallow_parameters": 9887,
+      "deep_parameters": 9848,
+      "shallow_accuracy": 19.9462890625,
+      "shallow_sd": 1.3307343823155902,
+      "deep_accuracy": 23.014322916666668,
+      "deep_sd": 0.7064627087959214
+    },
+    {
+      "width": 64,
+      "shallow_hidden": 16,
+      "deep_hidden": 15,
+      "shallow_parameters": 9840,
+      "deep_parameters": 9919,
+      "shallow_accuracy": 19.270833333333332,
+      "shallow_sd": 0.40289367820594285,
+      "deep_accuracy": 26.717122395833332,
+      "deep_sd": 8.396603879442706
+    },
+    {
+      "width": 72,
+      "shallow_hidden": 10,
+      "deep_hidden": 10,
+      "shallow_parameters": 9850,
+      "deep_parameters": 9960,
+      "shallow_accuracy": 17.732747395833332,
+      "shallow_sd": 0.7349943971312233,
+      "deep_accuracy": 31.0791015625,
+      "deep_sd": 14.921346924709793
+    },
+    {
+      "width": 80,
+      "shallow_hidden": 5,
+      "deep_hidden": 5,
+      "shallow_parameters": 9941,
+      "deep_parameters": 9971,
+      "shallow_accuracy": 18.26171875,
+      "shallow_sd": 0.7042092334890604,
+      "deep_accuracy": 46.305338541666664,
+      "deep_sd": 18.206676960670656
+    }
+  ],
+  "transformer_reference": {
+    "model": "transformer",
+    "width": 16,
+    "hidden": 162,
+    "parameters": 9970,
+    "accuracy_mean": 100.0,
+    "accuracy_sd": 0.0
+  },
+  "frequency_baseline_accuracy": 0.19189453125
+}

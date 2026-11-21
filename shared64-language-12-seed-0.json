@@ -1,0 +1,104 @@
+{
+  "config": {
+    "seed": 0,
+    "steps": 10000,
+    "output": "shared64-language-12-seed-0.json",
+    "deep_width": 64,
+    "deep_hidden": 9,
+    "deep_layers": 12,
+    "residual": false,
+    "residual_prenorm": false,
+    "models": [
+      "deep"
+    ],
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 64,
+      "hidden": 9,
+      "hidden_layers": 12,
+      "residual": false,
+      "residual_prenorm": false,
+      "parameters": 8433
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 0,
+      "parameters": 8433,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.896210215985775,
+            "accuracy": 0.187744140625,
+            "perplexity": 18.1053996318782
+          },
+          "final_train_loss": 2.9248239994049072,
+          "compile_seconds": 0.9181325889985601,
+          "execution_seconds": 0.659936034000566
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.6962722688913345,
+            "accuracy": 0.232177734375,
+            "perplexity": 14.824367341911612
+          },
+          "final_train_loss": 2.6987173557281494,
+          "compile_seconds": 0.9179300600007991,
+          "execution_seconds": 1.4384199119995174
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.392539404332638,
+            "accuracy": 0.313232421875,
+            "perplexity": 10.941242934888427
+          },
+          "final_train_loss": 2.4094760417938232,
+          "compile_seconds": 0.8799662009987514,
+          "execution_seconds": 4.671119116999762
+        }
+      ],
+      "validation": {
+        "loss": 2.392539404332638,
+        "accuracy": 0.313232421875,
+        "perplexity": 10.941242934888427
+      },
+      "test": {
+        "loss": 2.4372788593173027,
+        "accuracy": 0.31005859375,
+        "perplexity": 11.441863423049918
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nOt fuctewe el, sus doan rost the intitnnt the cuds. Enbd ptanred mond hatoge I thed dosoewn thals masresweme het feen id blefroon the thab os gdoau that thale w"
+    }
+  ]
+}

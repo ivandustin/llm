@@ -1,0 +1,107 @@
+{
+  "configuration": {
+    "dims": 16,
+    "hidden_layers": 6,
+    "hidden_units": 30,
+    "parameters": 9928,
+    "updates": 10000
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "width": 16,
+      "hidden": 30,
+      "hidden_layers": 6,
+      "parameters": 9928,
+      "steps": 10000,
+      "history": [
+        {
+          "loss": 2.652969650924206,
+          "accuracy": 0.13330078125,
+          "step": 1000
+        },
+        {
+          "loss": 2.440794125199318,
+          "accuracy": 0.207763671875,
+          "step": 3000
+        },
+        {
+          "loss": 2.3062512576580048,
+          "accuracy": 0.222412109375,
+          "step": 10000
+        }
+      ],
+      "fresh": {
+        "loss": 2.2991278804838657,
+        "accuracy": 0.232666015625
+      },
+      "evaluation_seed": 700016,
+      "fresh_seed": 20261122
+    },
+    {
+      "seed": 1,
+      "width": 16,
+      "hidden": 30,
+      "hidden_layers": 6,
+      "parameters": 9928,
+      "steps": 10000,
+      "history": [
+        {
+          "loss": 2.699206627905369,
+          "accuracy": 0.123046875,
+          "step": 1000
+        },
+        {
+          "loss": 2.4909522980451584,
+          "accuracy": 0.185302734375,
+          "step": 3000
+        },
+        {
+          "loss": 2.2409022599458694,
+          "accuracy": 0.25341796875,
+          "step": 10000
+        }
+      ],
+      "fresh": {
+        "loss": 2.259356452152133,
+        "accuracy": 0.24896240234375
+      },
+      "evaluation_seed": 700016,
+      "fresh_seed": 20261122
+    },
+    {
+      "seed": 2,
+      "width": 16,
+      "hidden": 30,
+      "hidden_layers": 6,
+      "parameters": 9928,
+      "steps": 10000,
+      "history": [
+        {
+          "loss": 2.6900425255298615,
+          "accuracy": 0.121826171875,
+          "step": 1000
+        },
+        {
+          "loss": 2.4507622569799423,
+          "accuracy": 0.197265625,
+          "step": 3000
+        },
+        {
+          "loss": 2.270028993487358,
+          "accuracy": 0.2333984375,
+          "step": 10000
+        }
+      ],
+      "fresh": {
+        "loss": 2.268248990178108,
+        "accuracy": 0.24053955078125
+      },
+      "evaluation_seed": 700016,
+      "fresh_seed": 20261122
+    }
+  ],
+  "accuracy_mean": 24.072265625,
+  "accuracy_sd": 0.8149736236914509,
+  "exact_reproduction": true
+}

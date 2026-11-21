@@ -1,0 +1,31 @@
+{
+  "seed": 1,
+  "width": 16,
+  "hidden": 26,
+  "hidden_layers": 8,
+  "parameters": 9740,
+  "steps": 10000,
+  "history": [
+    {
+      "loss": 2.720009572803974,
+      "accuracy": 0.09912109375,
+      "step": 1000
+    },
+    {
+      "loss": 2.3994032442569733,
+      "accuracy": 0.19482421875,
+      "step": 3000
+    },
+    {
+      "loss": 1.7132304981350899,
+      "accuracy": 0.423583984375,
+      "step": 10000
+    }
+  ],
+  "fresh": {
+    "loss": 1.679946887306869,
+    "accuracy": 0.4281005859375
+  },
+  "evaluation_seed": 700016,
+  "fresh_seed": 20261122
+}

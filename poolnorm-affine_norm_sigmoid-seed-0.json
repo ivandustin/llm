@@ -1,0 +1,76 @@
+{
+  "config": {
+    "architecture": "affine_norm_sigmoid",
+    "width_by_task": {
+      "position": 255,
+      "language": 32
+    },
+    "hidden_by_task": {
+      "position": 240,
+      "language": 152
+    },
+    "hidden_layers": 1,
+    "blocks": 0,
+    "pooled_norm_epsilon": 1e-05,
+    "final_norm": false,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 113646,
+      "history": [
+        {
+          "loss": 2.3716268837451935,
+          "accuracy": 0.19482421875,
+          "step": 1000
+        },
+        {
+          "loss": 2.257807679474354,
+          "accuracy": 0.184814453125,
+          "step": 3000
+        },
+        {
+          "loss": 0.9139298014342785,
+          "accuracy": 0.657470703125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.8890097010880709,
+        "accuracy": 0.66748046875,
+        "perplexity": 2.4327193387077406
+      }
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 18129,
+      "history": [
+        {
+          "loss": 2.46408324688673,
+          "accuracy": 0.30322265625,
+          "step": 1000
+        },
+        {
+          "loss": 2.2011957690119743,
+          "accuracy": 0.36328125,
+          "step": 3000
+        },
+        {
+          "loss": 1.9604500718414783,
+          "accuracy": 0.424072265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0607396848499775,
+        "accuracy": 0.39599609375,
+        "perplexity": 7.851775502246996
+      }
+    }
+  ]
+}

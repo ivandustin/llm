@@ -1,0 +1,199 @@
+{
+  "config": {
+    "context": 16,
+    "width": 16,
+    "hidden": 72,
+    "steps": 10000,
+    "seeds": 1,
+    "seed_start": 0,
+    "variants": [
+      "random_gelu",
+      "random_norm",
+      "random_norm_gelu"
+    ],
+    "output": "readout-small-pilot.json",
+    "unfreeze_steps": 0,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "unfreeze_lr": 0.0001,
+    "baseline_hidden": 72,
+    "deep_hidden": 50,
+    "test_examples": 4096,
+    "stats_note": "Sigmoid derivative is a reference diagnostic; GELU variants do not use sigmoid at that layer.",
+    "evaluation_note": "Different RNG from previous capability tests; IID support is not explicitly partitioned."
+  },
+  "runs": [
+    {
+      "variant": "random_gelu",
+      "seed": 0,
+      "hidden": 72,
+      "parameters": 10024,
+      "trainable_parameters": 10024,
+      "initial": {
+        "loss": 4.590573534369469,
+        "accuracy": 0.00927734375
+      },
+      "initial_stats": {
+        "preactivation_mean": 0.009732821956276894,
+        "preactivation_std": 0.2647078335285187,
+        "fraction_abs_over_4": 0.0,
+        "mean_sigmoid_derivative": 0.2457795888185501
+      },
+      "final_stats": {
+        "preactivation_mean": 0.1433286815881729,
+        "preactivation_std": 0.9683875441551208,
+        "fraction_abs_over_4": 0.0012546115322038531,
+        "mean_sigmoid_derivative": 0.2084754854440689
+      },
+      "history": [
+        {
+          "loss": 2.6470960453152657,
+          "accuracy": 0.14111328125,
+          "step": 500,
+          "train_loss": 2.683096408843994
+        },
+        {
+          "loss": 2.4635767936706543,
+          "accuracy": 0.179443359375,
+          "step": 1500,
+          "train_loss": 2.4284207820892334
+        },
+        {
+          "loss": 2.3963349610567093,
+          "accuracy": 0.19482421875,
+          "step": 3000,
+          "train_loss": 2.385183334350586
+        },
+        {
+          "loss": 2.249976672232151,
+          "accuracy": 0.174560546875,
+          "step": 10000,
+          "train_loss": 2.287741184234619
+        }
+      ],
+      "final": {
+        "loss": 2.249976672232151,
+        "accuracy": 0.174560546875,
+        "step": 10000,
+        "train_loss": 2.287741184234619
+      },
+      "seconds": 29.838003225000193,
+      "embedding_frozen": false
+    },
+    {
+      "variant": "random_norm",
+      "seed": 0,
+      "hidden": 72,
+      "parameters": 10024,
+      "trainable_parameters": 10024,
+      "initial": {
+        "loss": 4.686170428991318,
+        "accuracy": 0.017333984375
+      },
+      "initial_stats": {
+        "preactivation_mean": 0.0341968908905983,
+        "preactivation_std": 0.9951539039611816,
+        "fraction_abs_over_4": 0.0,
+        "mean_sigmoid_derivative": 0.20635315775871277
+      },
+      "final_stats": {
+        "preactivation_mean": -0.04373687133193016,
+        "preactivation_std": 1.7072803974151611,
+        "fraction_abs_over_4": 0.0268419049680233,
+        "mean_sigmoid_derivative": 0.1698819249868393
+      },
+      "history": [
+        {
+          "loss": 2.7068584635853767,
+          "accuracy": 0.124267578125,
+          "step": 500,
+          "train_loss": 2.7161173820495605
+        },
+        {
+          "loss": 2.473646454513073,
+          "accuracy": 0.186279296875,
+          "step": 1500,
+          "train_loss": 2.471459150314331
+        },
+        {
+          "loss": 2.4007369205355644,
+          "accuracy": 0.196044921875,
+          "step": 3000,
+          "train_loss": 2.3833203315734863
+        },
+        {
+          "loss": 2.327154204249382,
+          "accuracy": 0.19482421875,
+          "step": 10000,
+          "train_loss": 2.3896403312683105
+        }
+      ],
+      "final": {
+        "loss": 2.327154204249382,
+        "accuracy": 0.19482421875,
+        "step": 10000,
+        "train_loss": 2.3896403312683105
+      },
+      "seconds": 30.168525771000077,
+      "embedding_frozen": false
+    },
+    {
+      "variant": "random_norm_gelu",
+      "seed": 0,
+      "hidden": 72,
+      "parameters": 10024,
+      "trainable_parameters": 10024,
+      "initial": {
+        "loss": 4.841687455773354,
+        "accuracy": 0.007568359375
+      },
+      "initial_stats": {
+        "preactivation_mean": 0.0341968908905983,
+        "preactivation_std": 0.9951539039611816,
+        "fraction_abs_over_4": 0.0,
+        "mean_sigmoid_derivative": 0.20635315775871277
+      },
+      "final_stats": {
+        "preactivation_mean": 0.12557606399059296,
+        "preactivation_std": 1.177956223487854,
+        "fraction_abs_over_4": 0.0016411675605922937,
+        "mean_sigmoid_derivative": 0.19489529728889465
+      },
+      "history": [
+        {
+          "loss": 2.6784602254629135,
+          "accuracy": 0.13134765625,
+          "step": 500,
+          "train_loss": 2.7372379302978516
+        },
+        {
+          "loss": 2.471145898103714,
+          "accuracy": 0.18505859375,
+          "step": 1500,
+          "train_loss": 2.4814515113830566
+        },
+        {
+          "loss": 2.409871883690357,
+          "accuracy": 0.186767578125,
+          "step": 3000,
+          "train_loss": 2.4559226036071777
+        },
+        {
+          "loss": 2.267422340810299,
+          "accuracy": 0.197021484375,
+          "step": 10000,
+          "train_loss": 2.248889207839966
+        }
+      ],
+      "final": {
+        "loss": 2.267422340810299,
+        "accuracy": 0.197021484375,
+        "step": 10000,
+        "train_loss": 2.248889207839966
+      },
+      "seconds": 31.020261051000034,
+      "embedding_frozen": false
+    }
+  ]
+}

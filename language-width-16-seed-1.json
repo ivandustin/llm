@@ -1,0 +1,100 @@
+{
+  "config": {
+    "seed": 1,
+    "steps": 10000,
+    "output": "language-width-16-seed-1.json",
+    "deep_width": 16,
+    "deep_hidden": 30,
+    "models": [
+      "deep"
+    ],
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 16,
+      "hidden": 30,
+      "hidden_layers": 6,
+      "residual": false,
+      "parameters": 8727
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 1,
+      "parameters": 8727,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.712694749236107,
+            "accuracy": 0.246826171875,
+            "perplexity": 15.069830261483299
+          },
+          "final_train_loss": 2.784123182296753,
+          "compile_seconds": 0.4210278289992857,
+          "execution_seconds": 0.31356882900036
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.2984969913959503,
+            "accuracy": 0.33740234375,
+            "perplexity": 9.95920243313754
+          },
+          "final_train_loss": 2.3118016719818115,
+          "compile_seconds": 0.40447834999940824,
+          "execution_seconds": 0.6013677640003152
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.0900420174002647,
+            "accuracy": 0.3896484375,
+            "perplexity": 8.08525487855853
+          },
+          "final_train_loss": 2.039804220199585,
+          "compile_seconds": 0.3908204740000656,
+          "execution_seconds": 2.057657397001094
+        }
+      ],
+      "validation": {
+        "loss": 2.0900420174002647,
+        "accuracy": 0.3896484375,
+        "perplexity": 8.08525487855853
+      },
+      "test": {
+        "loss": 2.1750816144049168,
+        "accuracy": 0.38232421875,
+        "perplexity": 8.802903536604406
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMast the I is parke,\nAnd to sta makes ming, that theed, gow the:\nCord\nThat of with.\n\nVIUS:\nAr loul not it deat heece a lol il hast you lich a hild,\nUntele metur"
+    }
+  ]
+}

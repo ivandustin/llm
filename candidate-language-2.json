@@ -1,0 +1,49 @@
+{
+  "config": {
+    "steps": 10000,
+    "seeds": 1,
+    "context": 32,
+    "batch": 64,
+    "lr": 0.001,
+    "output": "candidate-language-2.json",
+    "models": [
+      "cube"
+    ],
+    "cube_variant": "norm_gelu",
+    "seed_start": 2,
+    "vocab": 65,
+    "width": 32,
+    "hidden": 152,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.1"
+  },
+  "runs": [
+    {
+      "model": "cube",
+      "seed": 2,
+      "parameters": 18065,
+      "compile_seconds": 0.4930532429998493,
+      "train_seconds": 18.411789177999708,
+      "final_train_loss": 1.8626902091503144,
+      "validation": {
+        "loss": 1.9352701380848885,
+        "perplexity": 6.925914756041451,
+        "accuracy": 0.42041015625
+      },
+      "test": {
+        "loss": 2.0410640239715576,
+        "perplexity": 7.698796546417069,
+        "accuracy": 0.4013671875
+      },
+      "sample": "First Citizen:\n\nLEONUS:\nI say thery my to them forricest my pofeld;\nBright hund shore and thou shappleare we wond a sout whou laice?\n\nPOLIXEONUS:\nMy lord! Bough,\nTow shouss mu"
+    }
+  ]
+}

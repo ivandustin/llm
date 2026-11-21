@@ -1,0 +1,23 @@
+Queried copying, context 16, 10,000 updates, three seeds.
+Lossless block encoding width 255; baseline hidden width 240.
+Final accuracy: mean +/- sample standard deviation (%).
+
+Variant                 Accuracy          Trainable parameters
+fixed_sigmoid            19.89 +/-  0.05    84,576
+fixed_norm               56.38 +/-  0.45    84,576
+fixed_gelu               99.19 +/-  0.09    84,576
+fixed_deep               19.57 +/-  0.42    84,884
+lossless_joint           50.35 +/-  7.97    113,136
+random_joint             18.59 +/-  0.56    113,136
+random_norm              58.27 +/-  1.73    113,136
+random_gelu              41.38 +/-  4.35    113,136
+random_norm_gelu         98.02 +/-  0.35    113,136
+
+Successful frozen-readout continuation (3,000 further updates, Adam 0.0001):
+fixed_gelu unfreeze=False: 99.64 +/- 0.11 (n=3)
+fixed_gelu unfreeze=True: 99.76 +/- 0.10 (n=3)
+
+Smaller-model pilot: width 16, hidden 72, ONE SEED only.
+random_gelu: 17.46%
+random_norm: 19.48%
+random_norm_gelu: 19.70%

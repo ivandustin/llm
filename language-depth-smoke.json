@@ -1,0 +1,133 @@
+{
+  "config": {
+    "seed": 0,
+    "steps": 5,
+    "output": "language-depth-smoke.json",
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 64,
+      "hidden": 12,
+      "hidden_layers": 6,
+      "residual": false,
+      "parameters": 8613
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 0,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 5,
+          "validation": {
+            "loss": 4.16671596467495,
+            "accuracy": 0.052490234375,
+            "perplexity": 64.5032728693563
+          },
+          "final_train_loss": 4.17307186126709,
+          "compile_seconds": 0.0006085120003263,
+          "execution_seconds": 0.002749979999862262
+        }
+      ],
+      "validation": {
+        "loss": 4.16671596467495,
+        "accuracy": 0.052490234375,
+        "perplexity": 64.5032728693563
+      },
+      "test": {
+        "loss": 4.167249485850334,
+        "accuracy": 0.061279296875,
+        "perplexity": 64.53769591320858
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\n3wuUShFFwYwel,e BTjJkFqurSsCQTsHKiDtNzNnHq&rJZzQLq.3EXbWOMVE$rvWJBU3dDLp;$Q;CIKkbtEJdB.JVwYYBwsWsCm,e$A;wwV!r3V,SfmhSGi!FTkkzKBoaPUXBY!tJbPRspSdM\nXbJ&UzLX;cqTu."
+    },
+    {
+      "model": "shallow",
+      "seed": 0,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 5,
+          "validation": {
+            "loss": 4.398910820484161,
+            "accuracy": 0.01611328125,
+            "perplexity": 81.3622023428074
+          },
+          "final_train_loss": 4.409961223602295,
+          "compile_seconds": 0.004344433000369463,
+          "execution_seconds": 0.002471907000654028
+        }
+      ],
+      "validation": {
+        "loss": 4.398910820484161,
+        "accuracy": 0.01611328125,
+        "perplexity": 81.3622023428074
+      },
+      "test": {
+        "loss": 4.395942702889442,
+        "accuracy": 0.01416015625,
+        "perplexity": 81.1210677933654
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\n3kZUFcF-wYBel,F BTjukFqurdsCpTsHKiktBzknH3&.dZ;QLq.3'XbWVMVE$rvWJBn3dDmp;;QbCIKtbtXJdB.JVwYSBwsWsCm,eKA;wwVdrlV,,fdhbGiaFTlkzKBPyP-;Bh,tJbKP.pSd \nBbY&dzLX;HB-u."
+    },
+    {
+      "model": "transformer",
+      "seed": 0,
+      "parameters": 8609,
+      "history": [
+        {
+          "step": 5,
+          "validation": {
+            "loss": 4.249609634280205,
+            "accuracy": 0.047119140625,
+            "perplexity": 70.0780509377611
+          },
+          "final_train_loss": 4.465831279754639,
+          "compile_seconds": 0.003131162999125081,
+          "execution_seconds": 0.01191371499953675
+        }
+      ],
+      "validation": {
+        "loss": 4.249609634280205,
+        "accuracy": 0.047119140625,
+        "perplexity": 70.0780509377611
+      },
+      "test": {
+        "loss": 4.264173239469528,
+        "accuracy": 0.049072265625,
+        "perplexity": 71.10610794149014
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nhwu?vh?lwpw?l,- Tia kznurSsCuTPHu& tNzNnhq&WlPcQL T ? $WlL TNHvWJ,?H DhP;pQ;CIkhbt;?dHPJzwnYBwsWsCm,e,D wwV!rhViPV W&GiaPTl&zK oOPUEBh rJbPRwpgd aX ?QUzLX;cqTuw"
+    }
+  ]
+}

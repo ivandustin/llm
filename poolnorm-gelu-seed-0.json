@@ -1,0 +1,49 @@
+{
+  "config": {
+    "architecture": "gelu",
+    "width_by_task": {
+      "position": 255,
+      "language": 32
+    },
+    "hidden_by_task": {
+      "position": 240,
+      "language": 152
+    },
+    "hidden_layers": 1,
+    "blocks": 0,
+    "pooled_norm_epsilon": 1e-05,
+    "final_norm": false,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 18065,
+      "history": [
+        {
+          "loss": 2.460530921816826,
+          "accuracy": 0.293212890625,
+          "step": 1000
+        },
+        {
+          "loss": 2.1950310692191124,
+          "accuracy": 0.360595703125,
+          "step": 3000
+        },
+        {
+          "loss": 1.9698574356734753,
+          "accuracy": 0.424072265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.100399162620306,
+        "accuracy": 0.387451171875,
+        "perplexity": 8.169430192995565
+      }
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 3,
+    "contexts": [
+      16,
+      64
+    ],
+    "tasks": [
+      "indexed_copy"
+    ],
+    "output": "capabilities-one-block.json",
+    "models": [
+      "transformer"
+    ],
+    "width": 16,
+    "lr": 0.001,
+    "seed_start": 0,
+    "resume": false,
+    "depth": 1,
+    "vocab": 96,
+    "batch": 64,
+    "transformer_depth": 1,
+    "test_examples": 4096
+  },
+  "runs": [
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10036,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.2747699059545994,
+          "accuracy": 0.683837890625
+        },
+        {
+          "step": 1500,
+          "loss": 0.009118487010709941,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0016276007518172264,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0016276007518172264,
+      "last_train_loss": 0.001781553030014038,
+      "training_seconds": 18.69557610201491
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10804,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7882957458496094,
+          "accuracy": 0.066650390625
+        },
+        {
+          "step": 1500,
+          "loss": 2.464899055659771,
+          "accuracy": 0.208984375
+        },
+        {
+          "step": 3000,
+          "loss": 0.056875975453294814,
+          "accuracy": 0.984375
+        }
+      ],
+      "accuracy": 0.984375,
+      "loss": 0.056875975453294814,
+      "last_train_loss": 0.0077266693115234375,
+      "training_seconds": 50.72799900500422
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10036,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.118548657745123,
+          "accuracy": 0.708251953125
+        },
+        {
+          "step": 1500,
+          "loss": 0.006744550075381994,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00129324896261096,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00129324896261096,
+      "last_train_loss": 0.0011928677558898926,
+      "training_seconds": 18.076487941001687
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10804,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.784355938434601,
+          "accuracy": 0.07275390625
+        },
+        {
+          "step": 1500,
+          "loss": 2.6688130274415016,
+          "accuracy": 0.13037109375
+        },
+        {
+          "step": 3000,
+          "loss": 0.2041547403205186,
+          "accuracy": 0.939697265625
+        }
+      ],
+      "accuracy": 0.939697265625,
+      "loss": 0.2041547403205186,
+      "last_train_loss": 0.38847100734710693,
+      "training_seconds": 50.00795659698815
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10036,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.9924622904509306,
+          "accuracy": 0.77490234375
+        },
+        {
+          "step": 1500,
+          "loss": 0.007700363057665527,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0015898833516985178,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0015898833516985178,
+      "last_train_loss": 0.0014019608497619629,
+      "training_seconds": 18.03229763200261
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10804,
+      "hidden": 164,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.792037181556225,
+          "accuracy": 0.078857421875
+        },
+        {
+          "step": 1500,
+          "loss": 2.705659955739975,
+          "accuracy": 0.118408203125
+        },
+        {
+          "step": 3000,
+          "loss": 0.12048634723760188,
+          "accuracy": 0.967529296875
+        }
+      ],
+      "accuracy": 0.967529296875,
+      "loss": 0.12048634723760188,
+      "last_train_loss": 0.10825908184051514,
+      "training_seconds": 49.6019463979942
+    }
+  ]
+}

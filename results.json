@@ -1,0 +1,138 @@
+{
+  "config": {
+    "steps": 10000,
+    "seeds": 3,
+    "context": 32,
+    "batch": 64,
+    "lr": 0.001,
+    "vocab": 65,
+    "width": 32,
+    "hidden": 152,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.1"
+  },
+  "runs": [
+    {
+      "model": "cube",
+      "seed": 0,
+      "parameters": 18065,
+      "compile_seconds": 0.2981587369999943,
+      "train_seconds": 10.877224382000009,
+      "final_train_loss": 2.0084411454200746,
+      "validation": {
+        "loss": 2.0297280736267567,
+        "perplexity": 7.612016169373175,
+        "accuracy": 0.398193359375
+      },
+      "test": {
+        "loss": 2.1083178408443928,
+        "perplexity": 8.234378093348145,
+        "accuracy": 0.37841796875
+      },
+      "sample": "First Citizen:\nI to his asel, stin kan rist the ist thear\nThom dor the hat and were drather I het add.\n\nKING RICCHARDAN:\nWard: nomencinculk goon the deabk sped a be at the hit"
+    },
+    {
+      "model": "transformer",
+      "seed": 0,
+      "parameters": 18017,
+      "compile_seconds": 0.6207553579999967,
+      "train_seconds": 58.513786553000045,
+      "final_train_loss": 1.8747126507759093,
+      "validation": {
+        "loss": 1.935414969921112,
+        "perplexity": 6.926917921636501,
+        "accuracy": 0.433837890625
+      },
+      "test": {
+        "loss": 2.078252624720335,
+        "perplexity": 7.990494316178055,
+        "accuracy": 0.408935546875
+      },
+      "sample": "First Citizen:\nO the this the stionk ner stalt those thank the do fear him arver,\nWhere peepplest thou two thees my they mare:\nShe but that gatand, his brows deated and that t"
+    },
+    {
+      "model": "cube",
+      "seed": 1,
+      "parameters": 18065,
+      "compile_seconds": 0.2243742130000328,
+      "train_seconds": 11.310856208000018,
+      "final_train_loss": 1.988662918806076,
+      "validation": {
+        "loss": 2.047256752848625,
+        "perplexity": 7.746621035316891,
+        "accuracy": 0.398193359375
+      },
+      "test": {
+        "loss": 2.108130846172571,
+        "perplexity": 8.23283845247573,
+        "accuracy": 0.3837890625
+      },
+      "sample": "First Citizen:\nMast the I is parke,\nAnd gont the farmo, thith you herves wextruencerain thou with.\n\nVOUS:\nA plokh not it deat heece a kile lighs, youge and what to mather'st w"
+    },
+    {
+      "model": "transformer",
+      "seed": 1,
+      "parameters": 18017,
+      "compile_seconds": 0.5324908279999363,
+      "train_seconds": 55.531655411999964,
+      "final_train_loss": 1.836910195350647,
+      "validation": {
+        "loss": 1.9353850819170475,
+        "perplexity": 6.926710892979356,
+        "accuracy": 0.431640625
+      },
+      "test": {
+        "loss": 2.082336202263832,
+        "perplexity": 8.02319083327435,
+        "accuracy": 0.40673828125
+      },
+      "sample": "First Citizen:\nMay thee I lair the yeept ort the fall hounst now their grow,\nThen in in thou with have I with MARGARET:\nAnd thee.\n\nRAKE A\nThe hought teway a have, in the frous"
+    },
+    {
+      "model": "cube",
+      "seed": 2,
+      "parameters": 18065,
+      "compile_seconds": 0.2210399729999608,
+      "train_seconds": 11.259030026000119,
+      "final_train_loss": 2.0171935987472533,
+      "validation": {
+        "loss": 2.0446219593286514,
+        "perplexity": 7.7262371538630354,
+        "accuracy": 0.399169921875
+      },
+      "test": {
+        "loss": 2.093114599585533,
+        "perplexity": 8.110135693261267,
+        "accuracy": 0.38134765625
+      },
+      "sample": "First Citizen:\n\nLoo mare seave mery martfore mof ancking! the fre not this sued shy.\n\nCLICLOTHNRETE:\nI weard out maps:\nThou doll cour repen mestay the shou the\nTourt are,\nshou"
+    },
+    {
+      "model": "transformer",
+      "seed": 2,
+      "parameters": 18017,
+      "compile_seconds": 0.5181594769999265,
+      "train_seconds": 64.1097917479999,
+      "final_train_loss": 1.8692140007019042,
+      "validation": {
+        "loss": 1.92222186550498,
+        "perplexity": 6.836130570567143,
+        "accuracy": 0.4375
+      },
+      "test": {
+        "loss": 2.0458492040634155,
+        "perplexity": 7.735724958467953,
+        "accuracy": 0.409423828125
+      },
+      "sample": "First Citizen:\n\nLEONE:\nWho now me were the like warckes.\n\nKING EDWARD II:\nThund shy have the grot prothis we outh a shall be well grant?\nNo west your word ither,\nThe shomss wo"
+    }
+  ]
+}

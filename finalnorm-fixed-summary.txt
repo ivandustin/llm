@@ -1,0 +1,17 @@
+Paired final LayerNorm ablation: learned positions, d64, h12, six hidden layers.
+Three seeds, 10,000 compiled Adam updates, batch64, lr .001.
+Variants: plain=no final norm; final=learned scale/bias (+24 params); fixed=no scale/bias (+0 params). All final norms use epsilon1e-6.
+Mean +/- sample standard deviation. No speed benchmark.
+
+position / plain: 9976 params, accuracy 98.08% +/- 0.76
+position / final: 10000 params, accuracy 86.50% +/- 3.29
+position / fixed: 9976 params, accuracy 82.14% +/- 4.66
+single / plain: 9976 params, accuracy 23.42% +/- 2.13
+single / final: 10000 params, accuracy 27.82% +/- 0.43
+single / fixed: 9976 params, accuracy 27.47% +/- 0.67
+multi / plain: 9976 params, accuracy 29.73% +/- 1.09
+multi / final: 10000 params, accuracy 33.14% +/- 0.39
+multi / fixed: 9976 params, accuracy 33.03% +/- 0.56
+language / plain: 8613 params, accuracy 35.31% +/- 0.34, perplexity 9.78 +/- 0.04
+language / final: 8637 params, accuracy 36.58% +/- 0.87, perplexity 9.41 +/- 0.15
+language / fixed: 8613 params, accuracy 36.48% +/- 0.43, perplexity 9.49 +/- 0.04

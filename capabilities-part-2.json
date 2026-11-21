@@ -1,0 +1,331 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 1,
+    "contexts": [
+      64
+    ],
+    "tasks": [
+      "first_copy",
+      "indexed_copy",
+      "associative_recall",
+      "relative_order",
+      "majority"
+    ],
+    "output": "capabilities-part-2.json",
+    "models": [
+      "cube",
+      "transformer"
+    ],
+    "width": 16,
+    "lr": 0.001,
+    "seed_start": 2,
+    "resume": true,
+    "vocab": 96,
+    "batch": 64,
+    "transformer_depth": 2,
+    "test_examples": 4096
+  },
+  "runs": [
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.8138436637818813,
+          "accuracy": 0.676025390625
+        },
+        {
+          "step": 1500,
+          "loss": 0.02360032289288938,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.003987278090789914,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.003987278090789914,
+      "last_train_loss": 0.004043221473693848,
+      "training_seconds": 5.135720595004841
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.046866817749105394,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.004685077117756009,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0009960397146642208,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0009960397146642208,
+      "last_train_loss": 0.000960126519203186,
+      "training_seconds": 83.31062627596702
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.78440560400486,
+          "accuracy": 0.069580078125
+        },
+        {
+          "step": 1500,
+          "loss": 2.765358902513981,
+          "accuracy": 0.08154296875
+        },
+        {
+          "step": 3000,
+          "loss": 2.7385907620191574,
+          "accuracy": 0.09619140625
+        }
+      ],
+      "accuracy": 0.09619140625,
+      "loss": 2.7385907620191574,
+      "last_train_loss": 2.734947681427002,
+      "training_seconds": 8.54104244200198
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7896425649523735,
+          "accuracy": 0.075439453125
+        },
+        {
+          "step": 1500,
+          "loss": 2.751944214105606,
+          "accuracy": 0.0869140625
+        },
+        {
+          "step": 3000,
+          "loss": 0.757661072537303,
+          "accuracy": 0.7822265625
+        }
+      ],
+      "accuracy": 0.7822265625,
+      "loss": 0.757661072537303,
+      "last_train_loss": 0.9617383480072021,
+      "training_seconds": 83.92558365100012
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.781011074781418,
+          "accuracy": 0.062744140625
+        },
+        {
+          "step": 1500,
+          "loss": 2.710517756640911,
+          "accuracy": 0.109375
+        },
+        {
+          "step": 3000,
+          "loss": 2.6198411658406258,
+          "accuracy": 0.139404296875
+        }
+      ],
+      "accuracy": 0.139404296875,
+      "loss": 2.6198411658406258,
+      "last_train_loss": 2.6185522079467773,
+      "training_seconds": 9.124610313003814
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.775983415544033,
+          "accuracy": 0.0732421875
+        },
+        {
+          "step": 1500,
+          "loss": 2.711902193725109,
+          "accuracy": 0.10595703125
+        },
+        {
+          "step": 3000,
+          "loss": 2.6566150709986687,
+          "accuracy": 0.1240234375
+        }
+      ],
+      "accuracy": 0.1240234375,
+      "loss": 2.6566150709986687,
+      "last_train_loss": 2.601224899291992,
+      "training_seconds": 80.11008442302546
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.6624041181057692,
+          "accuracy": 0.657470703125
+        },
+        {
+          "step": 1500,
+          "loss": 0.04791565809864551,
+          "accuracy": 0.990966796875
+        },
+        {
+          "step": 3000,
+          "loss": 0.01673584769014269,
+          "accuracy": 0.998046875
+        }
+      ],
+      "accuracy": 0.998046875,
+      "loss": 0.01673584769014269,
+      "last_train_loss": 0.018095463514328003,
+      "training_seconds": 7.793063608000921
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.031219261698424816,
+          "accuracy": 0.998046875
+        },
+        {
+          "step": 1500,
+          "loss": 0.001906238030642271,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0003680840600281954,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0003680840600281954,
+      "last_train_loss": 0.00037775933742523193,
+      "training_seconds": 77.31237519299793
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.15423471154645085,
+          "accuracy": 0.98779296875
+        },
+        {
+          "step": 1500,
+          "loss": 0.020822302205488086,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0029867198318243027,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0029867198318243027,
+      "last_train_loss": 0.0023160576820373535,
+      "training_seconds": 7.991178563999711
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.024157449835911393,
+          "accuracy": 0.999267578125
+        },
+        {
+          "step": 1500,
+          "loss": 0.0022227821173146367,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0006902040913701057,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0006902040913701057,
+      "last_train_loss": 0.00047500431537628174,
+      "training_seconds": 45.275867306004784
+    }
+  ]
+}

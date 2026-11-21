@@ -1,0 +1,8 @@
+Language residual test: context 32, vocabulary 65; three seeds, 10,000 compiled Adam updates.
+Six hidden layers of 12 units, embedding width 64; five hidden-to-hidden residuals.
+No residual on input or output projections; no intermediate normalization or scaling.
+
+six-layer plain: params=8613, perplexity=9.78 +/- 0.04, accuracy=35.31% +/- 0.34
+six-layer residual: params=8613, perplexity=9.43 +/- 0.16, accuracy=36.39% +/- 0.25
+one-layer plain: params=8613, perplexity=8.94 +/- 0.26, accuracy=37.65% +/- 0.65
+transformer: params=8609, perplexity=8.43 +/- 0.16, accuracy=38.25% +/- 0.56

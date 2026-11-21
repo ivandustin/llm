@@ -1,0 +1,29 @@
+Shared d64 position-token pool followed by parallel six-hidden-layer FFNs.
+Each branch: Linear64->h+GELU, five Linearh->h+GELU, Linearh->V, softmax. Final distribution is equal1/N average of probabilities.
+Shared learned token/position tables, non-learned pooled norm epsilon1e-5; no residual or final norm.
+Branch count/hidden width:1/120,2/81,4/53,8/34. All trainable branch weights, biases and shared embeddings counted.
+Same internal shapes across tasks. Query budget<=100k; language counts lower due to smaller vocabulary/context.
+Three seeds,10000 compiled Adam updates,batch64,lr .001,same data/evaluation as prior runs. Final checkpoints only.
+Deep6 reference reused, d64 h120, no residual. Fresh one-branch six-layer control also rerun; parameter initialization layout differs from historical deep6; not identical initial weights across branch counts.
+Context32 language;16 retrieval. No speed measurement.
+
+position / deep6: params=99184, accuracy=97.61% +/- 1.38
+position / n1: params=99184, accuracy=94.29% +/- 1.60
+position / n2: params=99862, accuracy=52.79% +/- 4.06
+position / n4: params=98924, accuracy=34.02% +/- 1.84
+position / n8: params=99328, accuracy=23.20% +/- 0.21
+single / deep6: params=99184, accuracy=29.07% +/- 0.80
+single / n1: params=99184, accuracy=29.10% +/- 0.82
+single / n2: params=99862, accuracy=27.86% +/- 0.29
+single / n4: params=98924, accuracy=28.40% +/- 0.52
+single / n8: params=99328, accuracy=28.67% +/- 0.46
+multi / deep6: params=99184, accuracy=34.36% +/- 0.33
+multi / n1: params=99184, accuracy=34.49% +/- 0.21
+multi / n2: params=99862, accuracy=33.41% +/- 0.27
+multi / n4: params=98924, accuracy=34.01% +/- 0.31
+multi / n8: params=99328, accuracy=33.99% +/- 0.10
+language / deep6: params=94473, accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / n1: params=94473, accuracy=43.44% +/- 0.39, perplexity=7.49 +/- 0.19
+language / n2: params=93818, accuracy=42.50% +/- 0.69, perplexity=7.60 +/- 0.08
+language / n4: params=91268, accuracy=41.22% +/- 0.51, perplexity=7.49 +/- 0.02
+language / n8: params=89688, accuracy=39.53% +/- 0.32, perplexity=8.00 +/- 0.22

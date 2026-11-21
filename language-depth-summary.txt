@@ -1,0 +1,39 @@
+Retained six-layer model: next-character language test, Tiny Shakespeare.
+Context 32, 65 characters; contiguous 80/10/10 split.
+Adam 0.001, batch 64, 10,000 compiled updates, three seeds.
+Same training batches and fixed held-out windows as the earlier language benchmark.
+Means +/- sample standard deviations across seeds.
+
+Model          Parameters   Test perplexity    Test accuracy (%)
+deep              8,613    9.78 +/- 0.04     35.31 +/- 0.34
+shallow           8,613    8.94 +/- 0.26     37.65 +/- 0.65
+transformer       8,609    8.43 +/- 0.16     38.25 +/- 0.56
+
+Model definitions:
+deep: embedding width 64; six hidden layers of width 12; normalized GELU; no residuals or gate.
+shallow: embedding width 64; one hidden layer of width 18; normalized GELU; exact same parameter count.
+transformer: one block, width 16, four heads, feed-forward width 144.
+
+Samples (temperature 0.8, seed 0, 160 generated characters):
+
+deep:
+First Citizen:
+Ow fuy hip eld sist kcinddst, the of the ford, the.
+
+IIWOMOTILEWTIU: dapt we I the thou twant sasd thinswy crattey hard arlker ound, hit bot ped a bit that arud
+
+shallow:
+First Citizen:
+Ow wite wate me the kank'ds hes hist theles domurs.
+
+IINININI:
+When than pat I the gromonwart sest thin wamer wind hacincolk groung; hort how mingued,
+FLOLIOLIZ
+
+transformer:
+First Citizen:
+Of frothingel, stild and dothes hist to thard,
+Of go that that dear that peard.
+
+SERY
+To wall stanc, ther, cray, frenciust kir oundet thabresped a bloce that ut

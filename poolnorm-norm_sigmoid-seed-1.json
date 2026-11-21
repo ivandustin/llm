@@ -1,0 +1,49 @@
+{
+  "config": {
+    "architecture": "norm_sigmoid",
+    "width_by_task": {
+      "position": 255,
+      "language": 32
+    },
+    "hidden_by_task": {
+      "position": 240,
+      "language": 152
+    },
+    "hidden_layers": 1,
+    "blocks": 0,
+    "pooled_norm_epsilon": 1e-05,
+    "final_norm": false,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 18065,
+      "history": [
+        {
+          "loss": 2.5030513927340508,
+          "accuracy": 0.303955078125,
+          "step": 1000
+        },
+        {
+          "loss": 2.2355493009090424,
+          "accuracy": 0.357666015625,
+          "step": 3000
+        },
+        {
+          "loss": 2.033939179033041,
+          "accuracy": 0.39501953125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.1109019368886948,
+        "accuracy": 0.38525390625,
+        "perplexity": 8.255684033648519
+      }
+    }
+  ]
+}

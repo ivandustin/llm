@@ -1,0 +1,125 @@
+{
+  "config": {
+    "widths": [
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80
+    ],
+    "budget": 10000,
+    "steps": 10000,
+    "seeds": 3,
+    "seed_start": 0,
+    "output": "gated-budget-results.json",
+    "context": 16,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "test_examples": 4096,
+    "task": "indexed_copy",
+    "variant": "normalized_GELU_sigmoid_query_gate",
+    "hidden_layers": 1,
+    "query": "shared embedding of last input token",
+    "query_normalization": false,
+    "evaluation_seed": 700016,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "execution_note": "Independent seeds run concurrently. Saved ungated and transformer controls share the same batches, evaluation and training budget."
+  },
+  "rows": [
+    {
+      "width": 16,
+      "hidden": 62,
+      "parameters": 9948,
+      "accuracy_mean": 19.7021484375,
+      "accuracy_sd": 0.9112039846934338,
+      "shallow_accuracy": 18.636067708333332,
+      "deep_accuracy": 18.465169270833332
+    },
+    {
+      "width": 24,
+      "hidden": 49,
+      "parameters": 9938,
+      "accuracy_mean": 20.426432291666668,
+      "accuracy_sd": 1.6551822123337974,
+      "shallow_accuracy": 18.937174479166668,
+      "deep_accuracy": 19.669596354166668
+    },
+    {
+      "width": 32,
+      "hidden": 39,
+      "parameters": 9998,
+      "accuracy_mean": 23.819986979166668,
+      "accuracy_sd": 2.186978595900425,
+      "shallow_accuracy": 21.3134765625,
+      "deep_accuracy": 19.222005208333332
+    },
+    {
+      "width": 40,
+      "hidden": 30,
+      "parameters": 9916,
+      "accuracy_mean": 23.811848958333332,
+      "accuracy_sd": 2.092405276446629,
+      "shallow_accuracy": 20.426432291666668,
+      "deep_accuracy": 20.100911458333332
+    },
+    {
+      "width": 48,
+      "hidden": 23,
+      "parameters": 9934,
+      "accuracy_mean": 21.2646484375,
+      "accuracy_sd": 2.6762089074306097,
+      "shallow_accuracy": 22.347005208333332,
+      "deep_accuracy": 24.430338541666668
+    },
+    {
+      "width": 56,
+      "hidden": 17,
+      "parameters": 9938,
+      "accuracy_mean": 19.197591145833332,
+      "accuracy_sd": 0.35742498789058835,
+      "shallow_accuracy": 19.9462890625,
+      "deep_accuracy": 23.014322916666668
+    },
+    {
+      "width": 64,
+      "hidden": 12,
+      "parameters": 9976,
+      "accuracy_mean": 18.5791015625,
+      "accuracy_sd": 0.19983771415704224,
+      "shallow_accuracy": 19.270833333333332,
+      "deep_accuracy": 26.717122395833332
+    },
+    {
+      "width": 72,
+      "hidden": 7,
+      "parameters": 9854,
+      "accuracy_mean": 16.373697916666668,
+      "accuracy_sd": 0.3969319140057682,
+      "shallow_accuracy": 17.732747395833332,
+      "deep_accuracy": 31.0791015625
+    },
+    {
+      "width": 80,
+      "hidden": 3,
+      "parameters": 9830,
+      "accuracy_mean": 26.163736979166668,
+      "accuracy_sd": 1.8539154511191374,
+      "shallow_accuracy": 18.26171875,
+      "deep_accuracy": 46.305338541666664
+    }
+  ],
+  "transformer_reference": {
+    "model": "transformer",
+    "width": 16,
+    "hidden": 162,
+    "parameters": 9970,
+    "accuracy_mean": 100.0,
+    "accuracy_sd": 0.0
+  },
+  "frequency_baseline_accuracy": 0.19189453125
+}

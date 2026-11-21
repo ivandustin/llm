@@ -1,0 +1,41 @@
+{
+  "config": {
+    "architecture": "transformer",
+    "width": 64,
+    "hidden": 200,
+    "hidden_layers": 1,
+    "blocks": 2,
+    "steps": 10000,
+    "batch": 64,
+    "lr": 0.001
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 99056,
+      "history": [
+        {
+          "loss": 0.0012680271174758673,
+          "accuracy": 1.0,
+          "step": 1000
+        },
+        {
+          "loss": 0.00016010156832635403,
+          "accuracy": 1.0,
+          "step": 3000
+        },
+        {
+          "loss": 2.130633220076561e-06,
+          "accuracy": 1.0,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.1011801436543465e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.0000021011823512
+      }
+    }
+  ]
+}

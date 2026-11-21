@@ -1,0 +1,161 @@
+{
+  "config": {
+    "steps": 10000,
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "new_widths": [
+      16,
+      32
+    ],
+    "hidden_layers": 6,
+    "seeds": 3,
+    "allocation": "Nearest equal hidden widths to the original 8,613 parameters, with total below 10,000.",
+    "comparison_note": "New widths use 8,727 and 8,521 parameters; controls are reused, no speed measurements."
+  },
+  "rows": [
+    {
+      "model": "deep",
+      "width": 16,
+      "hidden": 30,
+      "hidden_layers": 6,
+      "parameters": 8727,
+      "validation": {
+        "perplexity": {
+          "mean": 8.132770042558088,
+          "sd": 0.09131661873380797
+        },
+        "accuracy": {
+          "mean": 0.386474609375,
+          "sd": 0.006142453918656799
+        }
+      },
+      "test": {
+        "perplexity": {
+          "mean": 8.866198333965967,
+          "sd": 0.16796834792008317
+        },
+        "accuracy": {
+          "mean": 0.3739420572916667,
+          "sd": 0.0072601910578421035
+        }
+      }
+    },
+    {
+      "model": "deep",
+      "width": 32,
+      "hidden": 24,
+      "hidden_layers": 6,
+      "parameters": 8521,
+      "validation": {
+        "perplexity": {
+          "mean": 8.087428458477191,
+          "sd": 0.13275726600644058
+        },
+        "accuracy": {
+          "mean": 0.3899739583333333,
+          "sd": 0.0013446217156460208
+        }
+      },
+      "test": {
+        "perplexity": {
+          "mean": 8.989668377728435,
+          "sd": 0.0945150575222111
+        },
+        "accuracy": {
+          "mean": 0.3775227864583333,
+          "sd": 0.003176956591136578
+        }
+      }
+    },
+    {
+      "model": "deep",
+      "width": 64,
+      "hidden": 12,
+      "hidden_layers": 6,
+      "parameters": 8613,
+      "validation": {
+        "perplexity": {
+          "mean": 9.332711406268189,
+          "sd": 0.13919278536161395
+        },
+        "accuracy": {
+          "mean": 0.3548990885416667,
+          "sd": 0.004672811595037628
+        }
+      },
+      "test": {
+        "perplexity": {
+          "mean": 9.782394101849254,
+          "sd": 0.037109572160427935
+        },
+        "accuracy": {
+          "mean": 0.3531087239583333,
+          "sd": 0.00336819695419513
+        }
+      }
+    },
+    {
+      "model": "shallow",
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613,
+      "validation": {
+        "perplexity": {
+          "mean": 8.124070009707076,
+          "sd": 0.07137267246353415
+        },
+        "accuracy": {
+          "mean": 0.39501953125,
+          "sd": 0.00341796875
+        }
+      },
+      "test": {
+        "perplexity": {
+          "mean": 8.937930679000258,
+          "sd": 0.2615632467259544
+        },
+        "accuracy": {
+          "mean": 0.37646484375,
+          "sd": 0.006500745583835131
+        }
+      }
+    },
+    {
+      "model": "transformer",
+      "width": 16,
+      "hidden": 144,
+      "hidden_layers": 1,
+      "parameters": 8609,
+      "validation": {
+        "perplexity": {
+          "mean": 7.902679784019647,
+          "sd": 0.21334115894286038
+        },
+        "accuracy": {
+          "mean": 0.396728515625,
+          "sd": 0.007155444770387131
+        }
+      },
+      "test": {
+        "perplexity": {
+          "mean": 8.434045530772282,
+          "sd": 0.15690276869320802
+        },
+        "accuracy": {
+          "mean": 0.3824869791666667,
+          "sd": 0.005569046911108602
+        }
+      }
+    }
+  ]
+}

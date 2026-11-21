@@ -1,0 +1,104 @@
+{
+  "config": {
+    "seed": 2,
+    "steps": 10000,
+    "output": "shared-language-16-8-seed-2.json",
+    "deep_width": 16,
+    "deep_hidden": 26,
+    "deep_layers": 8,
+    "residual": false,
+    "residual_prenorm": false,
+    "models": [
+      "deep"
+    ],
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 16,
+      "hidden": 26,
+      "hidden_layers": 8,
+      "residual": false,
+      "residual_prenorm": false,
+      "parameters": 8663
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 2,
+      "parameters": 8663,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.986897572875023,
+            "accuracy": 0.1904296875,
+            "perplexity": 19.824084212297663
+          },
+          "final_train_loss": 3.028743267059326,
+          "compile_seconds": 0.4634946279984433,
+          "execution_seconds": 0.26855575800072984
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.4428326934576035,
+            "accuracy": 0.306396484375,
+            "perplexity": 11.505586424452897
+          },
+          "final_train_loss": 2.477004289627075,
+          "compile_seconds": 0.6681025370016869,
+          "execution_seconds": 0.928337814999395
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.153767965734005,
+            "accuracy": 0.375,
+            "perplexity": 8.617266868110287
+          },
+          "final_train_loss": 2.1700565814971924,
+          "compile_seconds": 0.7474594710001838,
+          "execution_seconds": 2.7560145580027893
+        }
+      ],
+      "validation": {
+        "loss": 2.153767965734005,
+        "accuracy": 0.375,
+        "perplexity": 8.617266868110287
+      },
+      "test": {
+        "loss": 2.2126606069505215,
+        "accuracy": 0.3662109375,
+        "perplexity": 9.140002024368215
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nWhy to the the the we hinthte mo wark with the fre netstace hut bend.\n\nCERULHTHINICKE:\nTo a withty aplacaw so we where reuf. Ors; you with! it hith the quass.\n\n"
+    }
+  ]
+}

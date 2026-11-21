@@ -1,0 +1,51 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+# Generated training checkpoints and execution logs.
+*.npz
+*.log
+# LaTeX build intermediates (keep the paper source and final PDF).
+paper/*.aux
+paper/*.out
+paper/*.toc
+paper/*preview*.png
+paper/performance-*.png
+paper/extracted.txt
+
+# Python environments and tooling caches.
+venv/
+env/
+.env/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.tox/
+.nox/
+
+# Test coverage and packaging artifacts.
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.eggs/
+*.egg
+
+# Local environment configuration.
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Editor and operating system files.
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

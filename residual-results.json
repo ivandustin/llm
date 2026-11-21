@@ -1,0 +1,289 @@
+{
+  "config": {
+    "steps": 10000,
+    "output": "residual-results.json",
+    "context": 16,
+    "vocab": 96,
+    "width": 64,
+    "hidden": 12,
+    "hidden_layers": 6,
+    "parameters": 9976,
+    "budget": 10000,
+    "batch": 64,
+    "lr": 0.001,
+    "evaluation_seed": 700016,
+    "test_examples": 4096,
+    "validation_seed": 20261122,
+    "validation_examples": 16384,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "residual_rule": "h <- h + GELU(W*h+b) at five equal-width hidden transitions; no scaling or extra normalization",
+    "training_mode": "compiled lax.scan for both control and residual; identical pre-generated batches",
+    "seeds": 3
+  },
+  "runs": [
+    {
+      "variant": "plain",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.679549567401409,
+          "accuracy": 0.120849609375,
+          "step": 1000,
+          "compile_seconds": 0.4604677309998806,
+          "execution_seconds": 0.30413236399908783,
+          "last_train_loss": 2.6564173698425293
+        },
+        {
+          "loss": 2.2462682873010635,
+          "accuracy": 0.2490234375,
+          "step": 3000,
+          "compile_seconds": 0.4666545260006387,
+          "execution_seconds": 0.5885515390000364,
+          "last_train_loss": 2.208395481109619
+        },
+        {
+          "loss": 0.14291082695126534,
+          "accuracy": 0.9755859375,
+          "step": 10000,
+          "compile_seconds": 0.44121194400031527,
+          "execution_seconds": 2.066173148999951,
+          "last_train_loss": 0.147538959980011
+        }
+      ],
+      "final": {
+        "loss": 0.14291082695126534,
+        "accuracy": 0.9755859375,
+        "step": 10000,
+        "compile_seconds": 0.44121194400031527,
+        "execution_seconds": 2.066173148999951,
+        "last_train_loss": 0.147538959980011
+      },
+      "validation": {
+        "loss": 0.14557998138479888,
+        "accuracy": 0.97821044921875
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "residual",
+      "seed": 0,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.6827624663710594,
+          "accuracy": 0.122802734375,
+          "step": 1000,
+          "compile_seconds": 0.6149443890008115,
+          "execution_seconds": 0.4840296849997685,
+          "last_train_loss": 2.695336103439331
+        },
+        {
+          "loss": 2.56552367657423,
+          "accuracy": 0.154541015625,
+          "step": 3000,
+          "compile_seconds": 0.7897062190004362,
+          "execution_seconds": 0.9201665569999022,
+          "last_train_loss": 2.625412940979004
+        },
+        {
+          "loss": 0.11728834640234709,
+          "accuracy": 0.98388671875,
+          "step": 10000,
+          "compile_seconds": 0.7118077680006536,
+          "execution_seconds": 2.95675392800149,
+          "last_train_loss": 0.1532604694366455
+        }
+      ],
+      "final": {
+        "loss": 0.11728834640234709,
+        "accuracy": 0.98388671875,
+        "step": 10000,
+        "compile_seconds": 0.7118077680006536,
+        "execution_seconds": 2.95675392800149,
+        "last_train_loss": 0.1532604694366455
+      },
+      "validation": {
+        "loss": 0.11329652648419142,
+        "accuracy": 0.98675537109375
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "residual",
+      "seed": 1,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.686716616153717,
+          "accuracy": 0.13037109375,
+          "step": 1000,
+          "compile_seconds": 0.44664484100030677,
+          "execution_seconds": 0.28718139800002973,
+          "last_train_loss": 2.680929660797119
+        },
+        {
+          "loss": 2.606785073876381,
+          "accuracy": 0.154296875,
+          "step": 3000,
+          "compile_seconds": 0.41572255700157257,
+          "execution_seconds": 0.574200983000992,
+          "last_train_loss": 2.6420016288757324
+        },
+        {
+          "loss": 0.17832155246287584,
+          "accuracy": 0.974853515625,
+          "step": 10000,
+          "compile_seconds": 0.4149780580009974,
+          "execution_seconds": 2.0621930260003865,
+          "last_train_loss": 0.1964181661605835
+        }
+      ],
+      "final": {
+        "loss": 0.17832155246287584,
+        "accuracy": 0.974853515625,
+        "step": 10000,
+        "compile_seconds": 0.4149780580009974,
+        "execution_seconds": 2.0621930260003865,
+        "last_train_loss": 0.1964181661605835
+      },
+      "validation": {
+        "loss": 0.1846493622288108,
+        "accuracy": 0.97344970703125
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "plain",
+      "seed": 1,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.7153280451893806,
+          "accuracy": 0.1044921875,
+          "step": 1000,
+          "compile_seconds": 0.4923263489999954,
+          "execution_seconds": 0.460255596000934,
+          "last_train_loss": 2.769211769104004
+        },
+        {
+          "loss": 1.3878106214106083,
+          "accuracy": 0.416748046875,
+          "step": 3000,
+          "compile_seconds": 0.6229556160014909,
+          "execution_seconds": 1.0152719180005079,
+          "last_train_loss": 1.3030519485473633
+        },
+        {
+          "loss": 0.19997177552431822,
+          "accuracy": 0.9736328125,
+          "step": 10000,
+          "compile_seconds": 0.6724865630003478,
+          "execution_seconds": 2.9833301159997063,
+          "last_train_loss": 0.2528378963470459
+        }
+      ],
+      "final": {
+        "loss": 0.19997177552431822,
+        "accuracy": 0.9736328125,
+        "step": 10000,
+        "compile_seconds": 0.6724865630003478,
+        "execution_seconds": 2.9833301159997063,
+        "last_train_loss": 0.2528378963470459
+      },
+      "validation": {
+        "loss": 0.19786674645729363,
+        "accuracy": 0.97491455078125
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "plain",
+      "seed": 2,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.7042026445269585,
+          "accuracy": 0.115966796875,
+          "step": 1000,
+          "compile_seconds": 0.4216196840006887,
+          "execution_seconds": 0.31055534400002216,
+          "last_train_loss": 2.693389654159546
+        },
+        {
+          "loss": 2.325074262917042,
+          "accuracy": 0.22314453125,
+          "step": 3000,
+          "compile_seconds": 0.469630360001247,
+          "execution_seconds": 0.5757678139998461,
+          "last_train_loss": 2.1545820236206055
+        },
+        {
+          "loss": 0.14182486291974783,
+          "accuracy": 0.990966796875,
+          "step": 10000,
+          "compile_seconds": 0.42268148999937694,
+          "execution_seconds": 2.0082257939993724,
+          "last_train_loss": 0.0969247817993164
+        }
+      ],
+      "final": {
+        "loss": 0.14182486291974783,
+        "accuracy": 0.990966796875,
+        "step": 10000,
+        "compile_seconds": 0.42268148999937694,
+        "execution_seconds": 2.0082257939993724,
+        "last_train_loss": 0.0969247817993164
+      },
+      "validation": {
+        "loss": 0.13938725227490067,
+        "accuracy": 0.9893798828125
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    },
+    {
+      "variant": "residual",
+      "seed": 2,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.6888496056199074,
+          "accuracy": 0.119140625,
+          "step": 1000,
+          "compile_seconds": 0.5616217879996839,
+          "execution_seconds": 0.4681043260006845,
+          "last_train_loss": 2.679777145385742
+        },
+        {
+          "loss": 2.4929870292544365,
+          "accuracy": 0.18505859375,
+          "step": 3000,
+          "compile_seconds": 0.6831358069994167,
+          "execution_seconds": 0.9863207130001683,
+          "last_train_loss": 2.3737592697143555
+        },
+        {
+          "loss": 0.28774363081902266,
+          "accuracy": 0.9248046875,
+          "step": 10000,
+          "compile_seconds": 0.6921872940001776,
+          "execution_seconds": 2.981174362999809,
+          "last_train_loss": 0.2642449736595154
+        }
+      ],
+      "final": {
+        "loss": 0.28774363081902266,
+        "accuracy": 0.9248046875,
+        "step": 10000,
+        "compile_seconds": 0.6921872940001776,
+        "execution_seconds": 2.981174362999809,
+        "last_train_loss": 0.2642449736595154
+      },
+      "validation": {
+        "loss": 0.29226160887628794,
+        "accuracy": 0.9215087890625
+      },
+      "parity_check": "five losses and complete model/Adam states match ordinary updates"
+    }
+  ]
+}

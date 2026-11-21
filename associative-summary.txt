@@ -1,0 +1,15 @@
+Five stored key/value pairs; single query versus three sequential queries.
+Ours: six hidden layers, 64 embedding dims, 12 units each, no residuals, 9,976 parameters.
+Transformer: one block, 16 dims, four heads, FF width 162, 9,970 parameters.
+Three seeds; 10,000 compiled Adam updates, batch 64, learning rate .001.
+Single query supervises one value/context; multi query supervises three values/context.
+Teacher-forced causal prefixes: no current or future answer is visible.
+Evaluation: same new 16,384 sequences for both models; mean +/- sample SD.
+This is an MQAR-style variant, not the official benchmark.
+
+single / ours: accuracy 23.42% +/- 2.13; all answers correct 23.42%
+single / transformer: accuracy 30.02% +/- 0.11; all answers correct 30.02%
+single / frequency shortcut: accuracy 30.57% +/- 0.00; all answers correct 30.57%
+multi / ours: accuracy 29.73% +/- 1.09; all answers correct 1.74%
+multi / transformer: accuracy 31.49% +/- 1.54; all answers correct 1.05%
+multi / frequency shortcut: accuracy 30.68% +/- 0.00; all answers correct 0.35%

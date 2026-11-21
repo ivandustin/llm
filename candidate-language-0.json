@@ -1,0 +1,49 @@
+{
+  "config": {
+    "steps": 10000,
+    "seeds": 1,
+    "context": 32,
+    "batch": 64,
+    "lr": 0.001,
+    "output": "candidate-language-0.json",
+    "models": [
+      "cube"
+    ],
+    "cube_variant": "norm_gelu",
+    "seed_start": 0,
+    "vocab": 65,
+    "width": 32,
+    "hidden": 152,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.1"
+  },
+  "runs": [
+    {
+      "model": "cube",
+      "seed": 0,
+      "parameters": 18065,
+      "compile_seconds": 0.48405210999999326,
+      "train_seconds": 18.656413035999776,
+      "final_train_loss": 1.8591008591651916,
+      "validation": {
+        "loss": 1.9251432046294212,
+        "perplexity": 6.856130425218067,
+        "accuracy": 0.4267578125
+      },
+      "test": {
+        "loss": 2.0532689802348614,
+        "perplexity": 7.793335771548568,
+        "accuracy": 0.40625
+      },
+      "sample": "First Citizen:\nO, USENES:\nNo, sis have rist, theiks the farther shat be pray vard\nWhat thee I heargens that warsem,\nThat marly, for God, and to Palionted of mingued,\nFithere w"
+    }
+  ]
+}

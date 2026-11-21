@@ -1,0 +1,68 @@
+{
+  "config": {
+    "context": 16,
+    "vocab": 96,
+    "pairs": 5,
+    "queries": 3,
+    "batch": 64,
+    "steps": 10000,
+    "lr": 0.001,
+    "protocol": "teacher-forced causal prefixes; same labels and data for both; no future answer access; MQAR-inspired, not official benchmark"
+  },
+  "runs": [
+    {
+      "model": "ours",
+      "seed": 1,
+      "parameters": 9976,
+      "history": [
+        {
+          "loss": 2.2303480356931686,
+          "accuracy": 0.24031576234847307,
+          "step": 1000
+        },
+        {
+          "loss": 2.044834181666374,
+          "accuracy": 0.288574225269258,
+          "step": 3000
+        },
+        {
+          "loss": 1.901139736175537,
+          "accuracy": 0.3009440219029784,
+          "step": 10000
+        }
+      ],
+      "fresh": {
+        "loss": 1.896673976443708,
+        "accuracy": 0.3041585390456021
+      },
+      "all_queries_correct": 0.01971435546875
+    },
+    {
+      "model": "transformer",
+      "seed": 1,
+      "parameters": 9970,
+      "history": [
+        {
+          "loss": 1.8000006787478924,
+          "accuracy": 0.29842123482376337,
+          "step": 1000
+        },
+        {
+          "loss": 1.5601949244737625,
+          "accuracy": 0.3035481870174408,
+          "step": 3000
+        },
+        {
+          "loss": 1.4803976342082024,
+          "accuracy": 0.30989584140479565,
+          "step": 10000
+        }
+      ],
+      "fresh": {
+        "loss": 1.4789310339838266,
+        "accuracy": 0.3050537211820483
+      },
+      "all_queries_correct": 0.0040283203125
+    }
+  ]
+}

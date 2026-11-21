@@ -1,0 +1,19 @@
+Sigmoid query gate, one hidden stage, <=10,000 total parameters.
+Queried copying, context 16, 10,000 Adam updates, three seeds.
+Feature branch: normalized pooled vector -> Linear -> GELU.
+Gate branch: shared last-token embedding -> Linear -> sigmoid.
+Branch product -> output Linear. No second serial hidden layer.
+
+Dims Hidden Parameters   Gated accuracy (%)  Ungated 1 hidden  Ungated 2 hidden
+  16     62      9,948    19.70 +/-  0.91        18.64            18.47
+  24     49      9,938    20.43 +/-  1.66        18.94            19.67
+  32     39      9,998    23.82 +/-  2.19        21.31            19.22
+  40     30      9,916    23.81 +/-  2.09        20.43            20.10
+  48     23      9,934    21.26 +/-  2.68        22.35            24.43
+  56     17      9,938    19.20 +/-  0.36        19.95            23.01
+  64     12      9,976    18.58 +/-  0.20        19.27            26.72
+  72      7      9,854    16.37 +/-  0.40        17.73            31.08
+  80      3      9,830    26.16 +/-  1.85        18.26            46.31
+
+Saved one-block transformer: 100.00%, 9,970 parameters.
+Frequency shortcut baseline: 19.19%.

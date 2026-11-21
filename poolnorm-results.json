@@ -1,0 +1,630 @@
+{
+  "config": {
+    "position": {
+      "width": 255,
+      "hidden": 240,
+      "context": 16,
+      "vocab": 96
+    },
+    "language": {
+      "width": 32,
+      "hidden": 152,
+      "context": 32,
+      "vocab": 65
+    },
+    "hidden_layers": 1,
+    "norm_location": "pooled vector, before input linear",
+    "norm_epsilon": 1e-05,
+    "affine": "learned per-coordinate scale and bias, initialized1/0",
+    "learned_positions": true,
+    "final_norm": false,
+    "steps": 10000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "batch": 64,
+    "optimizer": "Adam",
+    "lr": 0.001,
+    "training": "new runs compiled lax.scan; historical copy controls ordinary JIT updates",
+    "copy_controls": "reused historical random-embedding results, same 4096 examples",
+    "language_controls": "all six rerun",
+    "added_parameters": {
+      "position": 510,
+      "language": 64
+    }
+  },
+  "rows": [
+    {
+      "task": "position",
+      "variant": "sigmoid",
+      "parameters": 113136,
+      "accuracy_mean": 18.587239583333332,
+      "accuracy_sd": 0.5569046911108602,
+      "perplexity_mean": 8.909592064214392,
+      "perplexity_sd": 0.23743917835911776
+    },
+    {
+      "task": "position",
+      "variant": "norm_sigmoid",
+      "parameters": 113136,
+      "accuracy_mean": 58.268229166666664,
+      "accuracy_sd": 1.728807557592035,
+      "perplexity_mean": 2.853765208386433,
+      "perplexity_sd": 0.10531562442781846
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_sigmoid",
+      "parameters": 113646,
+      "accuracy_mean": 66.88639322916667,
+      "accuracy_sd": 1.8686462407560276,
+      "perplexity_mean": 2.383331783436835,
+      "perplexity_sd": 0.1023778616095523
+    },
+    {
+      "task": "position",
+      "variant": "gelu",
+      "parameters": 113136,
+      "accuracy_mean": 41.3818359375,
+      "accuracy_sd": 4.347280151880381,
+      "perplexity_mean": 4.267066916157167,
+      "perplexity_sd": 0.38447270872773576
+    },
+    {
+      "task": "position",
+      "variant": "norm_gelu",
+      "parameters": 113136,
+      "accuracy_mean": 98.0224609375,
+      "accuracy_sd": 0.3521046167445302,
+      "perplexity_mean": 1.0702799514021792,
+      "perplexity_sd": 0.00856969009079026
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_gelu",
+      "parameters": 113646,
+      "accuracy_mean": 97.81087239583333,
+      "accuracy_sd": 0.42027185330974465,
+      "perplexity_mean": 1.073434518136111,
+      "perplexity_sd": 0.011031640319384141
+    },
+    {
+      "task": "language",
+      "variant": "sigmoid",
+      "parameters": 18065,
+      "accuracy_mean": 38.118489583333336,
+      "accuracy_sd": 0.2689243431292042,
+      "perplexity_mean": 8.192450746361713,
+      "perplexity_sd": 0.07129108358484322
+    },
+    {
+      "task": "language",
+      "variant": "norm_sigmoid",
+      "parameters": 18065,
+      "accuracy_mean": 38.5009765625,
+      "accuracy_sd": 0.23289531284593398,
+      "perplexity_mean": 8.219341136282749,
+      "perplexity_sd": 0.08160716431801822
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_sigmoid",
+      "parameters": 18129,
+      "accuracy_mean": 39.74609375,
+      "accuracy_sd": 0.13593174713940484,
+      "perplexity_mean": 7.8089273912696155,
+      "perplexity_sd": 0.0771546456806763
+    },
+    {
+      "task": "language",
+      "variant": "gelu",
+      "parameters": 18065,
+      "accuracy_mean": 38.916015625,
+      "accuracy_sd": 0.3391709958361769,
+      "perplexity_mean": 8.169496799423673,
+      "perplexity_sd": 0.06271089069597555
+    },
+    {
+      "task": "language",
+      "variant": "norm_gelu",
+      "parameters": 18065,
+      "accuracy_mean": 40.364583333333336,
+      "accuracy_sd": 0.24576283968980303,
+      "perplexity_mean": 7.810719016905947,
+      "perplexity_sd": 0.12154995839160557
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_gelu",
+      "parameters": 18129,
+      "accuracy_mean": 40.6005859375,
+      "accuracy_sd": 0.32296768933893927,
+      "perplexity_mean": 7.851134479682813,
+      "perplexity_sd": 0.10294503901525377
+    }
+  ],
+  "runs": [
+    {
+      "task": "position",
+      "variant": "sigmoid",
+      "seed": 0,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 2.173439435660839,
+        "accuracy": 0.179443359375,
+        "step": 10000,
+        "train_loss": 2.2339229583740234
+      },
+      "source": "readout-seed-0.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "sigmoid",
+      "seed": 1,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 2.1698705181479454,
+        "accuracy": 0.18896484375,
+        "step": 10000,
+        "train_loss": 2.184840202331543
+      },
+      "source": "readout-seed-1.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "sigmoid",
+      "seed": 2,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 2.2173720970749855,
+        "accuracy": 0.189208984375,
+        "step": 10000,
+        "train_loss": 2.1419687271118164
+      },
+      "source": "readout-seed-2.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_sigmoid",
+      "seed": 0,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.0901531167328358,
+        "accuracy": 0.562744140625,
+        "step": 10000,
+        "train_loss": 1.2999837398529053
+      },
+      "source": "readout-seed-0.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_sigmoid",
+      "seed": 1,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.0233359429985285,
+        "accuracy": 0.593505859375,
+        "step": 10000,
+        "train_loss": 0.9686214327812195
+      },
+      "source": "readout-seed-1.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_sigmoid",
+      "seed": 2,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.0310842990875244,
+        "accuracy": 0.591796875,
+        "step": 10000,
+        "train_loss": 0.9548262357711792
+      },
+      "source": "readout-seed-2.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_sigmoid",
+      "seed": 0,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.9139298014342785,
+        "accuracy": 0.657470703125,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-0.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_sigmoid",
+      "seed": 1,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.82950883731246,
+        "accuracy": 0.6904296875,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-1.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_sigmoid",
+      "seed": 2,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.8602273799479008,
+        "accuracy": 0.65869140625,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-2.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "gelu",
+      "seed": 0,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.5187137834727764,
+        "accuracy": 0.3779296875,
+        "step": 10000,
+        "train_loss": 1.5550153255462646
+      },
+      "source": "readout-seed-0.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "gelu",
+      "seed": 1,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.4819231890141964,
+        "accuracy": 0.4013671875,
+        "step": 10000,
+        "train_loss": 1.4873228073120117
+      },
+      "source": "readout-seed-1.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "gelu",
+      "seed": 2,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 1.343765277415514,
+        "accuracy": 0.462158203125,
+        "step": 10000,
+        "train_loss": 1.2963886260986328
+      },
+      "source": "readout-seed-2.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_gelu",
+      "seed": 0,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 0.0695572781842202,
+        "accuracy": 0.981201171875,
+        "step": 10000,
+        "train_loss": 0.03393315523862839
+      },
+      "source": "readout-seed-0.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_gelu",
+      "seed": 1,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 0.07495649839984253,
+        "accuracy": 0.976318359375,
+        "step": 10000,
+        "train_loss": 0.061788707971572876
+      },
+      "source": "readout-seed-1.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "norm_gelu",
+      "seed": 2,
+      "parameters": 113136,
+      "metrics": {
+        "loss": 0.0591827625175938,
+        "accuracy": 0.983154296875,
+        "step": 10000,
+        "train_loss": 0.09225169569253922
+      },
+      "source": "readout-seed-2.json",
+      "evaluation": "historical final 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_gelu",
+      "seed": 0,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.07593489997088909,
+        "accuracy": 0.976318359375,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-0.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_gelu",
+      "seed": 1,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.07758433767594397,
+        "accuracy": 0.97509765625,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-1.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "position",
+      "variant": "affine_norm_gelu",
+      "seed": 2,
+      "parameters": 113646,
+      "metrics": {
+        "loss": 0.058964749332517385,
+        "accuracy": 0.98291015625,
+        "step": 10000
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-2.json",
+      "evaluation": "matched 4096-example diagnostic evaluation"
+    },
+    {
+      "task": "language",
+      "variant": "sigmoid",
+      "seed": 0,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.1083178408443928,
+        "accuracy": 0.37841796875,
+        "perplexity": 8.234378093348145
+      },
+      "source": "poolnorm-sigmoid-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "sigmoid",
+      "seed": 1,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.108130846172571,
+        "accuracy": 0.3837890625,
+        "perplexity": 8.23283845247573
+      },
+      "source": "poolnorm-sigmoid-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "sigmoid",
+      "seed": 2,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.093114599585533,
+        "accuracy": 0.38134765625,
+        "perplexity": 8.110135693261267
+      },
+      "source": "poolnorm-sigmoid-seed-2.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_sigmoid",
+      "seed": 0,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.1134157367050648,
+        "accuracy": 0.382568359375,
+        "perplexity": 8.276463277143224
+      },
+      "source": "poolnorm-norm_sigmoid-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_sigmoid",
+      "seed": 1,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.1109019368886948,
+        "accuracy": 0.38525390625,
+        "perplexity": 8.255684033648519
+      },
+      "source": "poolnorm-norm_sigmoid-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_sigmoid",
+      "seed": 2,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.0950535498559475,
+        "accuracy": 0.38720703125,
+        "perplexity": 8.125876098056505
+      },
+      "source": "poolnorm-norm_sigmoid-seed-2.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_sigmoid",
+      "seed": 0,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0607396848499775,
+        "accuracy": 0.39599609375,
+        "perplexity": 7.851775502246996
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_sigmoid",
+      "seed": 1,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0611691772937775,
+        "accuracy": 0.398681640625,
+        "perplexity": 7.855148504783326
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_sigmoid",
+      "seed": 2,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0437959916889668,
+        "accuracy": 0.397705078125,
+        "perplexity": 7.7198581667785255
+      },
+      "source": "poolnorm-affine_norm_sigmoid-seed-2.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "gelu",
+      "seed": 0,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.100399162620306,
+        "accuracy": 0.387451171875,
+        "perplexity": 8.169430192995565
+      },
+      "source": "poolnorm-gelu-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "gelu",
+      "seed": 1,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.092705588787794,
+        "accuracy": 0.39306640625,
+        "perplexity": 8.106819238470738
+      },
+      "source": "poolnorm-gelu-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "gelu",
+      "seed": 2,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.1080582700669765,
+        "accuracy": 0.386962890625,
+        "perplexity": 8.232240966804714
+      },
+      "source": "poolnorm-gelu-seed-2.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_gelu",
+      "seed": 0,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.0532689802348614,
+        "accuracy": 0.40625,
+        "perplexity": 7.793335771548568
+      },
+      "source": "poolnorm-norm_gelu-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_gelu",
+      "seed": 1,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.07191639021039,
+        "accuracy": 0.4033203125,
+        "perplexity": 7.940024732752206
+      },
+      "source": "poolnorm-norm_gelu-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "norm_gelu",
+      "seed": 2,
+      "parameters": 18065,
+      "metrics": {
+        "loss": 2.0410640239715576,
+        "accuracy": 0.4013671875,
+        "perplexity": 7.698796546417069
+      },
+      "source": "poolnorm-norm_gelu-seed-2.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_gelu",
+      "seed": 0,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0588283203542233,
+        "accuracy": 0.408447265625,
+        "perplexity": 7.836782230691425
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-0.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_gelu",
+      "seed": 1,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0744921304285526,
+        "accuracy": 0.4072265625,
+        "perplexity": 7.960502535217699
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-1.json",
+      "evaluation": "4096-example language test"
+    },
+    {
+      "task": "language",
+      "variant": "affine_norm_gelu",
+      "seed": 2,
+      "parameters": 18129,
+      "metrics": {
+        "loss": 2.0484820380806923,
+        "accuracy": 0.40234375,
+        "perplexity": 7.756118673139314
+      },
+      "source": "poolnorm-affine_norm_gelu-seed-2.json",
+      "evaluation": "4096-example language test"
+    }
+  ]
+}

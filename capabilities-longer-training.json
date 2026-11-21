@@ -1,0 +1,114 @@
+{
+  "config": {
+    "steps": 30000,
+    "seeds": 3,
+    "contexts": [
+      16
+    ],
+    "tasks": [
+      "indexed_copy"
+    ],
+    "output": "capabilities-longer-training.json",
+    "models": [
+      "cube"
+    ],
+    "width": 16,
+    "lr": 0.001,
+    "vocab": 96,
+    "batch": 64,
+    "transformer_depth": 2,
+    "test_examples": 4096
+  },
+  "runs": [
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.726200297474861,
+          "accuracy": 0.115234375
+        },
+        {
+          "step": 1500,
+          "loss": 2.485210418701172,
+          "accuracy": 0.18017578125
+        },
+        {
+          "step": 30000,
+          "loss": 2.203107997775078,
+          "accuracy": 0.19091796875
+        }
+      ],
+      "accuracy": 0.19091796875,
+      "loss": 2.203107997775078,
+      "last_train_loss": 2.238771438598633,
+      "training_seconds": 37.47949928600269
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7372038811445236,
+          "accuracy": 0.1044921875
+        },
+        {
+          "step": 1500,
+          "loss": 2.4693925231695175,
+          "accuracy": 0.184814453125
+        },
+        {
+          "step": 30000,
+          "loss": 2.201343856751919,
+          "accuracy": 0.19091796875
+        }
+      ],
+      "accuracy": 0.19091796875,
+      "loss": 2.201343856751919,
+      "last_train_loss": 2.119600296020508,
+      "training_seconds": 38.90515999998229
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7576248571276665,
+          "accuracy": 0.087158203125
+        },
+        {
+          "step": 1500,
+          "loss": 2.489932931959629,
+          "accuracy": 0.18212890625
+        },
+        {
+          "step": 30000,
+          "loss": 2.2006331235170364,
+          "accuracy": 0.1923828125
+        }
+      ],
+      "accuracy": 0.1923828125,
+      "loss": 2.2006331235170364,
+      "last_train_loss": 2.2114181518554688,
+      "training_seconds": 39.81387202599353
+    }
+  ]
+}

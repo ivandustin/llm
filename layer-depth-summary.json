@@ -1,0 +1,703 @@
+{
+  "config": {
+    "widths": [
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80
+    ],
+    "budget": 10000,
+    "steps": 10000,
+    "seeds": 3,
+    "seed_start": 0,
+    "output": "layer-depth-results.json",
+    "context": 16,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "test_examples": 4096,
+    "task": "indexed_copy",
+    "variant": "normalized_GELU",
+    "transformer_depth": 1,
+    "evaluation_seed": 700016,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "execution_note": "81 new fits; 57 saved controls reused. Three seed jobs run concurrently, serial depths within each seed; timings not compared.",
+    "depths": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "new_depths": [
+      3,
+      4,
+      6
+    ]
+  },
+  "rows": [
+    {
+      "hidden_layers": 1,
+      "width": 16,
+      "hidden": 71,
+      "parameters": 9911,
+      "accuracy_mean": 18.636067708333332,
+      "accuracy_sd": 0.4116744749329993,
+      "seed_accuracies": [
+        18.1640625,
+        18.8232421875,
+        18.9208984375
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 24,
+      "hidden": 59,
+      "parameters": 9923,
+      "accuracy_mean": 18.937174479166668,
+      "accuracy_sd": 0.578944544656003,
+      "seed_accuracies": [
+        18.7744140625,
+        18.45703125,
+        19.580078125
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 32,
+      "hidden": 48,
+      "parameters": 9872,
+      "accuracy_mean": 21.3134765625,
+      "accuracy_sd": 3.451202133382846,
+      "seed_accuracies": [
+        19.140625,
+        25.29296875,
+        19.5068359375
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 40,
+      "hidden": 39,
+      "parameters": 9919,
+      "accuracy_mean": 20.426432291666668,
+      "accuracy_sd": 2.332064851468735,
+      "seed_accuracies": [
+        19.6533203125,
+        18.5791015625,
+        23.046875
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 48,
+      "hidden": 31,
+      "parameters": 9967,
+      "accuracy_mean": 22.347005208333332,
+      "accuracy_sd": 3.1051322066888614,
+      "seed_accuracies": [
+        23.14453125,
+        18.9208984375,
+        24.9755859375
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 56,
+      "hidden": 23,
+      "parameters": 9887,
+      "accuracy_mean": 19.9462890625,
+      "accuracy_sd": 1.3307343823155902,
+      "seed_accuracies": [
+        18.6279296875,
+        21.2890625,
+        19.921875
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 64,
+      "hidden": 16,
+      "parameters": 9840,
+      "accuracy_mean": 19.270833333333332,
+      "accuracy_sd": 0.40289367820594285,
+      "seed_accuracies": [
+        19.677734375,
+        19.2626953125,
+        18.8720703125
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 72,
+      "hidden": 10,
+      "parameters": 9850,
+      "accuracy_mean": 17.732747395833332,
+      "accuracy_sd": 0.7349943971312233,
+      "seed_accuracies": [
+        18.5546875,
+        17.138671875,
+        17.5048828125
+      ]
+    },
+    {
+      "hidden_layers": 1,
+      "width": 80,
+      "hidden": 5,
+      "parameters": 9941,
+      "accuracy_mean": 18.26171875,
+      "accuracy_sd": 0.7042092334890604,
+      "seed_accuracies": [
+        18.84765625,
+        18.45703125,
+        17.48046875
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 16,
+      "hidden": 49,
+      "parameters": 9875,
+      "accuracy_mean": 18.465169270833332,
+      "accuracy_sd": 0.07848023080235152,
+      "seed_accuracies": [
+        18.4326171875,
+        18.408203125,
+        18.5546875
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 24,
+      "hidden": 43,
+      "parameters": 9879,
+      "accuracy_mean": 19.669596354166668,
+      "accuracy_sd": 1.6691673909320806,
+      "seed_accuracies": [
+        18.9208984375,
+        18.505859375,
+        21.58203125
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 32,
+      "hidden": 37,
+      "parameters": 9859,
+      "accuracy_mean": 19.222005208333332,
+      "accuracy_sd": 0.07458619295175521,
+      "seed_accuracies": [
+        19.287109375,
+        19.140625,
+        19.23828125
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 40,
+      "hidden": 31,
+      "parameters": 9815,
+      "accuracy_mean": 20.100911458333332,
+      "accuracy_sd": 2.3476039142244307,
+      "seed_accuracies": [
+        22.7294921875,
+        18.212890625,
+        19.3603515625
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 48,
+      "hidden": 26,
+      "parameters": 9944,
+      "accuracy_mean": 24.430338541666668,
+      "accuracy_sd": 1.022577210536986,
+      "seed_accuracies": [
+        25.2685546875,
+        24.7314453125,
+        23.291015625
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 56,
+      "hidden": 20,
+      "parameters": 9848,
+      "accuracy_mean": 23.014322916666668,
+      "accuracy_sd": 0.7064627087959214,
+      "seed_accuracies": [
+        22.55859375,
+        22.65625,
+        23.828125
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 64,
+      "hidden": 15,
+      "parameters": 9919,
+      "accuracy_mean": 26.717122395833332,
+      "accuracy_sd": 8.396603879442706,
+      "seed_accuracies": [
+        19.677734375,
+        24.462890625,
+        36.0107421875
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 72,
+      "hidden": 10,
+      "parameters": 9960,
+      "accuracy_mean": 31.0791015625,
+      "accuracy_sd": 14.921346924709793,
+      "seed_accuracies": [
+        27.587890625,
+        18.212890625,
+        47.4365234375
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 80,
+      "hidden": 5,
+      "parameters": 9971,
+      "accuracy_mean": 46.305338541666664,
+      "accuracy_sd": 18.206676960670656,
+      "seed_accuracies": [
+        25.29296875,
+        56.2255859375,
+        57.3974609375
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 16,
+      "hidden": 41,
+      "parameters": 9965,
+      "accuracy_mean": 18.806966145833332,
+      "accuracy_sd": 0.796487352416476,
+      "seed_accuracies": [
+        18.3349609375,
+        19.7265625,
+        18.359375
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 24,
+      "hidden": 36,
+      "parameters": 9804,
+      "accuracy_mean": 19.173177083333332,
+      "accuracy_sd": 0.7292956283604994,
+      "seed_accuracies": [
+        18.603515625,
+        18.9208984375,
+        19.9951171875
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 32,
+      "hidden": 32,
+      "parameters": 9920,
+      "accuracy_mean": 22.75390625,
+      "accuracy_sd": 4.491988467907391,
+      "seed_accuracies": [
+        18.6279296875,
+        27.5390625,
+        22.0947265625
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 40,
+      "hidden": 27,
+      "parameters": 9787,
+      "accuracy_mean": 24.430338541666668,
+      "accuracy_sd": 1.8406864728091132,
+      "seed_accuracies": [
+        24.0234375,
+        26.4404296875,
+        22.8271484375
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 48,
+      "hidden": 23,
+      "parameters": 9911,
+      "accuracy_mean": 23.14453125,
+      "accuracy_sd": 2.223288823167864,
+      "seed_accuracies": [
+        25.4150390625,
+        20.9716796875,
+        23.046875
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 56,
+      "hidden": 18,
+      "parameters": 9806,
+      "accuracy_mean": 30.078125,
+      "accuracy_sd": 7.7444546456667345,
+      "seed_accuracies": [
+        28.80859375,
+        23.046875,
+        38.37890625
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 64,
+      "hidden": 14,
+      "parameters": 9938,
+      "accuracy_mean": 36.1328125,
+      "accuracy_sd": 19.363953302266832,
+      "seed_accuracies": [
+        58.4228515625,
+        26.513671875,
+        23.4619140625
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 72,
+      "hidden": 9,
+      "parameters": 9861,
+      "accuracy_mean": 53.507486979166664,
+      "accuracy_sd": 24.47464813301602,
+      "seed_accuracies": [
+        74.1943359375,
+        59.8388671875,
+        26.4892578125
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 80,
+      "hidden": 4,
+      "parameters": 9804,
+      "accuracy_mean": 55.4931640625,
+      "accuracy_sd": 19.219264201907095,
+      "seed_accuracies": [
+        38.720703125,
+        51.2939453125,
+        76.46484375
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 16,
+      "hidden": 36,
+      "parameters": 9952,
+      "accuracy_mean": 20.857747395833332,
+      "accuracy_sd": 2.025092156593405,
+      "seed_accuracies": [
+        21.826171875,
+        22.216796875,
+        18.5302734375
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 24,
+      "hidden": 32,
+      "parameters": 9824,
+      "accuracy_mean": 22.9248046875,
+      "accuracy_sd": 1.584470775350386,
+      "seed_accuracies": [
+        23.3642578125,
+        21.1669921875,
+        24.2431640625
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 32,
+      "hidden": 28,
+      "parameters": 9728,
+      "accuracy_mean": 24.812825520833332,
+      "accuracy_sd": 3.9407604382821253,
+      "seed_accuracies": [
+        21.044921875,
+        28.90625,
+        24.4873046875
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 40,
+      "hidden": 25,
+      "parameters": 9951,
+      "accuracy_mean": 29.703776041666668,
+      "accuracy_sd": 1.91993487260881,
+      "seed_accuracies": [
+        27.5634765625,
+        31.2744140625,
+        30.2734375
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 48,
+      "hidden": 21,
+      "parameters": 9903,
+      "accuracy_mean": 56.949869791666664,
+      "accuracy_sd": 22.7218904768964,
+      "seed_accuracies": [
+        76.416015625,
+        31.982421875,
+        62.451171875
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 56,
+      "hidden": 17,
+      "parameters": 9887,
+      "accuracy_mean": 41.259765625,
+      "accuracy_sd": 12.513439582965717,
+      "seed_accuracies": [
+        40.13671875,
+        54.296875,
+        29.345703125
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 64,
+      "hidden": 13,
+      "parameters": 9903,
+      "accuracy_mean": 74.32454427083333,
+      "accuracy_sd": 10.794918223417753,
+      "seed_accuracies": [
+        69.7998046875,
+        86.6455078125,
+        66.5283203125
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 72,
+      "hidden": 9,
+      "parameters": 9951,
+      "accuracy_mean": 83.33333333333333,
+      "accuracy_sd": 12.446391864849407,
+      "seed_accuracies": [
+        81.4697265625,
+        96.6064453125,
+        71.923828125
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 80,
+      "hidden": 4,
+      "parameters": 9824,
+      "accuracy_mean": 64.95768229166667,
+      "accuracy_sd": 19.246293673061825,
+      "seed_accuracies": [
+        87.158203125,
+        54.736328125,
+        52.978515625
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 16,
+      "hidden": 30,
+      "parameters": 9928,
+      "accuracy_mean": 23.640950520833332,
+      "accuracy_sd": 1.5720710081090317,
+      "seed_accuracies": [
+        22.2412109375,
+        25.341796875,
+        23.33984375
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 24,
+      "hidden": 27,
+      "parameters": 9831,
+      "accuracy_mean": 26.8798828125,
+      "accuracy_sd": 3.3088936517802296,
+      "seed_accuracies": [
+        23.14453125,
+        29.443359375,
+        28.0517578125
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 32,
+      "hidden": 24,
+      "parameters": 9776,
+      "accuracy_mean": 48.1689453125,
+      "accuracy_sd": 29.686054395313693,
+      "seed_accuracies": [
+        27.9541015625,
+        82.2509765625,
+        34.3017578125
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 40,
+      "hidden": 21,
+      "parameters": 9763,
+      "accuracy_mean": 55.224609375,
+      "accuracy_sd": 10.556901475081485,
+      "seed_accuracies": [
+        66.7724609375,
+        46.0693359375,
+        52.83203125
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 48,
+      "hidden": 18,
+      "parameters": 9792,
+      "accuracy_mean": 82.53580729166667,
+      "accuracy_sd": 10.5093204971399,
+      "seed_accuracies": [
+        70.849609375,
+        85.546875,
+        91.2109375
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 56,
+      "hidden": 15,
+      "parameters": 9863,
+      "accuracy_mean": 89.77864583333333,
+      "accuracy_sd": 3.022253207051009,
+      "seed_accuracies": [
+        93.2373046875,
+        88.4521484375,
+        87.646484375
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 64,
+      "hidden": 12,
+      "parameters": 9976,
+      "accuracy_mean": 98.00618489583333,
+      "accuracy_sd": 0.9494318886329642,
+      "seed_accuracies": [
+        97.55859375,
+        97.36328125,
+        99.0966796875
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 72,
+      "hidden": 8,
+      "parameters": 9872,
+      "accuracy_mean": 94.7265625,
+      "accuracy_sd": 7.959171597203626,
+      "seed_accuracies": [
+        100.0,
+        85.5712890625,
+        98.6083984375
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 80,
+      "hidden": 4,
+      "parameters": 9864,
+      "accuracy_mean": 90.90983072916667,
+      "accuracy_sd": 8.421270986965627,
+      "seed_accuracies": [
+        83.3740234375,
+        100.0,
+        89.35546875
+      ]
+    }
+  ],
+  "best_per_depth": [
+    {
+      "hidden_layers": 1,
+      "width": 48,
+      "hidden": 31,
+      "parameters": 9967,
+      "accuracy_mean": 22.347005208333332,
+      "accuracy_sd": 3.1051322066888614,
+      "seed_accuracies": [
+        23.14453125,
+        18.9208984375,
+        24.9755859375
+      ]
+    },
+    {
+      "hidden_layers": 2,
+      "width": 80,
+      "hidden": 5,
+      "parameters": 9971,
+      "accuracy_mean": 46.305338541666664,
+      "accuracy_sd": 18.206676960670656,
+      "seed_accuracies": [
+        25.29296875,
+        56.2255859375,
+        57.3974609375
+      ]
+    },
+    {
+      "hidden_layers": 3,
+      "width": 80,
+      "hidden": 4,
+      "parameters": 9804,
+      "accuracy_mean": 55.4931640625,
+      "accuracy_sd": 19.219264201907095,
+      "seed_accuracies": [
+        38.720703125,
+        51.2939453125,
+        76.46484375
+      ]
+    },
+    {
+      "hidden_layers": 4,
+      "width": 72,
+      "hidden": 9,
+      "parameters": 9951,
+      "accuracy_mean": 83.33333333333333,
+      "accuracy_sd": 12.446391864849407,
+      "seed_accuracies": [
+        81.4697265625,
+        96.6064453125,
+        71.923828125
+      ]
+    },
+    {
+      "hidden_layers": 6,
+      "width": 64,
+      "hidden": 12,
+      "parameters": 9976,
+      "accuracy_mean": 98.00618489583333,
+      "accuracy_sd": 0.9494318886329642,
+      "seed_accuracies": [
+        97.55859375,
+        97.36328125,
+        99.0966796875
+      ]
+    }
+  ],
+  "transformer_reference": {
+    "parameters": 9970,
+    "accuracy_mean": 100.0,
+    "accuracy_sd": 0.0,
+    "blocks": 1
+  }
+}

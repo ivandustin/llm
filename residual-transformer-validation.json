@@ -1,0 +1,30 @@
+{
+  "evaluation_seed": 20261122,
+  "examples": 16384,
+  "runs": [
+    {
+      "seed": 0,
+      "parameters": 9970,
+      "validation": {
+        "loss": 2.0203704480081797e-05,
+        "accuracy": 1.0
+      }
+    },
+    {
+      "seed": 1,
+      "parameters": 9970,
+      "validation": {
+        "loss": 1.8004735466092825e-05,
+        "accuracy": 1.0
+      }
+    },
+    {
+      "seed": 2,
+      "parameters": 9970,
+      "validation": {
+        "loss": 1.7005542758852243e-05,
+        "accuracy": 1.0
+      }
+    }
+  ]
+}

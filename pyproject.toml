@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "position-token-pooling"
+version = "0.1.0"
+description = "Small position-token pooling models and controlled Transformer comparisons"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Ivan Dustin Bilon"}]
+dependencies = [
+    "jax==0.10.1",
+    "jaxlib==0.10.1",
+    "flax==0.12.7",
+    "optax==0.2.6",
+    "numpy==2.3.4",
+]
+
+[tool.setuptools]
+packages = ["position_token_pooling"]

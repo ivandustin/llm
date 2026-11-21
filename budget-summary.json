@@ -1,0 +1,114 @@
+{
+  "config": {
+    "widths": [
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80
+    ],
+    "budget": 10000,
+    "steps": 10000,
+    "seeds": 3,
+    "seed_start": 0,
+    "output": "budget-results.json",
+    "context": 16,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "test_examples": 4096,
+    "task": "indexed_copy",
+    "variant": "normalized_GELU",
+    "transformer_depth": 1,
+    "evaluation_seed": 700016,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "execution_note": "Independent seeds ran concurrently; no timing comparison."
+  },
+  "frequency_baseline_accuracy": 0.19189453125,
+  "rows": [
+    {
+      "model": "candidate",
+      "width": 16,
+      "hidden": 71,
+      "parameters": 9911,
+      "accuracy_mean": 18.636067708333332,
+      "accuracy_sd": 0.4116744749329993
+    },
+    {
+      "model": "candidate",
+      "width": 24,
+      "hidden": 59,
+      "parameters": 9923,
+      "accuracy_mean": 18.937174479166668,
+      "accuracy_sd": 0.578944544656003
+    },
+    {
+      "model": "candidate",
+      "width": 32,
+      "hidden": 48,
+      "parameters": 9872,
+      "accuracy_mean": 21.3134765625,
+      "accuracy_sd": 3.451202133382846
+    },
+    {
+      "model": "candidate",
+      "width": 40,
+      "hidden": 39,
+      "parameters": 9919,
+      "accuracy_mean": 20.426432291666668,
+      "accuracy_sd": 2.332064851468735
+    },
+    {
+      "model": "candidate",
+      "width": 48,
+      "hidden": 31,
+      "parameters": 9967,
+      "accuracy_mean": 22.347005208333332,
+      "accuracy_sd": 3.1051322066888614
+    },
+    {
+      "model": "candidate",
+      "width": 56,
+      "hidden": 23,
+      "parameters": 9887,
+      "accuracy_mean": 19.9462890625,
+      "accuracy_sd": 1.3307343823155902
+    },
+    {
+      "model": "candidate",
+      "width": 64,
+      "hidden": 16,
+      "parameters": 9840,
+      "accuracy_mean": 19.270833333333332,
+      "accuracy_sd": 0.40289367820594285
+    },
+    {
+      "model": "candidate",
+      "width": 72,
+      "hidden": 10,
+      "parameters": 9850,
+      "accuracy_mean": 17.732747395833332,
+      "accuracy_sd": 0.7349943971312233
+    },
+    {
+      "model": "candidate",
+      "width": 80,
+      "hidden": 5,
+      "parameters": 9941,
+      "accuracy_mean": 18.26171875,
+      "accuracy_sd": 0.7042092334890604
+    },
+    {
+      "model": "transformer",
+      "width": 16,
+      "hidden": 162,
+      "parameters": 9970,
+      "accuracy_mean": 100.0,
+      "accuracy_sd": 0.0
+    }
+  ]
+}

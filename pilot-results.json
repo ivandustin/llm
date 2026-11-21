@@ -1,0 +1,138 @@
+{
+  "config": {
+    "steps": 1000,
+    "seeds": 3,
+    "context": 32,
+    "batch": 64,
+    "lr": 0.001,
+    "vocab": 65,
+    "width": 32,
+    "hidden": 152,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.1"
+  },
+  "runs": [
+    {
+      "model": "cube",
+      "seed": 0,
+      "parameters": 18065,
+      "compile_seconds": 0.2922651579999638,
+      "train_seconds": 1.0205865520000543,
+      "final_train_loss": 2.596902143955231,
+      "validation": {
+        "loss": 2.550346538424492,
+        "perplexity": 12.81154270531439,
+        "accuracy": 0.279296875
+      },
+      "test": {
+        "loss": 2.556923069059849,
+        "perplexity": 12.896075871202939,
+        "accuracy": 0.293212890625
+      },
+      "sample": "First Citizen:\nOhan he we el,\n in Ioce rist, thee thonnte\nThocod Ior boup anred monde pomed Ikeet hed.\n\nwoutesesd te thewicrhe, foun inrrlker ound, hitharesped authe thave cuw"
+    },
+    {
+      "model": "transformer",
+      "seed": 0,
+      "parameters": 18017,
+      "compile_seconds": 0.5606216090000089,
+      "train_seconds": 5.490564917000029,
+      "final_train_loss": 2.3915475153923036,
+      "validation": {
+        "loss": 2.3605512380599976,
+        "perplexity": 10.596791197362908,
+        "accuracy": 0.308837890625
+      },
+      "test": {
+        "loss": 2.3567983582615852,
+        "perplexity": 10.557097243656635,
+        "accuracy": 0.3212890625
+      },
+      "sample": "First Citizen:\nOLRUShe welel, sis doce rist, the st thet the cur gor bous and hern the the Cikest ghom twouteses my inswerd heand hou arraker ound, hertbe sped aund cect coun."
+    },
+    {
+      "model": "cube",
+      "seed": 1,
+      "parameters": 18065,
+      "compile_seconds": 0.1981172590000142,
+      "train_seconds": 1.0510426849999703,
+      "final_train_loss": 2.62250253200531,
+      "validation": {
+        "loss": 2.572411134839058,
+        "perplexity": 13.097365915538541,
+        "accuracy": 0.287109375
+      },
+      "test": {
+        "loss": 2.566514804959297,
+        "perplexity": 13.020366754854324,
+        "accuracy": 0.281494140625
+      },
+      "sample": "First Citizen:\nMas ths conls pnergoy theg.\nsat man's min niren and litheste, s: ooed in thet wed'mea-\nUSh torlad an anit be theeece allylanl hhaw yhete ame whal tol thee met s"
+    },
+    {
+      "model": "transformer",
+      "seed": 1,
+      "parameters": 18017,
+      "compile_seconds": 0.5086113820000264,
+      "train_seconds": 5.451363249999986,
+      "final_train_loss": 2.3511217546463015,
+      "validation": {
+        "loss": 2.315201163291931,
+        "perplexity": 10.126959886442885,
+        "accuracy": 0.341796875
+      },
+      "test": {
+        "loss": 2.3093067184090614,
+        "perplexity": 10.067442662384098,
+        "accuracy": 0.353271484375
+      },
+      "sample": "First Citizen:\nMas the gon sornere,\nI my thim amand mall nith sand to nener, sullier\nThake ine;\nDord as hes aly hen and my min:\nMul all lanl hast youll ame whall,\nUIN:\nThe.\n\nC"
+    },
+    {
+      "model": "cube",
+      "seed": 2,
+      "parameters": 18065,
+      "compile_seconds": 0.20622168900001725,
+      "train_seconds": 1.084504463999906,
+      "final_train_loss": 2.5866039252281188,
+      "validation": {
+        "loss": 2.5637322068214417,
+        "perplexity": 12.984186667235042,
+        "accuracy": 0.2822265625
+      },
+      "test": {
+        "loss": 2.5660745054483414,
+        "perplexity": 13.014635155642456,
+        "accuracy": 0.28759765625
+      },
+      "sample": "First Citizen:\n\nhon moren tadether thhin\n\nGeem foang wit morpvet bnetrerisos bad hyre an ther hos paste theus.\n\nWoaps caw houclanc Lonrtuf k, se yathes dod ror\nTnstt ar ass mo"
+    },
+    {
+      "model": "transformer",
+      "seed": 2,
+      "parameters": 18017,
+      "compile_seconds": 0.5116107189999184,
+      "train_seconds": 5.431441737,
+      "final_train_loss": 2.352422840595245,
+      "validation": {
+        "loss": 2.3381763696670532,
+        "perplexity": 10.362322276417498,
+        "accuracy": 0.329833984375
+      },
+      "test": {
+        "loss": 2.341799221932888,
+        "perplexity": 10.399931524395264,
+        "accuracy": 0.332275390625
+      },
+      "sample": "First Citizen:\n\nLEN mIING and ther thh theteem frout with theve theetst cech nod hy.\nBou the goot pnote lang oun rops ca whourl icgren tuf k,\nIf your wolld the\nThert arof shou"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "selection_basis": "Best three-seed queried-copy mean among tested ungated depth/width allocations, then preferred to the simple residual variant",
+  "implementation": "best_model.py",
+  "architecture": {
+    "embedding_width": 64,
+    "hidden_width": 12,
+    "hidden_layers": 6,
+    "activation": "GELU",
+    "pool_normalization": "parameter-free layer normalization, epsilon 1e-5",
+    "residual": false,
+    "query_gate": false
+  },
+  "copy_task": {
+    "context": 16,
+    "vocab": 96,
+    "parameters": 9976,
+    "checkpoints": [
+      "residual-seed-0/plain-seed-0.npz",
+      "residual-seed-1/plain-seed-1.npz",
+      "residual-seed-2/plain-seed-2.npz"
+    ]
+  },
+  "language_test": {
+    "context": 32,
+    "vocab": 65,
+    "parameters": 8613,
+    "initialization": "fresh random weights; synthetic-task weights are not transferred",
+    "status": "complete",
+    "results": "language-depth-summary.json",
+    "vocabulary": "language-vocabulary.json",
+    "checkpoints": [
+      "language-depth-seed-0/deep-seed-0.npz",
+      "language-depth-seed-1/deep-seed-1.npz",
+      "language-depth-seed-2/deep-seed-2.npz"
+    ],
+    "selection_note": "Original queried-copy selection retained; language metrics are reported separately."
+  },
+  "scaled_experiment": {
+    "results": "100k-results.json",
+    "architecture": {
+      "embedding_width": 64,
+      "hidden_width": 120,
+      "hidden_layers": 6,
+      "residual": false
+    },
+    "copy_parameters": 99184,
+    "language_parameters": 94473,
+    "checkpoints": "large-ours-seed-{0,1,2}/{task}.npz",
+    "depth_comparison": "depth100k-results.json"
+  },
+  "default_transformer_reference": {
+    "blocks": 2,
+    "heads": 4,
+    "ff_hidden_layers_per_block": 1,
+    "positions": "learned",
+    "budget": "match total trainable parameters per experiment",
+    "selection": "User requested two blocks for future comparisons",
+    "small_results": "tfblocks-results.json",
+    "speed_results": "two-block-speed-results.json",
+    "large_quality_results": "depth100k-results.json"
+  }
+}

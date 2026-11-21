@@ -1,0 +1,15 @@
+Shared architecture across tasks, approximately 100k parameters.
+Ours: 64 dims, six hidden layers of 120 units, normalization + GELU, no residuals.
+Transformer: 64 dims, one block, four heads, standard one-hidden-layer FFN of 536 units.
+Three seeds, 10,000 compiled Adam updates, batch 64, learning rate .001.
+Same data and evaluation samples as previous tests. No speed benchmark.
+Parameter counts change with context/vocabulary; internal shapes stay fixed.
+
+position / ours: params=99184, accuracy=97.61% +/- 1.38
+position / transformer: params=99640, accuracy=100.00% +/- 0.00
+single / ours: params=99184, accuracy=29.07% +/- 0.80
+single / transformer: params=99640, accuracy=29.25% +/- 0.58
+multi / ours: params=99184, accuracy=34.36% +/- 0.33
+multi / transformer: params=99640, accuracy=30.66% +/- 0.12
+language / ours: params=94473, accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / transformer: params=96665, accuracy=43.47% +/- 0.36, perplexity=7.31 +/- 0.12

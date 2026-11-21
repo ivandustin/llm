@@ -1,0 +1,862 @@
+{
+  "rows": [
+    {
+      "depth": 8,
+      "dimensions": 64,
+      "hidden": 11,
+      "copy_params": 9959,
+      "language_params": 8627,
+      "copy_accuracy": 97.344970703125,
+      "copy_sd": 3.493914857567773,
+      "language_perplexity": 10.600421712660262,
+      "language_sd": 0.352003507823456
+    },
+    {
+      "depth": 12,
+      "dimensions": 64,
+      "hidden": 9,
+      "copy_params": 9703,
+      "language_params": 8433,
+      "copy_accuracy": 98.02042643229167,
+      "copy_sd": 3.3230284260498184,
+      "language_perplexity": 11.51596860567463,
+      "language_sd": 0.08384692868127229
+    }
+  ],
+  "runs": [
+    {
+      "depth": 8,
+      "seed": 0,
+      "copy": {
+        "seed": 0,
+        "width": 64,
+        "hidden": 11,
+        "hidden_layers": 8,
+        "parameters": 9959,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.7085080221295357,
+            "accuracy": 0.116455078125,
+            "step": 1000
+          },
+          {
+            "loss": 1.7700801268219948,
+            "accuracy": 0.298828125,
+            "step": 3000
+          },
+          {
+            "loss": 0.09429711103439331,
+            "accuracy": 0.98779296875,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.09559048945084214,
+          "accuracy": 0.9869384765625
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 0,
+          "steps": 10000,
+          "output": "shared64-language-8-seed-0.json",
+          "deep_width": 64,
+          "deep_hidden": 11,
+          "deep_layers": 8,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 11,
+            "hidden_layers": 8,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8627
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 0,
+            "parameters": 8627,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 2.867608092725277,
+                  "accuracy": 0.21435546875,
+                  "perplexity": 17.594882500132996
+                },
+                "final_train_loss": 2.901789665222168,
+                "compile_seconds": 0.8667522220021056,
+                "execution_seconds": 0.6827307300009124
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.468896597623825,
+                  "accuracy": 0.301513671875,
+                  "perplexity": 11.809409129947387
+                },
+                "final_train_loss": 2.4713549613952637,
+                "compile_seconds": 0.8166555049974704,
+                "execution_seconds": 1.3650978610021411
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.2635951787233353,
+                  "accuracy": 0.35400390625,
+                  "perplexity": 9.61760409152579
+                },
+                "final_train_loss": 2.25952410697937,
+                "compile_seconds": 0.8159992619985132,
+                "execution_seconds": 4.712035731001379
+              }
+            ],
+            "validation": {
+              "loss": 2.2635951787233353,
+              "accuracy": 0.35400390625,
+              "perplexity": 9.61760409152579
+            },
+            "test": {
+              "loss": 2.335215136408806,
+              "accuracy": 0.349365234375,
+              "perplexity": 10.331682411343465
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\nOr furtewe el, sis haan rost, the stitknles the dor the hort ther,\nThe porge I theled moe a to land,\nThe whar wind hor arrleflaoand, hort o sped aund and af hit"
+          }
+        ]
+      }
+    },
+    {
+      "depth": 8,
+      "seed": 1,
+      "copy": {
+        "seed": 1,
+        "width": 64,
+        "hidden": 11,
+        "hidden_layers": 8,
+        "parameters": 9959,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.715900607407093,
+            "accuracy": 0.091552734375,
+            "step": 1000
+          },
+          {
+            "loss": 0.7465994451195002,
+            "accuracy": 0.66650390625,
+            "step": 3000
+          },
+          {
+            "loss": 0.014216146897524595,
+            "accuracy": 0.999755859375,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.01477025868371129,
+          "accuracy": 0.9996337890625
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 1,
+          "steps": 10000,
+          "output": "shared64-language-8-seed-1.json",
+          "deep_width": 64,
+          "deep_hidden": 11,
+          "deep_layers": 8,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 11,
+            "hidden_layers": 8,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8627
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 1,
+            "parameters": 8627,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 2.880810149013996,
+                  "accuracy": 0.197021484375,
+                  "perplexity": 17.828711243165504
+                },
+                "final_train_loss": 2.928561210632324,
+                "compile_seconds": 0.7603105519992823,
+                "execution_seconds": 0.6933946579993062
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.516128070652485,
+                  "accuracy": 0.28466796875,
+                  "perplexity": 12.380567059029428
+                },
+                "final_train_loss": 2.531508684158325,
+                "compile_seconds": 0.7635790849999466,
+                "execution_seconds": 1.3654136350014596
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.2658788859844208,
+                  "accuracy": 0.358154296875,
+                  "perplexity": 9.639592982362098
+                },
+                "final_train_loss": 2.2412521839141846,
+                "compile_seconds": 0.7929793189978227,
+                "execution_seconds": 4.566410876999726
+              }
+            ],
+            "validation": {
+              "loss": 2.2658788859844208,
+              "accuracy": 0.358154296875,
+              "perplexity": 9.639592982362098
+            },
+            "test": {
+              "loss": 2.3485814929008484,
+              "accuracy": 0.347412109375,
+              "perplexity": 10.470706413982587
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\nMasters conlulr the,\nHet to.\n\nROSUS:\nMold nit ny theed nontext thoigin nake it pot.\n\nVINSUM: Uld hen agit dert heece all lanl houfadt theagh whald,\nUbrhin met w"
+          }
+        ]
+      }
+    },
+    {
+      "depth": 8,
+      "seed": 2,
+      "copy": {
+        "seed": 2,
+        "width": 64,
+        "hidden": 11,
+        "hidden_layers": 8,
+        "parameters": 9959,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.6841521486639977,
+            "accuracy": 0.11279296875,
+            "step": 1000
+          },
+          {
+            "loss": 1.8149569854140282,
+            "accuracy": 0.330810546875,
+            "step": 3000
+          },
+          {
+            "loss": 0.22477026656270027,
+            "accuracy": 0.931640625,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.21860386873595417,
+          "accuracy": 0.93377685546875
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 2,
+          "steps": 10000,
+          "output": "shared64-language-8-seed-2.json",
+          "deep_width": 64,
+          "deep_hidden": 11,
+          "deep_layers": 8,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 11,
+            "hidden_layers": 8,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8627
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 2,
+            "parameters": 8627,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 3.0089434161782265,
+                  "accuracy": 0.167724609375,
+                  "perplexity": 20.265975906822792
+                },
+                "final_train_loss": 3.0194084644317627,
+                "compile_seconds": 0.8746799760010617,
+                "execution_seconds": 0.6755588449996139
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.656066708266735,
+                  "accuracy": 0.2587890625,
+                  "perplexity": 14.240168065500349
+                },
+                "final_train_loss": 2.673231601715088,
+                "compile_seconds": 0.7321814319984696,
+                "execution_seconds": 1.359876673999679
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.332958698272705,
+                  "accuracy": 0.322021484375,
+                  "perplexity": 10.308395891316652
+                },
+                "final_train_loss": 2.3521039485931396,
+                "compile_seconds": 0.7179808970031445,
+                "execution_seconds": 4.555116593997809
+              }
+            ],
+            "validation": {
+              "loss": 2.332958698272705,
+              "accuracy": 0.322021484375,
+              "perplexity": 10.308395891316652
+            },
+            "test": {
+              "loss": 2.3977931141853333,
+              "accuracy": 0.325927734375,
+              "perplexity": 10.998876312654737
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\n\nwon more send the yhih thet im four knee! the fee netrer for badshy. Bow the gosh pelte the-to thir she woufd lanc Linr?\n\nDMENUSTELRO:\nWhod the\nThest ar fos mo"
+          }
+        ]
+      }
+    },
+    {
+      "depth": 12,
+      "seed": 0,
+      "copy": {
+        "seed": 0,
+        "width": 64,
+        "hidden": 9,
+        "hidden_layers": 12,
+        "parameters": 9703,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.445267029106617,
+            "accuracy": 0.14990234375,
+            "step": 1000
+          },
+          {
+            "loss": 0.5740331709384918,
+            "accuracy": 0.76953125,
+            "step": 3000
+          },
+          {
+            "loss": 0.025456725619733334,
+            "accuracy": 0.9990234375,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.02424456155858934,
+          "accuracy": 0.99951171875
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 0,
+          "steps": 10000,
+          "output": "shared64-language-12-seed-0.json",
+          "deep_width": 64,
+          "deep_hidden": 9,
+          "deep_layers": 12,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 9,
+            "hidden_layers": 12,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8433
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 0,
+            "parameters": 8433,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 2.896210215985775,
+                  "accuracy": 0.187744140625,
+                  "perplexity": 18.1053996318782
+                },
+                "final_train_loss": 2.9248239994049072,
+                "compile_seconds": 0.9181325889985601,
+                "execution_seconds": 0.659936034000566
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.6962722688913345,
+                  "accuracy": 0.232177734375,
+                  "perplexity": 14.824367341911612
+                },
+                "final_train_loss": 2.6987173557281494,
+                "compile_seconds": 0.9179300600007991,
+                "execution_seconds": 1.4384199119995174
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.392539404332638,
+                  "accuracy": 0.313232421875,
+                  "perplexity": 10.941242934888427
+                },
+                "final_train_loss": 2.4094760417938232,
+                "compile_seconds": 0.8799662009987514,
+                "execution_seconds": 4.671119116999762
+              }
+            ],
+            "validation": {
+              "loss": 2.392539404332638,
+              "accuracy": 0.313232421875,
+              "perplexity": 10.941242934888427
+            },
+            "test": {
+              "loss": 2.4372788593173027,
+              "accuracy": 0.31005859375,
+              "perplexity": 11.441863423049918
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\nOt fuctewe el, sus doan rost the intitnnt the cuds. Enbd ptanred mond hatoge I thed dosoewn thals masresweme het feen id blefroon the thab os gdoau that thale w"
+          }
+        ]
+      }
+    },
+    {
+      "depth": 12,
+      "seed": 1,
+      "copy": {
+        "seed": 1,
+        "width": 64,
+        "hidden": 9,
+        "hidden_layers": 12,
+        "parameters": 9703,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.6540245562791824,
+            "accuracy": 0.111572265625,
+            "step": 1000
+          },
+          {
+            "loss": 0.8638820070773363,
+            "accuracy": 0.618896484375,
+            "step": 3000
+          },
+          {
+            "loss": 0.03975306451320648,
+            "accuracy": 0.998779296875,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.03933442756533623,
+          "accuracy": 0.999267578125
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 1,
+          "steps": 10000,
+          "output": "shared64-language-12-seed-1.json",
+          "deep_width": 64,
+          "deep_hidden": 9,
+          "deep_layers": 12,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 9,
+            "hidden_layers": 12,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8433
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 1,
+            "parameters": 8433,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 2.960043415427208,
+                  "accuracy": 0.1806640625,
+                  "perplexity": 19.298809603378402
+                },
+                "final_train_loss": 2.9914772510528564,
+                "compile_seconds": 0.8607736250014568,
+                "execution_seconds": 0.7704320250013552
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.6177679523825645,
+                  "accuracy": 0.2626953125,
+                  "perplexity": 13.70509898647168
+                },
+                "final_train_loss": 2.6388602256774902,
+                "compile_seconds": 0.8058623659999284,
+                "execution_seconds": 1.4325723580004706
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.402706630527973,
+                  "accuracy": 0.32177734375,
+                  "perplexity": 11.05305245986375
+                },
+                "final_train_loss": 2.37382435798645,
+                "compile_seconds": 0.7972817279987794,
+                "execution_seconds": 4.737993179998739
+              }
+            ],
+            "validation": {
+              "loss": 2.402706630527973,
+              "accuracy": 0.32177734375,
+              "perplexity": 11.05305245986375
+            },
+            "test": {
+              "loss": 2.451606698334217,
+              "accuracy": 0.32666015625,
+              "perplexity": 11.606980662147429
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\nMas thhe I it parres met tors thmafes munt, thas theed nesim, suloce I raktot whet.\n\nVAUS:\nAr lod an agicided theece all lanl hhou yhe lwame whol tolnet doe't\nP"
+          }
+        ]
+      }
+    },
+    {
+      "depth": 12,
+      "seed": 2,
+      "copy": {
+        "seed": 2,
+        "width": 64,
+        "hidden": 9,
+        "hidden_layers": 12,
+        "parameters": 9703,
+        "steps": 10000,
+        "history": [
+          {
+            "loss": 2.5608761310577393,
+            "accuracy": 0.12109375,
+            "step": 1000
+          },
+          {
+            "loss": 0.7705031596124172,
+            "accuracy": 0.71337890625,
+            "step": 3000
+          },
+          {
+            "loss": 0.2272235923446715,
+            "accuracy": 0.941650390625,
+            "step": 10000
+          }
+        ],
+        "fresh": {
+          "loss": 0.2254721075296402,
+          "accuracy": 0.94183349609375
+        },
+        "evaluation_seed": 700016,
+        "fresh_seed": 20261122
+      },
+      "language": {
+        "config": {
+          "seed": 2,
+          "steps": 10000,
+          "output": "shared64-language-12-seed-2.json",
+          "deep_width": 64,
+          "deep_hidden": 9,
+          "deep_layers": 12,
+          "residual": false,
+          "residual_prenorm": false,
+          "models": [
+            "deep"
+          ],
+          "context": 32,
+          "vocab": 65,
+          "batch": 64,
+          "lr": 0.001,
+          "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+          "split_lengths": [
+            892315,
+            111539,
+            111540
+          ],
+          "evaluation_seed": 8675309,
+          "evaluation_examples_per_split": 4096,
+          "deep": {
+            "width": 64,
+            "hidden": 9,
+            "hidden_layers": 12,
+            "residual": false,
+            "residual_prenorm": false,
+            "parameters": 8433
+          },
+          "shallow": {
+            "width": 64,
+            "hidden": 18,
+            "hidden_layers": 1,
+            "parameters": 8613
+          },
+          "transformer": {
+            "width": 16,
+            "heads": 4,
+            "blocks": 1,
+            "ff_hidden": 144,
+            "parameters": 8609
+          },
+          "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+          "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+        },
+        "runs": [
+          {
+            "model": "deep",
+            "seed": 2,
+            "parameters": 8433,
+            "history": [
+              {
+                "step": 1000,
+                "validation": {
+                  "loss": 2.9969086423516273,
+                  "accuracy": 0.171142578125,
+                  "perplexity": 20.02354121981617
+                },
+                "final_train_loss": 3.0195255279541016,
+                "compile_seconds": 0.8396060159975605,
+                "execution_seconds": 0.771182721000514
+              },
+              {
+                "step": 3000,
+                "validation": {
+                  "loss": 2.7699820026755333,
+                  "accuracy": 0.231201171875,
+                  "perplexity": 15.958346799664223
+                },
+                "final_train_loss": 2.7826485633850098,
+                "compile_seconds": 0.790489159997378,
+                "execution_seconds": 1.4492690749975736
+              },
+              {
+                "step": 10000,
+                "validation": {
+                  "loss": 2.4021993055939674,
+                  "accuracy": 0.308837890625,
+                  "perplexity": 11.047446392923
+                },
+                "final_train_loss": 2.4660139083862305,
+                "compile_seconds": 0.7719473709985323,
+                "execution_seconds": 4.7808929800012265
+              }
+            ],
+            "validation": {
+              "loss": 2.4021993055939674,
+              "accuracy": 0.308837890625,
+              "perplexity": 11.047446392923
+            },
+            "test": {
+              "loss": 2.4422654435038567,
+              "accuracy": 0.299072265625,
+              "perplexity": 11.499061731826547
+            },
+            "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+            "sample": "First Citizen:\n\n\nWmoutoe send the werhinf\nGeem foar knieum have senetst ceusund thyrad wotter hos pes a thes oun maps: a wof we wher tituf thes; yase s dod toe\nTo to shof shou"
+          }
+        ]
+      }
+    }
+  ]
+}

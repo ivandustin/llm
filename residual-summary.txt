@@ -1,0 +1,16 @@
+Residual ablation: six hidden layers of width 12, embedding width 64.
+Adam 0.001, batch 64, 10,000 updates, three seeds, 9,976 parameters.
+Paired models have identical initial weights and training batches.
+Both trained in compiled lax.scan; five-step ordinary/compiled parity checks passed.
+
+Model        Original evaluation accuracy   New 16,384-example accuracy
+plain        98.01 +/- 0.95                98.08 +/- 0.76
+residual     96.12 +/- 3.18                96.06 +/- 3.45
+transformer  saved reference: 100%         100.00 +/- 0.00
+
+Previously completed isolated timing: median ms, seven trials, full CPU affinity.
+Mode                              Plain     Residual   Transformer
+inference_batch_1                    0.742      0.768       0.764
+inference_batch_64                   0.733      0.759       1.170
+python_training_batch_64             1.870      1.940       2.319
+compiled_training_batch_64           0.334      0.337       1.851

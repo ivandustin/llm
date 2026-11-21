@@ -1,0 +1,33 @@
+Capability accuracy: mean +/- sample standard deviation across seeds.
+Context lengths are trained independently; this is not length extrapolation.
+Frequency baseline guesses the modal candidate token (ties: smallest ID).
+For relative order the baseline is constant class 0.
+
+Task                  Context  Cube (%)         Transformer (%)  Frequency (%)
+first_copy                 16  100.00 +/- 0.00    100.00 +/- 0.00     20.65
+indexed_copy               16   19.51 +/- 0.58    100.00 +/- 0.00     19.73
+associative_recall         16   27.26 +/- 0.77     24.76 +/- 0.39     27.56
+relative_order             16  100.00 +/- 0.00    100.00 +/- 0.00     49.29
+majority                   16  100.00 +/- 0.00    100.00 +/- 0.00    100.00
+first_copy                 64  100.00 +/- 0.00    100.00 +/- 0.00     12.35
+indexed_copy               64    9.99 +/- 0.38     90.95 +/- 11.35    12.48
+associative_recall         64   14.03 +/- 0.18     12.57 +/- 0.25     15.36
+relative_order             64   99.81 +/- 0.06    100.00 +/- 0.00     50.00
+majority                   64  100.00 +/- 0.00    100.00 +/- 0.00    100.00
+
+capabilities-longer-training.json
+{"steps": 30000, "seeds": 3, "contexts": [16], "tasks": ["indexed_copy"], "output": "capabilities-longer-training.json", "models": ["cube"], "width": 16, "lr": 0.001, "vocab": 96, "batch": 64, "transformer_depth": 2, "test_examples": 4096}
+cube: 19.14% (n=3; individual=[19.091796875, 19.091796875, 19.23828125])
+
+capabilities-retrieval-extended.json
+{"steps": 10000, "seeds": 3, "contexts": [16], "tasks": ["associative_recall"], "output": "capabilities-retrieval-extended.json", "models": ["cube", "transformer"], "width": 16, "lr": 0.001, "vocab": 96, "batch": 64, "transformer_depth": 2, "test_examples": 4096}
+cube: 26.95% (n=3; individual=[26.7333984375, 27.2705078125, 26.85546875])
+transformer: 25.95% (n=3; individual=[26.513671875, 25.634765625, 25.7080078125])
+
+capabilities-wider.json
+{"steps": 10000, "seeds": 3, "contexts": [16], "tasks": ["indexed_copy"], "output": "capabilities-wider.json", "models": ["cube"], "width": 64, "lr": 0.001, "vocab": 96, "batch": 64, "transformer_depth": 2, "test_examples": 4096}
+cube: 18.68% (n=3; individual=[17.822265625, 19.23828125, 18.994140625])
+
+One-block transformer, parameter-matched queried copying:
+Context 16: 100.00% +/- 0.00 (n=3)
+Context 64: 96.39% +/- 2.26 (n=3)

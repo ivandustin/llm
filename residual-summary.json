@@ -1,0 +1,349 @@
+{
+  "config": {
+    "steps": 10000,
+    "output": "residual-results.json",
+    "context": 16,
+    "vocab": 96,
+    "width": 64,
+    "hidden": 12,
+    "hidden_layers": 6,
+    "parameters": 9976,
+    "budget": 10000,
+    "batch": 64,
+    "lr": 0.001,
+    "evaluation_seed": 700016,
+    "test_examples": 4096,
+    "validation_seed": 20261122,
+    "validation_examples": 16384,
+    "training_seed_formula": "10000*seed+100*context+1",
+    "residual_rule": "h <- h + GELU(W*h+b) at five equal-width hidden transitions; no scaling or extra normalization",
+    "training_mode": "compiled lax.scan for both control and residual; identical pre-generated batches",
+    "seeds": 3
+  },
+  "accuracy": [
+    {
+      "model": "plain",
+      "parameters": 9976,
+      "final": {
+        "mean": 98.00618489583333,
+        "sd": 0.9494318886329642,
+        "individual": [
+          97.55859375,
+          97.36328125,
+          99.0966796875
+        ]
+      },
+      "validation": {
+        "mean": 98.08349609375,
+        "sd": 0.7581391957613646,
+        "individual": [
+          97.821044921875,
+          97.491455078125,
+          98.93798828125
+        ]
+      }
+    },
+    {
+      "model": "residual",
+      "parameters": 9976,
+      "final": {
+        "mean": 96.1181640625,
+        "sd": 3.1825488663463015,
+        "individual": [
+          98.388671875,
+          97.4853515625,
+          92.48046875
+        ]
+      },
+      "validation": {
+        "mean": 96.05712890625,
+        "sd": 3.4477084472494566,
+        "individual": [
+          98.675537109375,
+          97.344970703125,
+          92.15087890625
+        ]
+      }
+    },
+    {
+      "model": "transformer",
+      "parameters": 9970,
+      "validation": {
+        "mean": 100.0,
+        "sd": 0.0,
+        "individual": [
+          100.0,
+          100.0,
+          100.0
+        ]
+      }
+    }
+  ],
+  "speed": {
+    "inference_batch_1": {
+      "candidate": {
+        "milliseconds_per_step_median": 0.7418780760017398,
+        "milliseconds_per_step_min": 0.7269077999990259,
+        "milliseconds_per_step_max": 0.7580734719995235,
+        "milliseconds_per_step_sd": 0.011705800653062686,
+        "examples_per_second": 1347.9303841803446,
+        "seconds_per_step_trials": [
+          0.0007269077999990258,
+          0.0007340044800002943,
+          0.0007384946340025636,
+          0.0007580734719995235,
+          0.0007553085479994479,
+          0.0007418780760017398,
+          0.0007523357939971902
+        ]
+      },
+      "residual": {
+        "milliseconds_per_step_median": 0.7682184759978554,
+        "milliseconds_per_step_min": 0.7547312379974755,
+        "milliseconds_per_step_max": 0.7885028999990027,
+        "milliseconds_per_step_sd": 0.013906613228206752,
+        "examples_per_second": 1301.7130298787447,
+        "seconds_per_step_trials": [
+          0.0007627214879976236,
+          0.0007682184759978554,
+          0.0007885028999990027,
+          0.0007784515439998358,
+          0.0007876582199969562,
+          0.0007547312379974756,
+          0.0007575778960017488
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 0.7643626579992997,
+        "milliseconds_per_step_min": 0.7514030219972483,
+        "milliseconds_per_step_max": 0.7790785819997836,
+        "milliseconds_per_step_sd": 0.01079489469131141,
+        "examples_per_second": 1308.2795051991095,
+        "seconds_per_step_trials": [
+          0.000763930569999502,
+          0.0007693918200020562,
+          0.0007643626579992997,
+          0.0007774704180010303,
+          0.0007514030219972483,
+          0.0007790785819997837,
+          0.0007530947720006224
+        ]
+      }
+    },
+    "inference_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 0.7330098859965801,
+        "milliseconds_per_step_min": 0.7243001520000689,
+        "milliseconds_per_step_max": 0.7628970240002673,
+        "milliseconds_per_step_sd": 0.014799436235449664,
+        "examples_per_second": 87311.23716426738,
+        "seconds_per_step_trials": [
+          0.0007628970240002673,
+          0.0007330098859965801,
+          0.0007288417339987064,
+          0.0007413929499998631,
+          0.0007243001520000689,
+          0.0007544441659993027,
+          0.0007270066060009413
+        ]
+      },
+      "residual": {
+        "milliseconds_per_step_median": 0.7590774179989239,
+        "milliseconds_per_step_min": 0.7486331760010216,
+        "milliseconds_per_step_max": 0.7868932479977957,
+        "milliseconds_per_step_sd": 0.013195694216694314,
+        "examples_per_second": 84312.8757126203,
+        "seconds_per_step_trials": [
+          0.0007868932479977957,
+          0.0007740649759980443,
+          0.0007533016939996742,
+          0.0007590774179989239,
+          0.0007575153520010644,
+          0.0007606297620004625,
+          0.0007486331760010217
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 1.1700897039991105,
+        "milliseconds_per_step_min": 1.1581749040014984,
+        "milliseconds_per_step_max": 1.1895955459985998,
+        "milliseconds_per_step_sd": 0.011060737673275296,
+        "examples_per_second": 54696.661103214574,
+        "seconds_per_step_trials": [
+          0.0011895955459986,
+          0.0011758929460011132,
+          0.0011700897039991106,
+          0.0011682662499988509,
+          0.0011857711539996671,
+          0.0011581749040014983,
+          0.0011668077620015538
+        ]
+      }
+    },
+    "python_training_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 1.8704078399969148,
+        "milliseconds_per_step_min": 1.5814429200054292,
+        "milliseconds_per_step_max": 2.04191408499355,
+        "milliseconds_per_step_sd": 0.16028493387396917,
+        "examples_per_second": 34217.136301195984,
+        "seconds_per_step_trials": [
+          0.0015814429200054292,
+          0.0018656960150019587,
+          0.002015549399993688,
+          0.0018704078399969148,
+          0.002017836074992374,
+          0.0018372463250034344,
+          0.00204191408499355
+        ]
+      },
+      "residual": {
+        "milliseconds_per_step_median": 1.940016465005101,
+        "milliseconds_per_step_min": 1.6293895649960177,
+        "milliseconds_per_step_max": 2.101842484998997,
+        "milliseconds_per_step_sd": 0.159182897012769,
+        "examples_per_second": 32989.41073669276,
+        "seconds_per_step_trials": [
+          0.0016293895649960178,
+          0.0020960387400009496,
+          0.001940016465005101,
+          0.002101842484998997,
+          0.001874346520007748,
+          0.0018928293549925002,
+          0.0019422135350032476
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 2.3194349099958345,
+        "milliseconds_per_step_min": 1.9200194599943643,
+        "milliseconds_per_step_max": 2.3939030400015326,
+        "milliseconds_per_step_sd": 0.16005561021301873,
+        "examples_per_second": 27592.927796415268,
+        "seconds_per_step_trials": [
+          0.0019200194599943642,
+          0.0023194349099958343,
+          0.002294700914999339,
+          0.0023939030400015326,
+          0.002319474995001656,
+          0.002248734864997459,
+          0.0023699757150006918
+        ]
+      }
+    },
+    "compiled_training_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 0.33443818500018097,
+        "milliseconds_per_step_min": 0.31383921499582357,
+        "milliseconds_per_step_max": 0.37785090500619845,
+        "milliseconds_per_step_sd": 0.024494604905517987,
+        "examples_per_second": 191365.7078361592,
+        "seconds_per_step_trials": [
+          0.00037785090500619845,
+          0.00033443818500018097,
+          0.0003441066999948816,
+          0.00031743767999614647,
+          0.00035762769500252033,
+          0.0003139901450049365,
+          0.00031383921499582355
+        ]
+      },
+      "residual": {
+        "milliseconds_per_step_median": 0.3373155899953417,
+        "milliseconds_per_step_min": 0.304279524998492,
+        "milliseconds_per_step_max": 0.3659194649935671,
+        "milliseconds_per_step_sd": 0.025253542496215687,
+        "examples_per_second": 189733.29990731773,
+        "seconds_per_step_trials": [
+          0.00035525807999874814,
+          0.00033731558999534173,
+          0.00036591946499356707,
+          0.0003657108600054926,
+          0.00030427952499849196,
+          0.00032997211500514824,
+          0.00031006895000246004
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 1.8511224949997995,
+        "milliseconds_per_step_min": 1.8306974850020197,
+        "milliseconds_per_step_max": 1.9155579849939386,
+        "milliseconds_per_step_sd": 0.03316951044638181,
+        "examples_per_second": 34573.61691237344,
+        "seconds_per_step_trials": [
+          0.0019155579849939387,
+          0.0018511224949997996,
+          0.001840412515002754,
+          0.0018987540299985994,
+          0.00183808907000639,
+          0.0018306974850020197,
+          0.0018794219050050742
+        ]
+      }
+    }
+  },
+  "speed_config": {
+    "trials": 7,
+    "train_steps": 200,
+    "infer_steps": 500,
+    "scan_steps": 200,
+    "warmup": 20,
+    "output": "residual-speed-results.json",
+    "include_residual": true,
+    "cpu": "Intel(R) Core(TM) Ultra 7 155H",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "software": {
+      "jax": "0.10.1",
+      "jaxlib": "0.10.1",
+      "flax": "0.12.7",
+      "optax": "0.2.6",
+      "numpy": "2.3.4"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "22",
+      "OPENBLAS_NUM_THREADS": "1",
+      "XLA_FLAGS": null
+    },
+    "context": 16,
+    "vocab": 96,
+    "training_batch": 64,
+    "inference_batches": [
+      1,
+      64
+    ],
+    "checkpoint_seed": 0,
+    "lr": 0.001,
+    "timing_note": "One process; no competing experiment jobs; rotating/reversing order for three models; resident FP32 model and int32 inputs; data generation and host transfers excluded. Training optimizer states start fresh; timing updates discarded.",
+    "parameters": {
+      "candidate": 9976,
+      "residual": 9976,
+      "transformer": 9970
+    }
+  }
+}

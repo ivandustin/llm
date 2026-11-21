@@ -1,0 +1,32 @@
+Residual ablation in our pooled model only: approximately100k total parameters.
+d64, learned token/position embeddings, GELU, non-learned pooled norm epsilon1e-5, no gate/final norm.
+Depth/hidden width:6/120,8/103,12/84, identical across tasks.
+Residual rule: h <- h + GELU(W h + b), at the K-1 equal-width hidden transitions; no residual on input/output projections, no added norm or scaling.
+Residuals add zero parameters. Each residual configuration starts with exactly the same learned weights as its prior plain control.
+Three seeds,10000 compiled Adam updates,batch64,lr .001,same training/evaluation data. Final checkpoint only.
+Historical plain controls reused. Context32 language; context16 retrieval. No Transformer runs or speed measurements.
+
+position / six-plain: params=99184, accuracy=97.61% +/- 1.38
+position / six-residual: params=99184, accuracy=97.94% +/- 0.45
+position / eight-plain: params=98831, accuracy=98.31% +/- 0.75
+position / eight-residual: params=98831, accuracy=95.65% +/- 2.38
+position / twelve-plain: params=99328, accuracy=96.91% +/- 2.98
+position / twelve-residual: params=99328, accuracy=95.84% +/- 4.08
+single / six-plain: params=99184, accuracy=29.07% +/- 0.80
+single / six-residual: params=99184, accuracy=29.67% +/- 0.44
+single / eight-plain: params=98831, accuracy=28.32% +/- 0.21
+single / eight-residual: params=98831, accuracy=29.62% +/- 0.13
+single / twelve-plain: params=99328, accuracy=24.92% +/- 0.58
+single / twelve-residual: params=99328, accuracy=29.43% +/- 0.51
+multi / six-plain: params=99184, accuracy=34.36% +/- 0.33
+multi / six-residual: params=99184, accuracy=34.54% +/- 0.11
+multi / eight-plain: params=98831, accuracy=34.32% +/- 0.24
+multi / eight-residual: params=98831, accuracy=34.67% +/- 0.05
+multi / twelve-plain: params=99328, accuracy=32.68% +/- 0.08
+multi / twelve-residual: params=99328, accuracy=34.40% +/- 0.09
+language / six-plain: params=94473, accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / six-residual: params=94473, accuracy=43.76% +/- 0.20, perplexity=7.37 +/- 0.12
+language / eight-plain: params=94647, accuracy=42.05% +/- 0.97, perplexity=7.55 +/- 0.15
+language / eight-residual: params=94647, accuracy=43.76% +/- 0.37, perplexity=7.51 +/- 0.30
+language / twelve-plain: params=95733, accuracy=39.94% +/- 0.42, perplexity=8.19 +/- 0.31
+language / twelve-residual: params=95733, accuracy=43.57% +/- 0.25, perplexity=7.38 +/- 0.10

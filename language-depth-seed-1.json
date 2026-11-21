@@ -1,0 +1,199 @@
+{
+  "config": {
+    "seed": 1,
+    "steps": 10000,
+    "output": "language-depth-seed-1.json",
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 64,
+      "hidden": 12,
+      "hidden_layers": 6,
+      "residual": false,
+      "parameters": 8613
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 1,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.6919463872909546,
+            "accuracy": 0.266845703125,
+            "perplexity": 14.76037739025551
+          },
+          "final_train_loss": 2.745293617248535,
+          "compile_seconds": 0.4513822179997078,
+          "execution_seconds": 0.4457338950014673
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.3979882150888443,
+            "accuracy": 0.30615234375,
+            "perplexity": 11.001022412707165
+          },
+          "final_train_loss": 2.4057021141052246,
+          "compile_seconds": 0.4670380119987385,
+          "execution_seconds": 0.8372783019985945
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.2264487221837044,
+            "accuracy": 0.35107421875,
+            "perplexity": 9.266898244998641
+          },
+          "final_train_loss": 2.1633787155151367,
+          "compile_seconds": 0.5076671460010402,
+          "execution_seconds": 4.754892353999821
+        }
+      ],
+      "validation": {
+        "loss": 2.2264487221837044,
+        "accuracy": 0.35107421875,
+        "perplexity": 9.266898244998641
+      },
+      "test": {
+        "loss": 2.277058221399784,
+        "accuracy": 0.35693359375,
+        "perplexity": 9.747961842862443
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMast the this parfer metthers the fas me thit brard thought the:\nCourake thoi with.\n\nVORS:\nArald hel agicr hit heece a lol il hou by fou ame whald,\nUnt be fetur"
+    },
+    {
+      "model": "shallow",
+      "seed": 1,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.5750822201371193,
+            "accuracy": 0.284912109375,
+            "perplexity": 13.132396861573403
+          },
+          "final_train_loss": 2.638179063796997,
+          "compile_seconds": 0.8954840590013191,
+          "execution_seconds": 0.6941851989995484
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.2655768543481827,
+            "accuracy": 0.34814453125,
+            "perplexity": 9.636681959953524
+          },
+          "final_train_loss": 2.2526588439941406,
+          "compile_seconds": 0.6785207289995014,
+          "execution_seconds": 1.3061850920003053
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.104819942265749,
+            "accuracy": 0.392578125,
+            "perplexity": 8.205625390255523
+          },
+          "final_train_loss": 2.058978319168091,
+          "compile_seconds": 0.6413606789992627,
+          "execution_seconds": 4.29954279499907
+        }
+      ],
+      "validation": {
+        "loss": 2.104819942265749,
+        "accuracy": 0.392578125,
+        "perplexity": 8.205625390255523
+      },
+      "test": {
+        "loss": 2.220189519226551,
+        "accuracy": 0.36962890625,
+        "perplexity": 9.209075997469323
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMay the cont lone\nO,\nAnd thes thea ghan, thith yave to nover, suencenain thou with.\n\nVOUS:\nABUS:\nOr the croughthe coolll lant has and theard what to bet? Re't w"
+    },
+    {
+      "model": "transformer",
+      "seed": 1,
+      "parameters": 8609,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.542062684893608,
+            "accuracy": 0.2919921875,
+            "perplexity": 12.70585212905844
+          },
+          "final_train_loss": 2.5985496044158936,
+          "compile_seconds": 1.6527197850009543,
+          "execution_seconds": 5.807139167998685
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.266594871878624,
+            "accuracy": 0.357421875,
+            "perplexity": 9.646497266353354
+          },
+          "final_train_loss": 2.2480130195617676,
+          "compile_seconds": 1.6341121630011912,
+          "execution_seconds": 11.744307322998793
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.0970938317477703,
+            "accuracy": 0.388671875,
+            "perplexity": 8.14247210041903
+          },
+          "final_train_loss": 2.0342304706573486,
+          "compile_seconds": 1.7563442059999943,
+          "execution_seconds": 40.910718162000194
+        }
+      ],
+      "validation": {
+        "loss": 2.0970938317477703,
+        "accuracy": 0.388671875,
+        "perplexity": 8.14247210041903
+      },
+      "test": {
+        "loss": 2.123802572488785,
+        "accuracy": 0.387451171875,
+        "perplexity": 8.362877550598068
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMath the I it parker comt of my may's ming,\nAnd and to now'm, sull YOI:\nThe the mame?\n\nCSAMEO:\nMimen and my minest pood-mlan fathe you linger hill,\nUnt be fraus"
+    }
+  ]
+}

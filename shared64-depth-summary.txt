@@ -1,0 +1,5 @@
+Same architecture per task: 64 dims, normalized GELU, no residuals; 10,000 updates, three seeds.
+Vocabulary/context change by task; layer widths stay identical.
+
+{'depth': 8, 'dimensions': 64, 'hidden': 11, 'copy_params': 9959, 'language_params': 8627, 'copy_accuracy': 97.344970703125, 'copy_sd': 3.493914857567773, 'language_perplexity': 10.600421712660262, 'language_sd': 0.352003507823456}
+{'depth': 12, 'dimensions': 64, 'hidden': 9, 'copy_params': 9703, 'language_params': 8433, 'copy_accuracy': 98.02042643229167, 'copy_sd': 3.3230284260498184, 'language_perplexity': 11.51596860567463, 'language_sd': 0.08384692868127229}

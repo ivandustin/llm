@@ -1,0 +1,100 @@
+{
+  "config": {
+    "seed": 1,
+    "steps": 10000,
+    "output": "language-width-32-seed-1.json",
+    "deep_width": 32,
+    "deep_hidden": 24,
+    "models": [
+      "deep"
+    ],
+    "context": 32,
+    "vocab": 65,
+    "batch": 64,
+    "lr": 0.001,
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "split_lengths": [
+      892315,
+      111539,
+      111540
+    ],
+    "evaluation_seed": 8675309,
+    "evaluation_examples_per_split": 4096,
+    "deep": {
+      "width": 32,
+      "hidden": 24,
+      "hidden_layers": 6,
+      "residual": false,
+      "parameters": 8521
+    },
+    "shallow": {
+      "width": 64,
+      "hidden": 18,
+      "hidden_layers": 1,
+      "parameters": 8613
+    },
+    "transformer": {
+      "width": 16,
+      "heads": 4,
+      "blocks": 1,
+      "ff_hidden": 144,
+      "parameters": 8609
+    },
+    "training_mode": "compiled lax.scan for all models; initial weights random and independently seeded",
+    "checkpoint_rule": "report final update; no validation-based checkpoint selection"
+  },
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 1,
+      "parameters": 8521,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.595619097352028,
+            "accuracy": 0.2666015625,
+            "perplexity": 13.404883721031654
+          },
+          "final_train_loss": 2.663510799407959,
+          "compile_seconds": 0.752739470999586,
+          "execution_seconds": 0.6908559579987923
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.2514066994190216,
+            "accuracy": 0.344970703125,
+            "perplexity": 9.501091620431838
+          },
+          "final_train_loss": 2.2528796195983887,
+          "compile_seconds": 0.6560269000001426,
+          "execution_seconds": 1.2540835259987944
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.08202837780118,
+            "accuracy": 0.390625,
+            "perplexity": 8.020721478950675
+          },
+          "final_train_loss": 2.0076346397399902,
+          "compile_seconds": 0.6317805720009346,
+          "execution_seconds": 4.511860243999763
+        }
+      ],
+      "validation": {
+        "loss": 2.08202837780118,
+        "accuracy": 0.390625,
+        "perplexity": 8.020721478950675
+      },
+      "test": {
+        "loss": 2.1862897872924805,
+        "accuracy": 0.377685546875,
+        "perplexity": 8.902122997102582
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMay the conis proughteemt of mo make move not nothere the with thou bain thou with.\n\nVOLIUM:\nAll hen alich hit heece a lol ill hou you lorder hall,\nUnt be frous"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+Six-hidden-layer model versus one-block transformer; isolated CPU benchmark.
+Intel(R) Core(TM) Ultra 7 155H
+Context 16; FP32; warmed up; seven alternating-order trials; median time.
+Both models have all 22 logical CPUs available. Generation, transfers and compilation excluded.
+
+Measurement                     Yours ms    Transformer ms   Speedup
+Inference, batch 1                 0.762          0.773        1.01x
+Inference, batch 64                0.761          1.171        1.54x
+Python training, batch 64          1.961          2.446        1.25x
+Compiled training, batch 64        0.352          1.994        5.67x
+
+Inference synchronizes each request and includes JIT dispatch overhead.
+Python training synchronizes complete model and optimizer state at trial end.
+Compiled training uses lax.scan, removing Python dispatch between optimizer updates.
+Its five-step losses and all model/Adam-state leaves match ordinary training.
+Compilation/first-call timings and all individual trials are in speed-results.json.
+This is throughput/latency, not time to target accuracy. Transformer learned in fewer updates.
+Accuracy reference: selected model 98.15%, transformer 100% on the fresh evaluation sample.

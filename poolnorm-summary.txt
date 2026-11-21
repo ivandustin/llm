@@ -1,0 +1,20 @@
+Pooled learned-affine LayerNorm comparison, one hidden layer, learned positions.
+Query-copy: d255 h240, 113136 base params / 113646 affine params.
+Language: d32 h152, 18065 base params / 18129 affine params.
+Three seeds, 10000 Adam updates, batch64, lr .001. Epsilon1e-5; final norm unchanged (none).
+Query controls reuse original four random-embedding diagnostics. New copy scores use the identical 4096 evaluation examples; extra fresh16384 scores are in raw files.
+All six language variants rerun with identical data, held-out windows and shared initialization.
+No speed benchmark.
+
+position / sigmoid: params=113136, accuracy=18.59% +/- 0.56
+position / norm_sigmoid: params=113136, accuracy=58.27% +/- 1.73
+position / affine_norm_sigmoid: params=113646, accuracy=66.89% +/- 1.87
+position / gelu: params=113136, accuracy=41.38% +/- 4.35
+position / norm_gelu: params=113136, accuracy=98.02% +/- 0.35
+position / affine_norm_gelu: params=113646, accuracy=97.81% +/- 0.42
+language / sigmoid: params=18065, accuracy=38.12% +/- 0.27, perplexity=8.19 +/- 0.07
+language / norm_sigmoid: params=18065, accuracy=38.50% +/- 0.23, perplexity=8.22 +/- 0.08
+language / affine_norm_sigmoid: params=18129, accuracy=39.75% +/- 0.14, perplexity=7.81 +/- 0.08
+language / gelu: params=18065, accuracy=38.92% +/- 0.34, perplexity=8.17 +/- 0.06
+language / norm_gelu: params=18065, accuracy=40.36% +/- 0.25, perplexity=7.81 +/- 0.12
+language / affine_norm_gelu: params=18129, accuracy=40.60% +/- 0.32, perplexity=7.85 +/- 0.10

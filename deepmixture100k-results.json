@@ -1,0 +1,2006 @@
+{
+  "configs": {
+    "deep6": {
+      "architecture": "ours",
+      "width": 64,
+      "hidden": 120,
+      "hidden_layers": 6,
+      "blocks": 0,
+      "steps": 10000,
+      "batch": 64,
+      "lr": 0.001
+    },
+    "n1": {
+      "architecture": "n1",
+      "width": 64,
+      "hidden": 120,
+      "hidden_layers": 6,
+      "branches": 1,
+      "branch_weights": "equal1/N probability average",
+      "blocks": 0,
+      "residual": false,
+      "pooled_norm": "non-learned epsilon1e-5",
+      "positions": "learned",
+      "final_norm": false,
+      "budget": 100000,
+      "steps": 10000,
+      "batch": 64,
+      "lr": 0.001
+    },
+    "n2": {
+      "architecture": "n2",
+      "width": 64,
+      "hidden": 81,
+      "hidden_layers": 6,
+      "branches": 2,
+      "branch_weights": "equal1/N probability average",
+      "blocks": 0,
+      "residual": false,
+      "pooled_norm": "non-learned epsilon1e-5",
+      "positions": "learned",
+      "final_norm": false,
+      "budget": 100000,
+      "steps": 10000,
+      "batch": 64,
+      "lr": 0.001
+    },
+    "n4": {
+      "architecture": "n4",
+      "width": 64,
+      "hidden": 53,
+      "hidden_layers": 6,
+      "branches": 4,
+      "branch_weights": "equal1/N probability average",
+      "blocks": 0,
+      "residual": false,
+      "pooled_norm": "non-learned epsilon1e-5",
+      "positions": "learned",
+      "final_norm": false,
+      "budget": 100000,
+      "steps": 10000,
+      "batch": 64,
+      "lr": 0.001
+    },
+    "n8": {
+      "architecture": "n8",
+      "width": 64,
+      "hidden": 34,
+      "hidden_layers": 6,
+      "branches": 8,
+      "branch_weights": "equal1/N probability average",
+      "blocks": 0,
+      "residual": false,
+      "pooled_norm": "non-learned epsilon1e-5",
+      "positions": "learned",
+      "final_norm": false,
+      "budget": 100000,
+      "steps": 10000,
+      "batch": 64,
+      "lr": 0.001
+    }
+  },
+  "rows": [
+    {
+      "architecture": "deep6",
+      "task": "position",
+      "parameters": 99184,
+      "accuracy_mean": 97.60538736979167,
+      "accuracy_sd": 1.376885126116771,
+      "perplexity_mean": 1.0746785908397185,
+      "perplexity_sd": 0.04345972272305903
+    },
+    {
+      "architecture": "deep6",
+      "task": "single",
+      "parameters": 99184,
+      "accuracy_mean": 29.069010416666668,
+      "accuracy_sd": 0.8023589185093736,
+      "perplexity_mean": 4.385888868987,
+      "perplexity_sd": 0.050461956671502356
+    },
+    {
+      "architecture": "deep6",
+      "task": "multi",
+      "parameters": 99184,
+      "accuracy_mean": 34.36008131441971,
+      "accuracy_sd": 0.33499811011272496,
+      "perplexity_mean": 3.5086000072966144,
+      "perplexity_sd": 0.03139040452504476
+    },
+    {
+      "architecture": "deep6",
+      "task": "language",
+      "parameters": 94473,
+      "accuracy_mean": 43.245442708333336,
+      "accuracy_sd": 0.3784835922602046,
+      "perplexity_mean": 7.5006889949088915,
+      "perplexity_sd": 0.14565492597445312
+    },
+    {
+      "architecture": "n1",
+      "task": "position",
+      "parameters": 99184,
+      "accuracy_mean": 94.287109375,
+      "accuracy_sd": 1.5995752985378953,
+      "perplexity_mean": 1.1666504137378675,
+      "perplexity_sd": 0.012846743329337336
+    },
+    {
+      "architecture": "n1",
+      "task": "single",
+      "parameters": 99184,
+      "accuracy_mean": 29.103597005208332,
+      "accuracy_sd": 0.8186526383806667,
+      "perplexity_mean": 4.403930830123938,
+      "perplexity_sd": 0.05484129178088099
+    },
+    {
+      "architecture": "n1",
+      "task": "multi",
+      "parameters": 99184,
+      "accuracy_mean": 34.49164591729641,
+      "accuracy_sd": 0.20867650969616428,
+      "perplexity_mean": 3.502992005169683,
+      "perplexity_sd": 0.002576006170324631
+    },
+    {
+      "architecture": "n1",
+      "task": "language",
+      "parameters": 94473,
+      "accuracy_mean": 43.440755208333336,
+      "accuracy_sd": 0.39087923042066497,
+      "perplexity_mean": 7.487379696525309,
+      "perplexity_sd": 0.1948345850729861
+    },
+    {
+      "architecture": "n2",
+      "task": "position",
+      "parameters": 99862,
+      "accuracy_mean": 52.789306640625,
+      "accuracy_sd": 4.061150143183264,
+      "perplexity_mean": 3.3171264392487925,
+      "perplexity_sd": 0.12487065304640078
+    },
+    {
+      "architecture": "n2",
+      "task": "single",
+      "parameters": 99862,
+      "accuracy_mean": 27.8564453125,
+      "accuracy_sd": 0.28705996133556755,
+      "perplexity_mean": 4.480167899886678,
+      "perplexity_sd": 0.0027145649582988323
+    },
+    {
+      "architecture": "n2",
+      "task": "multi",
+      "parameters": 99862,
+      "accuracy_mean": 33.40725469558189,
+      "accuracy_sd": 0.27459281660255,
+      "perplexity_mean": 3.5599452819569777,
+      "perplexity_sd": 0.003773329586311945
+    },
+    {
+      "architecture": "n2",
+      "task": "language",
+      "parameters": 93818,
+      "accuracy_mean": 42.5048828125,
+      "accuracy_sd": 0.692258148376847,
+      "perplexity_mean": 7.602513106057395,
+      "perplexity_sd": 0.0804380528789342
+    },
+    {
+      "architecture": "n4",
+      "task": "position",
+      "parameters": 98924,
+      "accuracy_mean": 34.016927083333336,
+      "accuracy_sd": 1.8402006824906878,
+      "perplexity_mean": 4.39123411850286,
+      "perplexity_sd": 0.28440733185569417
+    },
+    {
+      "architecture": "n4",
+      "task": "single",
+      "parameters": 98924,
+      "accuracy_mean": 28.395589192708332,
+      "accuracy_sd": 0.5218535603518425,
+      "perplexity_mean": 4.492846151706416,
+      "perplexity_sd": 0.02607995999323011
+    },
+    {
+      "architecture": "n4",
+      "task": "multi",
+      "parameters": 98924,
+      "accuracy_mean": 34.01082460768521,
+      "accuracy_sd": 0.30501975590608416,
+      "perplexity_mean": 3.5961441782776014,
+      "perplexity_sd": 0.021860677080992888
+    },
+    {
+      "architecture": "n4",
+      "task": "language",
+      "parameters": 91268,
+      "accuracy_mean": 41.219075520833336,
+      "accuracy_sd": 0.506456962321016,
+      "perplexity_mean": 7.485807135661855,
+      "perplexity_sd": 0.0249531771461216
+    },
+    {
+      "architecture": "n8",
+      "task": "position",
+      "parameters": 99328,
+      "accuracy_mean": 23.203531901041668,
+      "accuracy_sd": 0.20583723746649965,
+      "perplexity_mean": 6.540759343985048,
+      "perplexity_sd": 0.16073364178058464
+    },
+    {
+      "architecture": "n8",
+      "task": "single",
+      "parameters": 99328,
+      "accuracy_mean": 28.67431640625,
+      "accuracy_sd": 0.4554793263380282,
+      "perplexity_mean": 4.528887574353859,
+      "perplexity_sd": 0.03267237979438186
+    },
+    {
+      "architecture": "n8",
+      "task": "multi",
+      "parameters": 99328,
+      "accuracy_mean": 33.98708861786872,
+      "accuracy_sd": 0.09800182101007446,
+      "perplexity_mean": 3.7247155551629945,
+      "perplexity_sd": 0.01637536962530998
+    },
+    {
+      "architecture": "n8",
+      "task": "language",
+      "parameters": 89688,
+      "accuracy_mean": 39.534505208333336,
+      "accuracy_sd": 0.32235192578675714,
+      "perplexity_mean": 8.00455297681909,
+      "perplexity_sd": 0.21969878991908512
+    }
+  ],
+  "runs": [
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.230764850974083,
+          "accuracy": 0.276123046875,
+          "step": 1000
+        },
+        {
+          "loss": 1.183948827907443,
+          "accuracy": 0.594482421875,
+          "step": 3000
+        },
+        {
+          "loss": 0.08822818379849195,
+          "accuracy": 0.972412109375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.09050083014881238,
+        "accuracy": 0.9703369140625,
+        "perplexity": 1.0947224164237832
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-0.json"
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6875389888882637,
+          "accuracy": 0.288330078125,
+          "step": 1000
+        },
+        {
+          "loss": 1.5530914179980755,
+          "accuracy": 0.280517578125,
+          "step": 3000
+        },
+        {
+          "loss": 1.4889358915388584,
+          "accuracy": 0.29296875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4910277286544442,
+        "accuracy": 0.281494140625,
+        "perplexity": 4.441657993302253
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-0.json"
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3596348986029625,
+          "accuracy": 0.3330078199505806,
+          "step": 1000
+        },
+        {
+          "loss": 1.3061938174068928,
+          "accuracy": 0.33447266556322575,
+          "step": 3000
+        },
+        {
+          "loss": 1.2680182382464409,
+          "accuracy": 0.34179688431322575,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2654926246032119,
+        "accuracy": 0.33974203397519886,
+        "perplexity": 3.5448385807499556
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-0.json"
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.291802279651165,
+          "accuracy": 0.33544921875,
+          "step": 1000
+        },
+        {
+          "loss": 1.9933958426117897,
+          "accuracy": 0.41552734375,
+          "step": 3000
+        },
+        {
+          "loss": 1.775854181498289,
+          "accuracy": 0.4755859375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.9923530705273151,
+        "accuracy": 0.436767578125,
+        "perplexity": 7.332767997931109
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-0.json"
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.2994759678840637,
+          "accuracy": 0.24951171875,
+          "step": 1000
+        },
+        {
+          "loss": 1.0367489028722048,
+          "accuracy": 0.64306640625,
+          "step": 3000
+        },
+        {
+          "loss": 0.026366271311417222,
+          "accuracy": 0.991455078125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.024511227034963667,
+        "accuracy": 0.99176025390625,
+        "perplexity": 1.0248140966663064
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-1.json"
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6685741282999516,
+          "accuracy": 0.287353515625,
+          "step": 1000
+        },
+        {
+          "loss": 1.543730553239584,
+          "accuracy": 0.27392578125,
+          "step": 3000
+        },
+        {
+          "loss": 1.4671644046902657,
+          "accuracy": 0.30029296875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4686536947265267,
+        "accuracy": 0.2943115234375,
+        "perplexity": 4.343383682665235
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-1.json"
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3509854152798653,
+          "accuracy": 0.33561198879033327,
+          "step": 1000
+        },
+        {
+          "loss": 1.2769807130098343,
+          "accuracy": 0.3395182406529784,
+          "step": 3000
+        },
+        {
+          "loss": 1.2506671659648418,
+          "accuracy": 0.3486328227445483,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2498511830344796,
+        "accuracy": 0.345296235056594,
+        "perplexity": 3.489823573861791
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-1.json"
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.2870020642876625,
+          "accuracy": 0.331787109375,
+          "step": 1000
+        },
+        {
+          "loss": 1.9811302088201046,
+          "accuracy": 0.41259765625,
+          "step": 3000
+        },
+        {
+          "loss": 1.7722562290728092,
+          "accuracy": 0.469482421875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.02504451200366,
+        "accuracy": 0.430908203125,
+        "perplexity": 7.576448180020399
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-1.json"
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.2002251222729683,
+          "accuracy": 0.281494140625,
+          "step": 1000
+        },
+        {
+          "loss": 1.2717630825936794,
+          "accuracy": 0.578125,
+          "step": 3000
+        },
+        {
+          "loss": 0.11242965934798121,
+          "accuracy": 0.96337890625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.09939207337447442,
+        "accuracy": 0.966064453125,
+        "perplexity": 1.104499259429066
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-2.json"
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6877269633114338,
+          "accuracy": 0.28369140625,
+          "step": 1000
+        },
+        {
+          "loss": 1.5305722914636135,
+          "accuracy": 0.279541015625,
+          "step": 3000
+        },
+        {
+          "loss": 1.4736885502934456,
+          "accuracy": 0.297119140625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4753634994849563,
+        "accuracy": 0.2962646484375,
+        "perplexity": 4.372624930993514
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-2.json"
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3387900702655315,
+          "accuracy": 0.34212240763008595,
+          "step": 1000
+        },
+        {
+          "loss": 1.282865509390831,
+          "accuracy": 0.33854167722165585,
+          "step": 3000
+        },
+        {
+          "loss": 1.2506653107702732,
+          "accuracy": 0.34440105222165585,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2502277195453644,
+        "accuracy": 0.3457641704007983,
+        "perplexity": 3.491137867278096
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-2.json"
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.2982954531908035,
+          "accuracy": 0.32275390625,
+          "step": 1000
+        },
+        {
+          "loss": 1.964184895157814,
+          "accuracy": 0.422607421875,
+          "step": 3000
+        },
+        {
+          "loss": 1.7762372307479382,
+          "accuracy": 0.469482421875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0272071212530136,
+        "accuracy": 0.4296875,
+        "perplexity": 7.592850806775167
+      },
+      "architecture": "deep6",
+      "source": "large-ours-seed-2.json"
+    },
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.3784243389964104,
+          "accuracy": 0.21044921875,
+          "step": 1000
+        },
+        {
+          "loss": 1.284347526729107,
+          "accuracy": 0.56640625,
+          "step": 3000
+        },
+        {
+          "loss": 0.1838457710109651,
+          "accuracy": 0.939697265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.16677010475541465,
+        "accuracy": 0.9451904296875,
+        "perplexity": 1.1814826168490395
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-0.json"
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6700194664299488,
+          "accuracy": 0.292724609375,
+          "step": 1000
+        },
+        {
+          "loss": 1.5467084981501102,
+          "accuracy": 0.278076171875,
+          "step": 3000
+        },
+        {
+          "loss": 1.4956179335713387,
+          "accuracy": 0.280029296875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4960112357512116,
+        "accuracy": 0.28436279296875,
+        "perplexity": 4.463848274219252
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-0.json"
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3698344863951206,
+          "accuracy": 0.3318684957921505,
+          "step": 1000
+        },
+        {
+          "loss": 1.3061836771667004,
+          "accuracy": 0.33439128659665585,
+          "step": 3000
+        },
+        {
+          "loss": 1.2545748203992844,
+          "accuracy": 0.34448243118822575,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2530489126220345,
+        "accuracy": 0.3453979582991451,
+        "perplexity": 3.5010009475440484
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-0.json"
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.2974617183208466,
+          "accuracy": 0.33154296875,
+          "step": 1000
+        },
+        {
+          "loss": 1.9993253163993359,
+          "accuracy": 0.416748046875,
+          "step": 3000
+        },
+        {
+          "loss": 1.7706482633948326,
+          "accuracy": 0.470947265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.9831459075212479,
+        "accuracy": 0.438232421875,
+        "perplexity": 7.265563862155775
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-0.json"
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.2425916865468025,
+          "accuracy": 0.269775390625,
+          "step": 1000
+        },
+        {
+          "loss": 1.0171589255332947,
+          "accuracy": 0.65283203125,
+          "step": 3000
+        },
+        {
+          "loss": 0.1471551350550726,
+          "accuracy": 0.956787109375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.14758055028505623,
+        "accuracy": 0.95758056640625,
+        "perplexity": 1.1590266409960877
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-1.json"
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6723858565092087,
+          "accuracy": 0.28515625,
+          "step": 1000
+        },
+        {
+          "loss": 1.5289808586239815,
+          "accuracy": 0.288818359375,
+          "step": 3000
+        },
+        {
+          "loss": 1.4806894585490227,
+          "accuracy": 0.2919921875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4797209789976478,
+        "accuracy": 0.28857421875,
+        "perplexity": 4.391720127797069
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-1.json"
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3634412996470928,
+          "accuracy": 0.33162435982376337,
+          "step": 1000
+        },
+        {
+          "loss": 1.2921683229506016,
+          "accuracy": 0.3323567807674408,
+          "step": 3000
+        },
+        {
+          "loss": 1.2538164742290974,
+          "accuracy": 0.34505209140479565,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2533552926033735,
+        "accuracy": 0.34263103175908327,
+        "perplexity": 3.502073748482999
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-1.json"
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.2775204181671143,
+          "accuracy": 0.343994140625,
+          "step": 1000
+        },
+        {
+          "loss": 1.9768744930624962,
+          "accuracy": 0.41845703125,
+          "step": 3000
+        },
+        {
+          "loss": 1.7856845073401928,
+          "accuracy": 0.4775390625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0321962386369705,
+        "accuracy": 0.4345703125,
+        "perplexity": 7.630827086013314
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-1.json"
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 2.316387139260769,
+          "accuracy": 0.23828125,
+          "step": 1000
+        },
+        {
+          "loss": 1.1801953129470348,
+          "accuracy": 0.602783203125,
+          "step": 3000
+        },
+        {
+          "loss": 0.1430152382235974,
+          "accuracy": 0.927001953125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 0.14793884055688977,
+        "accuracy": 0.92584228515625,
+        "perplexity": 1.159441983368475
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-2.json"
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.6854627504944801,
+          "accuracy": 0.291015625,
+          "step": 1000
+        },
+        {
+          "loss": 1.5422361567616463,
+          "accuracy": 0.286865234375,
+          "step": 3000
+        },
+        {
+          "loss": 1.473033495247364,
+          "accuracy": 0.29052734375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.471605647355318,
+        "accuracy": 0.3001708984375,
+        "perplexity": 4.356224088355495
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-2.json"
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 99184,
+      "history": [
+        {
+          "loss": 1.3561058416962624,
+          "accuracy": 0.33544922713190317,
+          "step": 1000
+        },
+        {
+          "loss": 1.2893983758985996,
+          "accuracy": 0.3351237056776881,
+          "step": 3000
+        },
+        {
+          "loss": 1.255218617618084,
+          "accuracy": 0.3484700610861182,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2544476399198174,
+        "accuracy": 0.3467203874606639,
+        "perplexity": 3.505901319482002
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-2.json"
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 94473,
+      "history": [
+        {
+          "loss": 2.297977603971958,
+          "accuracy": 0.32666015625,
+          "step": 1000
+        },
+        {
+          "loss": 1.9956375695765018,
+          "accuracy": 0.41064453125,
+          "step": 3000
+        },
+        {
+          "loss": 1.7784430868923664,
+          "accuracy": 0.464111328125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.023631237447262,
+        "accuracy": 0.430419921875,
+        "perplexity": 7.56574814140684
+      },
+      "architecture": "n1",
+      "source": "deepmixture100k-n1-seed-2.json"
+    },
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 2.389575533568859,
+          "accuracy": 0.204345703125,
+          "step": 1000
+        },
+        {
+          "loss": 1.699390221387148,
+          "accuracy": 0.376220703125,
+          "step": 3000
+        },
+        {
+          "loss": 1.2327369153499603,
+          "accuracy": 0.4951171875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.23850301746279,
+        "accuracy": 0.490234375,
+        "perplexity": 3.4504443417593276
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-0.json"
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.6030758284032345,
+          "accuracy": 0.282470703125,
+          "step": 1000
+        },
+        {
+          "loss": 1.530249822884798,
+          "accuracy": 0.284423828125,
+          "step": 3000
+        },
+        {
+          "loss": 1.504746314138174,
+          "accuracy": 0.277099609375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.5001623379066586,
+        "accuracy": 0.280517578125,
+        "perplexity": 4.482416677417546
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-0.json"
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.3456484340131283,
+          "accuracy": 0.3307291744276881,
+          "step": 1000
+        },
+        {
+          "loss": 1.3046952039003372,
+          "accuracy": 0.33447266463190317,
+          "step": 3000
+        },
+        {
+          "loss": 1.2716120481491089,
+          "accuracy": 0.33732097409665585,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2695348942652345,
+        "accuracy": 0.3362019956111908,
+        "perplexity": 3.559196774496178
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-0.json"
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 93818,
+      "history": [
+        {
+          "loss": 2.334301680326462,
+          "accuracy": 0.32275390625,
+          "step": 1000
+        },
+        {
+          "loss": 2.014930598437786,
+          "accuracy": 0.4013671875,
+          "step": 3000
+        },
+        {
+          "loss": 1.8165788725018501,
+          "accuracy": 0.455810546875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0382498651742935,
+        "accuracy": 0.427490234375,
+        "perplexity": 7.677161367081049
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-0.json"
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 2.3380589485168457,
+          "accuracy": 0.22412109375,
+          "step": 1000
+        },
+        {
+          "loss": 1.6516567431390285,
+          "accuracy": 0.43212890625,
+          "step": 3000
+        },
+        {
+          "loss": 1.1551503241062164,
+          "accuracy": 0.57763671875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.1640574149787426,
+        "accuracy": 0.5709228515625,
+        "perplexity": 3.2029024520440146
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-1.json"
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.629409845918417,
+          "accuracy": 0.27490234375,
+          "step": 1000
+        },
+        {
+          "loss": 1.5470077320933342,
+          "accuracy": 0.264404296875,
+          "step": 3000
+        },
+        {
+          "loss": 1.499913178384304,
+          "accuracy": 0.280029296875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4998316345736384,
+        "accuracy": 0.2752685546875,
+        "perplexity": 4.4809345723643865
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-1.json"
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.3829971253871918,
+          "accuracy": 0.31803386099636555,
+          "step": 1000
+        },
+        {
+          "loss": 1.299814086407423,
+          "accuracy": 0.3313802182674408,
+          "step": 3000
+        },
+        {
+          "loss": 1.2702552191913128,
+          "accuracy": 0.33072917722165585,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2688056798651814,
+        "accuracy": 0.33504232694394886,
+        "perplexity": 3.5566023030335367
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-1.json"
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 93818,
+      "history": [
+        {
+          "loss": 2.327437959611416,
+          "accuracy": 0.334716796875,
+          "step": 1000
+        },
+        {
+          "loss": 2.0358378551900387,
+          "accuracy": 0.407470703125,
+          "step": 3000
+        },
+        {
+          "loss": 1.8417110331356525,
+          "accuracy": 0.453369140625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0298643335700035,
+        "accuracy": 0.430419921875,
+        "perplexity": 7.613053452932903
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-1.json"
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 2.337842509150505,
+          "accuracy": 0.2255859375,
+          "step": 1000
+        },
+        {
+          "loss": 1.6833004876971245,
+          "accuracy": 0.409912109375,
+          "step": 3000
+        },
+        {
+          "loss": 1.2130371741950512,
+          "accuracy": 0.51025390625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.193326085805893,
+        "accuracy": 0.52252197265625,
+        "perplexity": 3.298032523943036
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-2.json"
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.6189307048916817,
+          "accuracy": 0.268310546875,
+          "step": 1000
+        },
+        {
+          "loss": 1.5419899486005306,
+          "accuracy": 0.279541015625,
+          "step": 3000
+        },
+        {
+          "loss": 1.5008276104927063,
+          "accuracy": 0.282470703125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4989872304722667,
+        "accuracy": 0.2799072265625,
+        "perplexity": 4.4771524498780995
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-2.json"
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 99862,
+      "history": [
+        {
+          "loss": 1.3747709318995476,
+          "accuracy": 0.3215332133695483,
+          "step": 1000
+        },
+        {
+          "loss": 1.3071277923882008,
+          "accuracy": 0.32560222409665585,
+          "step": 3000
+        },
+        {
+          "loss": 1.2694822251796722,
+          "accuracy": 0.3369140727445483,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.270893826149404,
+        "accuracy": 0.33097331831231713,
+        "perplexity": 3.564036768341219
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-2.json"
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 93818,
+      "history": [
+        {
+          "loss": 2.3421453833580017,
+          "accuracy": 0.317626953125,
+          "step": 1000
+        },
+        {
+          "loss": 2.039942055940628,
+          "accuracy": 0.390625,
+          "step": 3000
+        },
+        {
+          "loss": 1.8306750617921352,
+          "accuracy": 0.450927734375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.01721028983593,
+        "accuracy": 0.417236328125,
+        "perplexity": 7.517324498158235
+      },
+      "architecture": "n2",
+      "source": "deepmixture100k-n2-seed-2.json"
+    },
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 2.420969881117344,
+          "accuracy": 0.18017578125,
+          "step": 1000
+        },
+        {
+          "loss": 2.2025212198495865,
+          "accuracy": 0.2099609375,
+          "step": 3000
+        },
+        {
+          "loss": 1.4848555997014046,
+          "accuracy": 0.345703125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.458635138347745,
+        "accuracy": 0.357421875,
+        "perplexity": 4.300086498157362
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-0.json"
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.6399335116147995,
+          "accuracy": 0.2578125,
+          "step": 1000
+        },
+        {
+          "loss": 1.5392908081412315,
+          "accuracy": 0.277099609375,
+          "step": 3000
+        },
+        {
+          "loss": 1.5052610002458096,
+          "accuracy": 0.283203125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.505049073137343,
+        "accuracy": 0.283935546875,
+        "perplexity": 4.504374668661676
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-0.json"
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.3538083024322987,
+          "accuracy": 0.32999675534665585,
+          "step": 1000
+        },
+        {
+          "loss": 1.3030684292316437,
+          "accuracy": 0.33528646547347307,
+          "step": 3000
+        },
+        {
+          "loss": 1.2795083783566952,
+          "accuracy": 0.34155274368822575,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2811865340918303,
+        "accuracy": 0.34037273190915585,
+        "perplexity": 3.6009097940096173
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-0.json"
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 91268,
+      "history": [
+        {
+          "loss": 2.3638612776994705,
+          "accuracy": 0.3271484375,
+          "step": 1000
+        },
+        {
+          "loss": 2.080959837883711,
+          "accuracy": 0.382080078125,
+          "step": 3000
+        },
+        {
+          "loss": 1.8708103820681572,
+          "accuracy": 0.431884765625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.016799308359623,
+        "accuracy": 0.40673828125,
+        "perplexity": 7.514235651810897
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-0.json"
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 2.3992123156785965,
+          "accuracy": 0.186767578125,
+          "step": 1000
+        },
+        {
+          "loss": 1.9800409190356731,
+          "accuracy": 0.228271484375,
+          "step": 3000
+        },
+        {
+          "loss": 1.5490079037845135,
+          "accuracy": 0.32470703125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.5496967304497957,
+        "accuracy": 0.32080078125,
+        "perplexity": 4.710041553788423
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-1.json"
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.6268072053790092,
+          "accuracy": 0.268310546875,
+          "step": 1000
+        },
+        {
+          "loss": 1.5552112571895123,
+          "accuracy": 0.274169921875,
+          "step": 3000
+        },
+        {
+          "loss": 1.49444979429245,
+          "accuracy": 0.297607421875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.495818642899394,
+        "accuracy": 0.2891845703125,
+        "perplexity": 4.462988651731269
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-1.json"
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.3477048352360725,
+          "accuracy": 0.335611991584301,
+          "step": 1000
+        },
+        {
+          "loss": 1.2990394979715347,
+          "accuracy": 0.3400065191090107,
+          "step": 3000
+        },
+        {
+          "loss": 1.2713137455284595,
+          "accuracy": 0.3453776128590107,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2732079150155187,
+        "accuracy": 0.3430175883695483,
+        "perplexity": 3.572293816231843
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-1.json"
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 91268,
+      "history": [
+        {
+          "loss": 2.349770411849022,
+          "accuracy": 0.3291015625,
+          "step": 1000
+        },
+        {
+          "loss": 2.076936550438404,
+          "accuracy": 0.380126953125,
+          "step": 3000
+        },
+        {
+          "loss": 1.8735658638179302,
+          "accuracy": 0.439697265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.011652149260044,
+        "accuracy": 0.416748046875,
+        "perplexity": 7.475658053088899
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-1.json"
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 2.386907696723938,
+          "accuracy": 0.181396484375,
+          "step": 1000
+        },
+        {
+          "loss": 1.9257281608879566,
+          "accuracy": 0.255615234375,
+          "step": 3000
+        },
+        {
+          "loss": 1.427610568702221,
+          "accuracy": 0.3369140625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.4263739129528403,
+        "accuracy": 0.34228515625,
+        "perplexity": 4.163574303562795
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-2.json"
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.6150571815669537,
+          "accuracy": 0.273681640625,
+          "step": 1000
+        },
+        {
+          "loss": 1.5538630485534668,
+          "accuracy": 0.271484375,
+          "step": 3000
+        },
+        {
+          "loss": 1.515052642673254,
+          "accuracy": 0.275146484375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.5065576815977693,
+        "accuracy": 0.27874755859375,
+        "perplexity": 4.5111751347263045
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-2.json"
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 98924,
+      "history": [
+        {
+          "loss": 1.355013132095337,
+          "accuracy": 0.3377278773114085,
+          "step": 1000
+        },
+        {
+          "loss": 1.3147731199860573,
+          "accuracy": 0.34057618398219347,
+          "step": 3000
+        },
+        {
+          "loss": 1.2863959223031998,
+          "accuracy": 0.33821615390479565,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.2851551799103618,
+        "accuracy": 0.3369344179518521,
+        "perplexity": 3.615228924591344
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-2.json"
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 91268,
+      "history": [
+        {
+          "loss": 2.394000008702278,
+          "accuracy": 0.30810546875,
+          "step": 1000
+        },
+        {
+          "loss": 2.1039814464747906,
+          "accuracy": 0.382080078125,
+          "step": 3000
+        },
+        {
+          "loss": 1.8688691705465317,
+          "accuracy": 0.43212890625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0105639807879925,
+        "accuracy": 0.4130859375,
+        "perplexity": 7.467527702085772
+      },
+      "architecture": "n4",
+      "source": "deepmixture100k-n4-seed-2.json"
+    },
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 2.3848906084895134,
+          "accuracy": 0.174560546875,
+          "step": 1000
+        },
+        {
+          "loss": 2.308087520301342,
+          "accuracy": 0.177490234375,
+          "step": 3000
+        },
+        {
+          "loss": 1.9162941798567772,
+          "accuracy": 0.23388671875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.9032338010147214,
+        "accuracy": 0.23297119140625,
+        "perplexity": 6.707550290991692
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-0.json"
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.6197713650763035,
+          "accuracy": 0.27783203125,
+          "step": 1000
+        },
+        {
+          "loss": 1.5315858237445354,
+          "accuracy": 0.2822265625,
+          "step": 3000
+        },
+        {
+          "loss": 1.5073440596461296,
+          "accuracy": 0.29052734375,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.5059578930959105,
+        "accuracy": 0.2911376953125,
+        "perplexity": 4.50847019502758
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-0.json"
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.372028473764658,
+          "accuracy": 0.33618164900690317,
+          "step": 1000
+        },
+        {
+          "loss": 1.3406127281486988,
+          "accuracy": 0.33862305525690317,
+          "step": 3000
+        },
+        {
+          "loss": 1.321233119815588,
+          "accuracy": 0.33772787638008595,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.3200506838038564,
+        "accuracy": 0.338846851605922,
+        "perplexity": 3.743611112903921
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-0.json"
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 89688,
+      "history": [
+        {
+          "loss": 2.4220479652285576,
+          "accuracy": 0.29638671875,
+          "step": 1000
+        },
+        {
+          "loss": 2.161088153719902,
+          "accuracy": 0.36376953125,
+          "step": 3000
+        },
+        {
+          "loss": 1.9602854549884796,
+          "accuracy": 0.3994140625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0478046722710133,
+        "accuracy": 0.39599609375,
+        "perplexity": 7.750866722481032
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-0.json"
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 2.384909026324749,
+          "accuracy": 0.1787109375,
+          "step": 1000
+        },
+        {
+          "loss": 2.3044705986976624,
+          "accuracy": 0.16650390625,
+          "step": 3000
+        },
+        {
+          "loss": 1.89719982072711,
+          "accuracy": 0.21826171875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.8760804580524564,
+        "accuracy": 0.23345947265625,
+        "perplexity": 6.527868399396679
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-1.json"
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.6060199290513992,
+          "accuracy": 0.2705078125,
+          "step": 1000
+        },
+        {
+          "loss": 1.543603304773569,
+          "accuracy": 0.2724609375,
+          "step": 3000
+        },
+        {
+          "loss": 1.5072574578225613,
+          "accuracy": 0.29736328125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.5066567454487085,
+        "accuracy": 0.28704833984375,
+        "perplexity": 4.511622051243681
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-1.json"
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.3789298720657825,
+          "accuracy": 0.3262532642111182,
+          "step": 1000
+        },
+        {
+          "loss": 1.330210879445076,
+          "accuracy": 0.3358561275526881,
+          "step": 3000
+        },
+        {
+          "loss": 1.3180199787020683,
+          "accuracy": 0.3306477963924408,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.3126147203147411,
+        "accuracy": 0.3407999773044139,
+        "perplexity": 3.715877000069161
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-1.json"
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 89688,
+      "history": [
+        {
+          "loss": 2.444048620760441,
+          "accuracy": 0.2841796875,
+          "step": 1000
+        },
+        {
+          "loss": 2.1639009825885296,
+          "accuracy": 0.369140625,
+          "step": 3000
+        },
+        {
+          "loss": 1.9563392624258995,
+          "accuracy": 0.4072265625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.0957506895065308,
+        "accuracy": 0.391845703125,
+        "perplexity": 8.13154294354202
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-1.json"
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 2.3945370092988014,
+          "accuracy": 0.176513671875,
+          "step": 1000
+        },
+        {
+          "loss": 2.3079314678907394,
+          "accuracy": 0.17236328125,
+          "step": 3000
+        },
+        {
+          "loss": 1.852500144392252,
+          "accuracy": 0.2275390625,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.8542426517233253,
+        "accuracy": 0.22967529296875,
+        "perplexity": 6.386859341566773
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-2.json"
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.6157824955880642,
+          "accuracy": 0.27490234375,
+          "step": 1000
+        },
+        {
+          "loss": 1.5464636012911797,
+          "accuracy": 0.278076171875,
+          "step": 3000
+        },
+        {
+          "loss": 1.517610277980566,
+          "accuracy": 0.294921875,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.518762480467558,
+        "accuracy": 0.28204345703125,
+        "perplexity": 4.566570476790314
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-2.json"
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 99328,
+      "history": [
+        {
+          "loss": 1.3616545423865318,
+          "accuracy": 0.33170573972165585,
+          "step": 1000
+        },
+        {
+          "loss": 1.3341723084449768,
+          "accuracy": 0.3385416753590107,
+          "step": 3000
+        },
+        {
+          "loss": 1.3121093399822712,
+          "accuracy": 0.34049480129033327,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 1.3122867634519935,
+        "accuracy": 0.33996582962572575,
+        "perplexity": 3.7146585525159015
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-2.json"
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 89688,
+      "history": [
+        {
+          "loss": 2.413518860936165,
+          "accuracy": 0.29052734375,
+          "step": 1000
+        },
+        {
+          "loss": 2.1771182976663113,
+          "accuracy": 0.362060546875,
+          "step": 3000
+        },
+        {
+          "loss": 1.9897934272885323,
+          "accuracy": 0.407470703125,
+          "step": 10000
+        }
+      ],
+      "final": {
+        "loss": 2.095714572817087,
+        "accuracy": 0.398193359375,
+        "perplexity": 8.13124926443422
+      },
+      "architecture": "n8",
+      "source": "deepmixture100k-n8-seed-2.json"
+    }
+  ]
+}

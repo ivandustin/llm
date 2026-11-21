@@ -1,0 +1,194 @@
+{
+  "runs": [
+    {
+      "model": "deep",
+      "seed": 0,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 2.861339583992958,
+            "accuracy": 0.2333984375,
+            "perplexity": 17.484933792781515
+          },
+          "final_train_loss": 2.9256460666656494,
+          "compile_seconds": 0.5715590719992178,
+          "execution_seconds": 0.43825250700137985
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.4033235982060432,
+            "accuracy": 0.31884765625,
+            "perplexity": 11.059873940075521
+          },
+          "final_train_loss": 2.395399570465088,
+          "compile_seconds": 0.6421262589992693,
+          "execution_seconds": 0.8847719879995566
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.210645392537117,
+            "accuracy": 0.3681640625,
+            "perplexity": 9.121601507270974
+          },
+          "final_train_loss": 2.1757280826568604,
+          "compile_seconds": 0.6011677730002702,
+          "execution_seconds": 3.30875004399968
+        }
+      ],
+      "validation": {
+        "loss": 2.210645392537117,
+        "accuracy": 0.3681640625,
+        "perplexity": 9.121601507270974
+      },
+      "test": {
+        "loss": 2.2771252505481243,
+        "accuracy": 0.353759765625,
+        "perplexity": 9.748615262341655
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nOw fufthip elle the kandrist the int theles dom.\n\nHUCICWOE ENLER:\nUn dar pee I the hinster atesest thin wame heand hat ard kir oand, hill howped and the that un"
+    },
+    {
+      "model": "deep",
+      "seed": 1,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 3.093140132725239,
+            "accuracy": 0.1669921875,
+            "perplexity": 22.0461973827806
+          },
+          "final_train_loss": 3.1571455001831055,
+          "compile_seconds": 0.6454840599999443,
+          "execution_seconds": 0.4287213290008367
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.409082680940628,
+            "accuracy": 0.32421875,
+            "perplexity": 11.123752433339412
+          },
+          "final_train_loss": 2.4038500785827637,
+          "compile_seconds": 0.567967597000461,
+          "execution_seconds": 0.8503841249985271
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.207681432366371,
+            "accuracy": 0.37158203125,
+            "perplexity": 9.094605471061534
+          },
+          "final_train_loss": 2.1565232276916504,
+          "compile_seconds": 0.5863373979991593,
+          "execution_seconds": 3.1818427459984377
+        }
+      ],
+      "validation": {
+        "loss": 2.207681432366371,
+        "accuracy": 0.37158203125,
+        "perplexity": 9.094605471061534
+      },
+      "test": {
+        "loss": 2.289389681071043,
+        "accuracy": 0.355712890625,
+        "perplexity": 9.868912658563787
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\nMart the this parth,\nHer to sar manes mint, thar theed, ghou, steoind\nCo thoith;\nMord mord thald hen arich hit heece a lold lith.\n\nGIONRESWU:\nBat tor thin metur"
+    },
+    {
+      "model": "deep",
+      "seed": 2,
+      "parameters": 8613,
+      "history": [
+        {
+          "step": 1000,
+          "validation": {
+            "loss": 3.1186060905456543,
+            "accuracy": 0.182373046875,
+            "perplexity": 22.61483463103702
+          },
+          "final_train_loss": 3.1634795665740967,
+          "compile_seconds": 0.5347551369995927,
+          "execution_seconds": 0.45331008399989514
+        },
+        {
+          "step": 3000,
+          "validation": {
+            "loss": 2.4901502579450607,
+            "accuracy": 0.291748046875,
+            "perplexity": 12.063088559172636
+          },
+          "final_train_loss": 2.509366035461426,
+          "compile_seconds": 0.6237235670014343,
+          "execution_seconds": 0.8666895589994965
+        },
+        {
+          "step": 10000,
+          "validation": {
+            "loss": 2.1725849211215973,
+            "accuracy": 0.373046875,
+            "perplexity": 8.780952800001627
+          },
+          "final_train_loss": 2.20053768157959,
+          "compile_seconds": 0.5645313379991421,
+          "execution_seconds": 3.2680640109992964
+        }
+      ],
+      "validation": {
+        "loss": 2.1725849211215973,
+        "accuracy": 0.373046875,
+        "perplexity": 8.780952800001627
+      },
+      "test": {
+        "loss": 2.239783652126789,
+        "accuracy": 0.36328125,
+        "perplexity": 9.391299280014547
+      },
+      "implementation_check": "five-step losses and all model/Adam states match ordinary updates",
+      "sample": "First Citizen:\n\nfy tut thee hither the to the sforit with to vere ketror worund, hir you the grot polte the touny a sout whou laicpron tufll, so you wis he the\nTo the to,\nsom "
+    }
+  ],
+  "summary": [
+    {
+      "model": "Six-layer plain",
+      "parameters": 8613,
+      "perplexity": 9.782394101849254,
+      "perplexity_sd": 0.037109572160427935,
+      "accuracy": 35.310872395833336,
+      "accuracy_sd": 0.33681969541951295
+    },
+    {
+      "model": "Simple residual",
+      "parameters": 8613,
+      "perplexity": 9.431780859250752,
+      "perplexity_sd": 0.15590547538069194,
+      "accuracy": 36.385091145833336,
+      "accuracy_sd": 0.24937424228588154
+    },
+    {
+      "model": "Pre-norm residual",
+      "parameters": 8613,
+      "perplexity": 9.66960906697333,
+      "perplexity_sd": 0.24841521495721308,
+      "accuracy": 35.758463541666664,
+      "accuracy_sd": 0.5029138852695435
+    },
+    {
+      "model": "Transformer",
+      "parameters": 8609,
+      "perplexity": 8.434045530772282,
+      "perplexity_sd": 0.15690276869320802,
+      "accuracy": 38.248697916666664,
+      "accuracy_sd": 0.5569046911108602
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "constructive_hand_designed_encoding_not_learned",
+  "construction": "P[i] = unit_vector(i); E[t] = t * ones(L); sum_i P[i] * E[x_i] = x",
+  "lossless_pooling_runs": [
+    {
+      "context": 16,
+      "embedding_width": 16,
+      "examples": 1024,
+      "exact_sequence_recovery": 1.0,
+      "max_absolute_error": 0.0
+    },
+    {
+      "context": 64,
+      "embedding_width": 64,
+      "examples": 1024,
+      "exact_sequence_recovery": 1.0,
+      "max_absolute_error": 0.0
+    }
+  ],
+  "constructed_full_network": {
+    "task": "indexed_copy",
+    "context": 16,
+    "vocab": 96,
+    "embedding_width": 1536,
+    "hidden": 240,
+    "parameters": 564048,
+    "examples": 4096,
+    "accuracy": 1.0,
+    "note": "All weights assigned by construction; no training or parameter matching."
+  }
+}

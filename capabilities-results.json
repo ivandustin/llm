@@ -1,0 +1,1832 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 3,
+    "contexts": [
+      16,
+      64
+    ],
+    "tasks": [
+      "first_copy",
+      "indexed_copy",
+      "associative_recall",
+      "relative_order",
+      "majority"
+    ],
+    "output": "capabilities-results.json",
+    "width": 16,
+    "vocab": 96,
+    "batch": 64,
+    "lr": 0.001,
+    "transformer_depth": 2,
+    "test_examples": 4096,
+    "models": [
+      "cube",
+      "transformer"
+    ],
+    "seed_start": 0,
+    "execution_note": "Context 16 serial; context 64 resumed by seed with affinities 0-5, 6-11, 12-17. Controls ran concurrently. Do not compare synthetic timings."
+  },
+  "runs": [
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.636484295129776,
+          "accuracy": 0.163330078125
+        },
+        {
+          "step": 1500,
+          "loss": 2.0605240389704704,
+          "accuracy": 0.270263671875
+        },
+        {
+          "step": 3000,
+          "loss": 1.9305082894861698,
+          "accuracy": 0.280029296875
+        }
+      ],
+      "accuracy": 0.280029296875,
+      "loss": 1.9305082894861698,
+      "last_train_loss": 1.8700649738311768,
+      "training_seconds": 3.280111980000356
+    },
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.4569820910692215,
+          "accuracy": 0.201416015625
+        },
+        {
+          "step": 1500,
+          "loss": 2.0488603189587593,
+          "accuracy": 0.248291015625
+        },
+        {
+          "step": 3000,
+          "loss": 1.916670385748148,
+          "accuracy": 0.24609375
+        }
+      ],
+      "accuracy": 0.24609375,
+      "loss": 1.916670385748148,
+      "last_train_loss": 1.9018986225128174,
+      "training_seconds": 17.64867916399703
+    },
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.628931663930416,
+          "accuracy": 0.177734375
+        },
+        {
+          "step": 1500,
+          "loss": 2.0831387042999268,
+          "accuracy": 0.266845703125
+        },
+        {
+          "step": 3000,
+          "loss": 1.9493545889854431,
+          "accuracy": 0.273193359375
+        }
+      ],
+      "accuracy": 0.273193359375,
+      "loss": 1.9493545889854431,
+      "last_train_loss": 2.058523178100586,
+      "training_seconds": 3.410599723997393
+    },
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.523902103304863,
+          "accuracy": 0.179931640625
+        },
+        {
+          "step": 1500,
+          "loss": 2.083298649638891,
+          "accuracy": 0.240478515625
+        },
+        {
+          "step": 3000,
+          "loss": 1.9072025530040264,
+          "accuracy": 0.251953125
+        }
+      ],
+      "accuracy": 0.251953125,
+      "loss": 1.9072025530040264,
+      "last_train_loss": 2.101691961288452,
+      "training_seconds": 17.54223362100106
+    },
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.6017335802316666,
+          "accuracy": 0.190673828125
+        },
+        {
+          "step": 1500,
+          "loss": 2.0940944366157055,
+          "accuracy": 0.257080078125
+        },
+        {
+          "step": 3000,
+          "loss": 1.9655060283839703,
+          "accuracy": 0.2646484375
+        }
+      ],
+      "accuracy": 0.2646484375,
+      "loss": 1.9655060283839703,
+      "last_train_loss": 1.8291057348251343,
+      "training_seconds": 3.3639371099975506
+    },
+    {
+      "task": "associative_recall",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.5111111998558044,
+          "accuracy": 0.1904296875
+        },
+        {
+          "step": 1500,
+          "loss": 2.070812154561281,
+          "accuracy": 0.25048828125
+        },
+        {
+          "step": 3000,
+          "loss": 1.9233959577977657,
+          "accuracy": 0.24462890625
+        }
+      ],
+      "accuracy": 0.24462890625,
+      "loss": 1.9233959577977657,
+      "last_train_loss": 1.6726877689361572,
+      "training_seconds": 19.558962054001768
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.6510561145842075,
+          "accuracy": 0.999755859375
+        },
+        {
+          "step": 1500,
+          "loss": 0.014455827418714762,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.002875732257962227,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.002875732257962227,
+      "last_train_loss": 0.0028600990772247314,
+      "training_seconds": 2.5708788310028012
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.03296549804508686,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.003861397970467806,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0008412159513682127,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0008412159513682127,
+      "last_train_loss": 0.0008337497711181641,
+      "training_seconds": 13.137418096006286
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.684685105457902,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.015327842440456152,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0029388745315372944,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0029388745315372944,
+      "last_train_loss": 0.0030130594968795776,
+      "training_seconds": 3.0745677280099244
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.03876746085006744,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.004182217177003622,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0008901176042854786,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0008901176042854786,
+      "last_train_loss": 0.0008884668350219727,
+      "training_seconds": 16.38034093499482
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.8086541071534157,
+          "accuracy": 0.9970703125
+        },
+        {
+          "step": 1500,
+          "loss": 0.014967498369514942,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.002899375045672059,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.002899375045672059,
+      "last_train_loss": 0.002814844250679016,
+      "training_seconds": 3.0765864589968714
+    },
+    {
+      "task": "first_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.04113894409965724,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0042929311748594046,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0009146512020379305,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0009146512020379305,
+      "last_train_loss": 0.0009194612503051758,
+      "training_seconds": 16.683662539006036
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.726200297474861,
+          "accuracy": 0.115234375
+        },
+        {
+          "step": 1500,
+          "loss": 2.485210418701172,
+          "accuracy": 0.18017578125
+        },
+        {
+          "step": 3000,
+          "loss": 2.3934097290039062,
+          "accuracy": 0.188720703125
+        }
+      ],
+      "accuracy": 0.188720703125,
+      "loss": 2.3934097290039062,
+      "last_train_loss": 2.3994386196136475,
+      "training_seconds": 3.132529406994081
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.0183185636997223,
+          "accuracy": 0.409912109375
+        },
+        {
+          "step": 1500,
+          "loss": 0.009936570073477924,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0015879322309046984,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0015879322309046984,
+      "last_train_loss": 0.001659497618675232,
+      "training_seconds": 16.741936692001218
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7372038811445236,
+          "accuracy": 0.1044921875
+        },
+        {
+          "step": 1500,
+          "loss": 2.4693925231695175,
+          "accuracy": 0.184814453125
+        },
+        {
+          "step": 3000,
+          "loss": 2.389316141605377,
+          "accuracy": 0.196533203125
+        }
+      ],
+      "accuracy": 0.196533203125,
+      "loss": 2.389316141605377,
+      "last_train_loss": 2.561305046081543,
+      "training_seconds": 3.223416505004707
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.7222045250236988,
+          "accuracy": 0.520751953125
+        },
+        {
+          "step": 1500,
+          "loss": 0.007779718143865466,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.001375170424580574,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.001375170424580574,
+      "last_train_loss": 0.0012919455766677856,
+      "training_seconds": 18.227517545009732
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7576248571276665,
+          "accuracy": 0.087158203125
+        },
+        {
+          "step": 1500,
+          "loss": 2.489932931959629,
+          "accuracy": 0.18212890625
+        },
+        {
+          "step": 3000,
+          "loss": 2.3708826899528503,
+          "accuracy": 0.199951171875
+        }
+      ],
+      "accuracy": 0.199951171875,
+      "loss": 2.3708826899528503,
+      "last_train_loss": 2.2416813373565674,
+      "training_seconds": 3.25139437900566
+    },
+    {
+      "task": "indexed_copy",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.2093307599425316,
+          "accuracy": 0.31591796875
+        },
+        {
+          "step": 1500,
+          "loss": 0.011057539144530892,
+          "accuracy": 0.999755859375
+        },
+        {
+          "step": 3000,
+          "loss": 0.0018603748176246881,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0018603748176246881,
+      "last_train_loss": 0.0018162280321121216,
+      "training_seconds": 17.577049445995954
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.052983326953835785,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0021833983482792974,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00039349310100078583,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00039349310100078583,
+      "last_train_loss": 0.0004680901765823364,
+      "training_seconds": 4.579570015998343
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.011843362357467413,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.001484445296227932,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00032725604251027107,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00032725604251027107,
+      "last_train_loss": 0.00032842159271240234,
+      "training_seconds": 21.874099657994975
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.05986051633954048,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.00282818591222167,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0005096079548820853,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0005096079548820853,
+      "last_train_loss": 0.0005104169249534607,
+      "training_seconds": 3.667066456994462
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.014736490440554917,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0015934058465063572,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0003272236790508032,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0003272236790508032,
+      "last_train_loss": 0.00031498074531555176,
+      "training_seconds": 19.434422648003874
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.07232702127657831,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0030452535720542073,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0005286557134240866,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0005286557134240866,
+      "last_train_loss": 0.0005624890327453613,
+      "training_seconds": 3.7140725460096746
+    },
+    {
+      "task": "majority",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.017984581529162824,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.002047453075647354,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0004239603877067566,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0004239603877067566,
+      "last_train_loss": 0.0004244595766067505,
+      "training_seconds": 24.38304636200337
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.14756308705545962,
+          "accuracy": 0.983154296875
+        },
+        {
+          "step": 1500,
+          "loss": 0.00901885749772191,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0012038665590807796,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0012038665590807796,
+      "last_train_loss": 0.0010033026337623596,
+      "training_seconds": 4.378084388001298
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.009435168467462063,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0009857283439487219,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00020186067558825016,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00020186067558825016,
+      "last_train_loss": 0.00020803511142730713,
+      "training_seconds": 22.50130155800298
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.13791852490976453,
+          "accuracy": 0.9833984375
+        },
+        {
+          "step": 1500,
+          "loss": 0.008606962393969297,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0011726738885045052,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0011726738885045052,
+      "last_train_loss": 0.0008898526430130005,
+      "training_seconds": 4.811128263007504
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.01136706187389791,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0011662335600703955,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00024179997853934765,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00024179997853934765,
+      "last_train_loss": 0.00024096667766571045,
+      "training_seconds": 24.851551640005027
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10024,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.21141467709094286,
+          "accuracy": 0.962158203125
+        },
+        {
+          "step": 1500,
+          "loss": 0.008533193613402545,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0010750842047855258,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0010750842047855258,
+      "last_train_loss": 0.0006473958492279053,
+      "training_seconds": 4.495663181993905
+    },
+    {
+      "task": "relative_order",
+      "context": 16,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10016,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.015753306448459625,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.001490986905992031,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00028166850097477436,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00028166850097477436,
+      "last_train_loss": 0.00028187036514282227,
+      "training_seconds": 24.342176810001774
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.779015965759754,
+          "accuracy": 0.068359375
+        },
+        {
+          "step": 1500,
+          "loss": 2.712591476738453,
+          "accuracy": 0.10791015625
+        },
+        {
+          "step": 3000,
+          "loss": 2.616487927734852,
+          "accuracy": 0.13916015625
+        }
+      ],
+      "accuracy": 0.13916015625,
+      "loss": 2.616487927734852,
+      "last_train_loss": 2.6408767700195312,
+      "training_seconds": 8.378904176008746
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7779300585389137,
+          "accuracy": 0.078857421875
+        },
+        {
+          "step": 1500,
+          "loss": 2.705344408750534,
+          "accuracy": 0.112548828125
+        },
+        {
+          "step": 3000,
+          "loss": 2.6383810713887215,
+          "accuracy": 0.128662109375
+        }
+      ],
+      "accuracy": 0.128662109375,
+      "loss": 2.6383810713887215,
+      "last_train_loss": 2.679427146911621,
+      "training_seconds": 90.27357549399085
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7733209058642387,
+          "accuracy": 0.076904296875
+        },
+        {
+          "step": 1500,
+          "loss": 2.711185961961746,
+          "accuracy": 0.11181640625
+        },
+        {
+          "step": 3000,
+          "loss": 2.618342235684395,
+          "accuracy": 0.142333984375
+        }
+      ],
+      "accuracy": 0.142333984375,
+      "loss": 2.618342235684395,
+      "last_train_loss": 2.798532009124756,
+      "training_seconds": 8.074038052003289
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.784968577325344,
+          "accuracy": 0.080810546875
+        },
+        {
+          "step": 1500,
+          "loss": 2.7231797575950623,
+          "accuracy": 0.107666015625
+        },
+        {
+          "step": 3000,
+          "loss": 2.663056030869484,
+          "accuracy": 0.12451171875
+        }
+      ],
+      "accuracy": 0.12451171875,
+      "loss": 2.663056030869484,
+      "last_train_loss": 2.75010347366333,
+      "training_seconds": 86.40621088098351
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.781011074781418,
+          "accuracy": 0.062744140625
+        },
+        {
+          "step": 1500,
+          "loss": 2.710517756640911,
+          "accuracy": 0.109375
+        },
+        {
+          "step": 3000,
+          "loss": 2.6198411658406258,
+          "accuracy": 0.139404296875
+        }
+      ],
+      "accuracy": 0.139404296875,
+      "loss": 2.6198411658406258,
+      "last_train_loss": 2.6185522079467773,
+      "training_seconds": 9.124610313003814
+    },
+    {
+      "task": "associative_recall",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.775983415544033,
+          "accuracy": 0.0732421875
+        },
+        {
+          "step": 1500,
+          "loss": 2.711902193725109,
+          "accuracy": 0.10595703125
+        },
+        {
+          "step": 3000,
+          "loss": 2.6566150709986687,
+          "accuracy": 0.1240234375
+        }
+      ],
+      "accuracy": 0.1240234375,
+      "loss": 2.6566150709986687,
+      "last_train_loss": 2.601224899291992,
+      "training_seconds": 80.11008442302546
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.9106925576925278,
+          "accuracy": 0.622802734375
+        },
+        {
+          "step": 1500,
+          "loss": 0.02283159992657602,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00399248325265944,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00399248325265944,
+      "last_train_loss": 0.004002809524536133,
+      "training_seconds": 5.057139651004036
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.037555239046923816,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.004114978946745396,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0008949432522058487,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0008949432522058487,
+      "last_train_loss": 0.0008831024169921875,
+      "training_seconds": 69.73103243299147
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.7322254031896591,
+          "accuracy": 0.747802734375
+        },
+        {
+          "step": 1500,
+          "loss": 0.021955551113933325,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0038096678908914328,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0038096678908914328,
+      "last_train_loss": 0.0037370026111602783,
+      "training_seconds": 6.39436543399961
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.03900756000075489,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.004084402462467551,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0008665393106639385,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0008665393106639385,
+      "last_train_loss": 0.0008431971073150635,
+      "training_seconds": 66.86766032399782
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 1.8138436637818813,
+          "accuracy": 0.676025390625
+        },
+        {
+          "step": 1500,
+          "loss": 0.02360032289288938,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.003987278090789914,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.003987278090789914,
+      "last_train_loss": 0.004043221473693848,
+      "training_seconds": 5.135720595004841
+    },
+    {
+      "task": "first_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.046866817749105394,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.004685077117756009,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0009960397146642208,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0009960397146642208,
+      "last_train_loss": 0.000960126519203186,
+      "training_seconds": 83.31062627596702
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.779542200267315,
+          "accuracy": 0.06298828125
+        },
+        {
+          "step": 1500,
+          "loss": 2.767999455332756,
+          "accuracy": 0.07666015625
+        },
+        {
+          "step": 3000,
+          "loss": 2.72520861774683,
+          "accuracy": 0.103759765625
+        }
+      ],
+      "accuracy": 0.103759765625,
+      "loss": 2.72520861774683,
+      "last_train_loss": 2.7845301628112793,
+      "training_seconds": 7.762811143983981
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7815684601664543,
+          "accuracy": 0.07470703125
+        },
+        {
+          "step": 1500,
+          "loss": 2.7207675352692604,
+          "accuracy": 0.105224609375
+        },
+        {
+          "step": 3000,
+          "loss": 0.20777626894414425,
+          "accuracy": 0.9462890625
+        }
+      ],
+      "accuracy": 0.9462890625,
+      "loss": 0.20777626894414425,
+      "last_train_loss": 0.3637712001800537,
+      "training_seconds": 88.63220028800788
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7781409472227097,
+          "accuracy": 0.06298828125
+        },
+        {
+          "step": 1500,
+          "loss": 2.7688567489385605,
+          "accuracy": 0.07568359375
+        },
+        {
+          "step": 3000,
+          "loss": 2.7315363213419914,
+          "accuracy": 0.099853515625
+        }
+      ],
+      "accuracy": 0.099853515625,
+      "loss": 2.7315363213419914,
+      "last_train_loss": 2.6859679222106934,
+      "training_seconds": 7.537404295984743
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.788032576441765,
+          "accuracy": 0.067138671875
+        },
+        {
+          "step": 1500,
+          "loss": 2.6944450065493584,
+          "accuracy": 0.123779296875
+        },
+        {
+          "step": 3000,
+          "loss": 0.009885349776595831,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.009885349776595831,
+      "last_train_loss": 0.008635178208351135,
+      "training_seconds": 84.1437065489963
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.78440560400486,
+          "accuracy": 0.069580078125
+        },
+        {
+          "step": 1500,
+          "loss": 2.765358902513981,
+          "accuracy": 0.08154296875
+        },
+        {
+          "step": 3000,
+          "loss": 2.7385907620191574,
+          "accuracy": 0.09619140625
+        }
+      ],
+      "accuracy": 0.09619140625,
+      "loss": 2.7385907620191574,
+      "last_train_loss": 2.734947681427002,
+      "training_seconds": 8.54104244200198
+    },
+    {
+      "task": "indexed_copy",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.0625,
+      "history": [
+        {
+          "step": 500,
+          "loss": 2.7896425649523735,
+          "accuracy": 0.075439453125
+        },
+        {
+          "step": 1500,
+          "loss": 2.751944214105606,
+          "accuracy": 0.0869140625
+        },
+        {
+          "step": 3000,
+          "loss": 0.757661072537303,
+          "accuracy": 0.7822265625
+        }
+      ],
+      "accuracy": 0.7822265625,
+      "loss": 0.757661072537303,
+      "last_train_loss": 0.9617383480072021,
+      "training_seconds": 83.92558365100012
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.10716313263401389,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.014478636323474348,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.002003250876441598,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.002003250876441598,
+      "last_train_loss": 0.002287551760673523,
+      "training_seconds": 8.26875879900308
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.1781539828516543,
+          "accuracy": 0.9091796875
+        },
+        {
+          "step": 1500,
+          "loss": 0.001844162936322391,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00042716600000858307,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00042716600000858307,
+      "last_train_loss": 0.00044633448123931885,
+      "training_seconds": 76.78699664899841
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.12699741893447936,
+          "accuracy": 0.9990234375
+        },
+        {
+          "step": 1500,
+          "loss": 0.0185340887401253,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.002355750068090856,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.002355750068090856,
+      "last_train_loss": 0.0018401071429252625,
+      "training_seconds": 7.773096335990886
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.02275839203502983,
+          "accuracy": 0.999755859375
+        },
+        {
+          "step": 1500,
+          "loss": 0.0021279046777635813,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0004348962102085352,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0004348962102085352,
+      "last_train_loss": 0.0004238933324813843,
+      "training_seconds": 78.34127218199365
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.15423471154645085,
+          "accuracy": 0.98779296875
+        },
+        {
+          "step": 1500,
+          "loss": 0.020822302205488086,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0029867198318243027,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0029867198318243027,
+      "last_train_loss": 0.0023160576820373535,
+      "training_seconds": 7.991178563999711
+    },
+    {
+      "task": "majority",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.024157449835911393,
+          "accuracy": 0.999267578125
+        },
+        {
+          "step": 1500,
+          "loss": 0.0022227821173146367,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0006902040913701057,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0006902040913701057,
+      "last_train_loss": 0.00047500431537628174,
+      "training_seconds": 45.275867306004784
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 0,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.6233484614640474,
+          "accuracy": 0.689453125
+        },
+        {
+          "step": 1500,
+          "loss": 0.04746284056454897,
+          "accuracy": 0.991943359375
+        },
+        {
+          "step": 3000,
+          "loss": 0.01620665960945189,
+          "accuracy": 0.998779296875
+        }
+      ],
+      "accuracy": 0.998779296875,
+      "loss": 0.01620665960945189,
+      "last_train_loss": 0.014483869075775146,
+      "training_seconds": 9.020466767999096
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 0,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.07056241703685373,
+          "accuracy": 0.974365234375
+        },
+        {
+          "step": 1500,
+          "loss": 0.0012676508631557226,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.00025045115035027266,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.00025045115035027266,
+      "last_train_loss": 0.000241890549659729,
+      "training_seconds": 81.29034577900347
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 1,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.6257138699293137,
+          "accuracy": 0.70654296875
+        },
+        {
+          "step": 1500,
+          "loss": 0.04458951356355101,
+          "accuracy": 0.9951171875
+        },
+        {
+          "step": 3000,
+          "loss": 0.01743701531086117,
+          "accuracy": 0.99755859375
+        }
+      ],
+      "accuracy": 0.99755859375,
+      "loss": 0.01743701531086117,
+      "last_train_loss": 0.015198156237602234,
+      "training_seconds": 8.56706834699662
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 1,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.01658417854923755,
+          "accuracy": 1.0
+        },
+        {
+          "step": 1500,
+          "loss": 0.0012651721481233835,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0002498337998986244,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0002498337998986244,
+      "last_train_loss": 0.0002471506595611572,
+      "training_seconds": 80.11688712899468
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 2,
+      "model": "cube",
+      "parameters": 10792,
+      "hidden": 72,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.6624041181057692,
+          "accuracy": 0.657470703125
+        },
+        {
+          "step": 1500,
+          "loss": 0.04791565809864551,
+          "accuracy": 0.990966796875
+        },
+        {
+          "step": 3000,
+          "loss": 0.01673584769014269,
+          "accuracy": 0.998046875
+        }
+      ],
+      "accuracy": 0.998046875,
+      "loss": 0.01673584769014269,
+      "last_train_loss": 0.018095463514328003,
+      "training_seconds": 7.793063608000921
+    },
+    {
+      "task": "relative_order",
+      "context": 64,
+      "seed": 2,
+      "model": "transformer",
+      "parameters": 10784,
+      "hidden": 64,
+      "chance_accuracy": 0.5,
+      "history": [
+        {
+          "step": 500,
+          "loss": 0.031219261698424816,
+          "accuracy": 0.998046875
+        },
+        {
+          "step": 1500,
+          "loss": 0.001906238030642271,
+          "accuracy": 1.0
+        },
+        {
+          "step": 3000,
+          "loss": 0.0003680840600281954,
+          "accuracy": 1.0
+        }
+      ],
+      "accuracy": 1.0,
+      "loss": 0.0003680840600281954,
+      "last_train_loss": 0.00037775933742523193,
+      "training_seconds": 77.31237519299793
+    }
+  ]
+}

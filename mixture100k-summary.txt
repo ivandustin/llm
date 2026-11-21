@@ -1,0 +1,29 @@
+Shared d64 position-token pool followed by parallel one-hidden FFNs.
+Each branch: Linear64->h, GELU, Linearh->V, softmax. Final distribution is equal1/N average of probabilities.
+Shared learned token/position tables, non-learned pooled norm epsilon1e-5; no residual or final norm.
+Branch count/hidden width:1/576,2/287,4/143,8/71. All trainable branch weights, biases and shared embeddings counted.
+Same internal shapes across tasks. Query budget<=100k; language counts lower due to smaller vocabulary/context.
+Three seeds,10000 compiled Adam updates,batch64,lr .001,same data/evaluation as prior runs. Final checkpoints only.
+Deep6 reference reused, d64 h120, no residual. Different shallow branch initialization layout; not identical initial weights across branch counts.
+Context32 language;16 retrieval. No speed measurement.
+
+position / deep6: params=99184, accuracy=97.61% +/- 1.38
+position / n1: params=100000, accuracy=71.20% +/- 0.83
+position / n2: params=99774, accuracy=67.33% +/- 0.48
+position / n4: params=99644, accuracy=51.95% +/- 2.82
+position / n8: params=99384, accuracy=33.92% +/- 5.26
+single / deep6: params=99184, accuracy=29.07% +/- 0.80
+single / n1: params=100000, accuracy=29.15% +/- 0.50
+single / n2: params=99774, accuracy=29.70% +/- 0.28
+single / n4: params=99644, accuracy=30.42% +/- 0.14
+single / n8: params=99384, accuracy=30.69% +/- 0.22
+multi / deep6: params=99184, accuracy=34.36% +/- 0.33
+multi / n1: params=100000, accuracy=34.46% +/- 0.13
+multi / n2: params=99774, accuracy=34.61% +/- 0.15
+multi / n4: params=99644, accuracy=34.69% +/- 0.17
+multi / n8: params=99384, accuracy=34.71% +/- 0.12
+language / deep6: params=94473, accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / n1: params=81153, accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / n2: params=80958, accuracy=43.18% +/- 0.20, perplexity=7.31 +/- 0.11
+language / n4: params=80828, accuracy=42.17% +/- 0.35, perplexity=7.20 +/- 0.14
+language / n8: params=80568, accuracy=41.23% +/- 0.33, perplexity=7.20 +/- 0.17
