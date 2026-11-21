@@ -56,11 +56,18 @@ class Probe(nnx.Module):
 class TokenInteraction(nnx.Module):
     """Query-conditioned pooling with no added trainable parameters.
 
-All variants exclude the final token from memory; previous_pool is the
-corresponding no-query control. GELU is applied per token, before the sum.
-"""
-    def __init__(self, seed, variant, hidden, layers, context=16, vocab=96):
+    All variants exclude the final token from memory; previous_pool is the
+    corresponding no-query control. Only token_product_gelu applies GELU per
+    token before the sum. Readout activation and pooled normalization can be
+    changed without changing parameter initialization or counts.
+    """
+    def __init__(self, seed, variant, hidden, layers, context=16, vocab=96,
+                 activation='gelu', pooled_norm=True):
+        if activation not in ['gelu', 'sigmoid']:
+            raise ValueError('activation must be gelu or sigmoid')
         self.variant = variant
+        self.activation = activation
+        self.pooled_norm = pooled_norm
         self.base = BatchedCandidate(context, vocab, 64, hidden, seed, layers).model
 
     def __call__(self, tokens):
@@ -73,10 +80,12 @@ corresponding no-query control. GELU is applied per token, before the sum.
             if self.variant == 'token_product_gelu':
                 memory = jax.nn.gelu(memory)
             pooled = memory.sum(axis=0)
-            pooled = (pooled - pooled.mean()) / jnp.sqrt(pooled.var() + 1e-5)
-            h = jax.nn.gelu(self.base.fn.a(pooled))
+            if self.pooled_norm:
+                pooled = (pooled - pooled.mean()) / jnp.sqrt(pooled.var() + 1e-5)
+            activate = jax.nn.gelu if self.activation == 'gelu' else jax.nn.sigmoid
+            h = activate(self.base.fn.a(pooled))
             for layer in getattr(self.base, 'layers', []):
-                h = jax.nn.gelu(layer(h))
+                h = activate(layer(h))
             return self.base.fn.b(h)
         return jax.vmap(one)(jnp.stack([positions, tokens], axis=1))
 
