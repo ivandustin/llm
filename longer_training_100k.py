@@ -1,4 +1,4 @@
-"""Longer chunked training of deep or shallow pooling, with10k parity checks."""
+"""Longer chunked training of pooled models or the two-block Transformer, with10k parity checks."""
 import argparse
 import hashlib
 import json
@@ -8,6 +8,8 @@ import optax
 from benchmark import nnx,np,jax,count,batch
 from benchmark_100k import Model as DeepModel
 from parallel_mixture_100k import Model as ShallowModel
+from sigmoid_no_norm import Model as SigmoidModel
+from depth_100k_test import Model as TransformerModel
 from capabilities import generate
 from mqar_test import generate as associative
 from language_depth_test import evaluate
@@ -40,7 +42,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer'],default='deep')
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
@@ -52,14 +54,16 @@ def main():
     data=np.array([enc[c] for c in text],np.int32)
     train,val,test=np.split(data,[int(len(data)*.8),int(len(data)*.9)])
     checkpoints=sorted({s for s in [10000,30000,args.steps] if s<=args.steps})
-    shallow=args.architecture=='shallow'
-    prefix='longer-shallow100k' if shallow else 'longer100k'
-    baseline='mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
+    transformer=args.architecture=='transformer'
+    sigmoid=args.architecture=='sigmoid'
+    shallow=args.architecture in ['shallow','sigmoid']
+    prefix='longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
+    baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     config=dict(architecture=args.architecture,seed=args.seed,steps=args.steps,checkpoints=checkpoints,batch=64,lr=.001,
         optimizer='Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay',
-        width=64,hidden=576 if shallow else 120,hidden_layers=1 if shallow else 6,residual=False,final_norm=False,
-        positions='learned',pooled_norm='non-learned epsilon1e-5',activation='GELU',
-        parameters=dict(query=100000 if shallow else 99184,language=81153 if shallow else 94473),tasks=args.tasks,
+        width=64,hidden=200 if transformer else 576 if shallow else 120,hidden_layers=1 if shallow or transformer else 6,blocks=2 if transformer else 0,residual=transformer,final_norm=transformer,
+        positions='learned',pooled_norm='not applicable' if transformer else 'none' if sigmoid else 'non-learned epsilon1e-5',activation='sigmoid' if sigmoid else 'GELU',
+        parameters=dict(query=99056 if transformer else 100000 if shallow else 99184,language=96081 if transformer else 81153 if shallow else 94473),tasks=args.tasks,
         training='compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state',
         evaluation='same fixed samples as original100k runs; predeclared update counts, no best-step selection',
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
@@ -67,7 +71,7 @@ def main():
     directory=Path(f'{prefix}-seed-{args.seed}');directory.mkdir(exist_ok=True)
     output=Path(f'{prefix}-seed-{args.seed}.json');runs=[]
     for task in args.tasks:
-        model=ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
+        model=TransformerModel(task,args.seed,'transformer') if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)
@@ -85,7 +89,7 @@ def main():
                 history.append(point);print(task,args.seed,end,point,flush=True)
             if end in checkpoints:
                 final=evaluate(model,*heldout);record=dict(step=end,final=final)
-                if end==10000:
+                if end==10000 and baseline is not None:
                     prior=json.loads(Path(baseline.format(seed=args.seed)).read_text())
                     expected=next(r['final'] for r in prior['runs'] if r['task']==task)
                     np.testing.assert_allclose(final['loss'],expected['loss'],rtol=1e-4,atol=1e-5)

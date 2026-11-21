@@ -69,6 +69,21 @@
         30000,
         50000
       ]
+    },
+    "sigmoid_no_norm_longer_training": {
+      "results": "longer-sigmoid100k-results.json",
+      "width": 64,
+      "hidden": 576,
+      "hidden_layers": 1,
+      "activation": "sigmoid",
+      "pooled_norm": false,
+      "query_parameters": 100000,
+      "language_parameters": 81153,
+      "updates": [
+        10000,
+        30000,
+        50000
+      ]
     }
   },
   "default_transformer_reference": {
@@ -80,6 +95,20 @@
     "selection": "User requested two blocks for future comparisons",
     "small_results": "tfblocks-results.json",
     "speed_results": "two-block-speed-results.json",
-    "large_quality_results": "depth100k-results.json"
+    "large_quality_results": "depth100k-results.json",
+    "longer_training": {
+      "results": "longer-transformer100k-results.json",
+      "width": 64,
+      "ff_hidden": 200,
+      "blocks": 2,
+      "updates": [
+        10000,
+        30000,
+        50000
+      ],
+      "query_parameters": 99056,
+      "language_parameters": 96081,
+      "checkpoints": "longer-transformer100k-seed-{0,1,2}/{task}-step-{updates}.npz"
+    }
   }
 }

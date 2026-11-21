@@ -1477,3 +1477,101 @@ language / deep / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0
 language / deep / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27
 
 Reproduce via `longer_training_100k.py --architecture shallow --seed 0|1|2`, then `summarize_longer_shallow.py`. The shallow implementation is the earlier n1 control in `parallel_mixture_100k.py`, with one branch and one hidden layer (h576). Original deep long-run commands remain supported with the default architecture deep. All12 new10k model/task/seed baseline checks must pass. Saved NPZ checkpoints contain weights only, not optimizer state; Adam is uninterrupted in memory. No paper/default-model changes made.
+
+## Original sigmoid without normalization, longer training
+
+Original sigmoid/no-normalization versus GELU/parameter-free pooled normalization.
+One hidden layer,d64,h576,learned positions,no residual/gate/final norm.
+Same initial parameters,data streams,held-out examples and parameter counts:100000 queries/81153 language.
+Three seeds,Adam .001,batch64,1000-update compiled chunks,continuous model/Adam state,no schedule/weight decay.
+Predeclared checkpoints10k/30k/50k; no best-step selection. Only sigmoid/no-norm newly trained; GELU/norm controls reused.
+Activation and pooled norm both change; this does not isolate either effect separately. No speed benchmark or Transformer runs.
+
+position / sigmoid_no_norm / 10000 updates: accuracy=18.72% +/- 0.58
+position / sigmoid_no_norm / 30000 updates: accuracy=38.53% +/- 0.56
+position / sigmoid_no_norm / 50000 updates: accuracy=57.04% +/- 0.44
+position / gelu_norm / 10000 updates: accuracy=71.20% +/- 0.83
+position / gelu_norm / 30000 updates: accuracy=82.90% +/- 3.92
+position / gelu_norm / 50000 updates: accuracy=88.83% +/- 3.86
+single / sigmoid_no_norm / 10000 updates: accuracy=30.52% +/- 0.23
+single / sigmoid_no_norm / 30000 updates: accuracy=30.80% +/- 0.25
+single / sigmoid_no_norm / 50000 updates: accuracy=30.46% +/- 0.02
+single / gelu_norm / 10000 updates: accuracy=29.15% +/- 0.50
+single / gelu_norm / 30000 updates: accuracy=45.62% +/- 0.25
+single / gelu_norm / 50000 updates: accuracy=46.07% +/- 0.32
+multi / sigmoid_no_norm / 10000 updates: accuracy=34.80% +/- 0.17
+multi / sigmoid_no_norm / 30000 updates: accuracy=34.77% +/- 0.17
+multi / sigmoid_no_norm / 50000 updates: accuracy=34.87% +/- 0.20
+multi / gelu_norm / 10000 updates: accuracy=34.46% +/- 0.13
+multi / gelu_norm / 30000 updates: accuracy=34.65% +/- 0.11
+multi / gelu_norm / 50000 updates: accuracy=34.63% +/- 0.08
+language / sigmoid_no_norm / 10000 updates: accuracy=39.96% +/- 0.44, perplexity=7.82 +/- 0.04
+language / sigmoid_no_norm / 30000 updates: accuracy=46.03% +/- 0.23, perplexity=7.08 +/- 0.14
+language / sigmoid_no_norm / 50000 updates: accuracy=47.41% +/- 0.09, perplexity=7.34 +/- 0.16
+language / gelu_norm / 10000 updates: accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / gelu_norm / 30000 updates: accuracy=46.75% +/- 0.38, perplexity=7.44 +/- 0.25
+language / gelu_norm / 50000 updates: accuracy=47.09% +/- 0.30, perplexity=7.72 +/- 0.24
+
+Reproduce with `longer_training_100k.py --architecture sigmoid --seed 0|1|2`, then `summarize_longer_sigmoid.py`. `sigmoid_no_norm.py` implements raw position-token sum pooling, Linear, sigmoid, and output Linear with the exact same parameter layout/initial values as the earlier n1 shallow control. `check_sigmoid_no_norm.py` verifies identical weights/counts, expected unnormalized sigmoid formula, and five-step compiled versus ordinary full losses/model/Adam state for query and language shapes. Saved checkpoints contain model weights only; optimizer state remains continuous in memory. No paper/default changes made.
+
+## Default two-block Transformer, matched longer training
+
+Matched10k/30k/50k update comparison, same data streams and held-out samples within each task/seed.
+Transformer:2 standard blocks,d64,4 heads,FF200 per block,learned positions,standard learned LayerNorm/residuals;99056 query/96081 language params.
+Deep pooling:d64,h120,6 hidden layers,GELU+non-learned pooled norm;99184/94473 params.
+Shallow pooling:d64,h576,1 hidden layer,GELU+non-learned pooled norm;100000/81153 params.
+Sigmoid pooling:same shallow shape and counts,no normalization,sigmoid.
+Three seeds,Adam .001,batch64,no schedule/weight decay,continuous model/Adam state in1000-update scans.
+Only Transformer newly trained; pooled results reused. All predeclared milestones reported; no best-step selection.
+Parameter budgets approximate; shallow language variants have fewer params. Same updates/examples are not equal compute. No new speed benchmark.
+
+position / transformer / 10000 updates: accuracy=100.00% +/- 0.00
+position / transformer / 30000 updates: accuracy=100.00% +/- 0.00
+position / transformer / 50000 updates: accuracy=100.00% +/- 0.00
+position / deep / 10000 updates: accuracy=97.61% +/- 1.38
+position / deep / 30000 updates: accuracy=99.68% +/- 0.11
+position / deep / 50000 updates: accuracy=99.24% +/- 0.26
+position / shallow / 10000 updates: accuracy=71.20% +/- 0.83
+position / shallow / 30000 updates: accuracy=82.90% +/- 3.92
+position / shallow / 50000 updates: accuracy=88.83% +/- 3.86
+position / sigmoid / 10000 updates: accuracy=18.72% +/- 0.58
+position / sigmoid / 30000 updates: accuracy=38.53% +/- 0.56
+position / sigmoid / 50000 updates: accuracy=57.04% +/- 0.44
+single / transformer / 10000 updates: accuracy=28.77% +/- 0.66
+single / transformer / 30000 updates: accuracy=30.09% +/- 0.31
+single / transformer / 50000 updates: accuracy=29.99% +/- 0.31
+single / deep / 10000 updates: accuracy=29.07% +/- 0.80
+single / deep / 30000 updates: accuracy=30.32% +/- 0.13
+single / deep / 50000 updates: accuracy=29.89% +/- 0.60
+single / shallow / 10000 updates: accuracy=29.15% +/- 0.50
+single / shallow / 30000 updates: accuracy=45.62% +/- 0.25
+single / shallow / 50000 updates: accuracy=46.07% +/- 0.32
+single / sigmoid / 10000 updates: accuracy=30.52% +/- 0.23
+single / sigmoid / 30000 updates: accuracy=30.80% +/- 0.25
+single / sigmoid / 50000 updates: accuracy=30.46% +/- 0.02
+multi / transformer / 10000 updates: accuracy=80.21% +/- 34.18
+multi / transformer / 30000 updates: accuracy=100.00% +/- 0.00
+multi / transformer / 50000 updates: accuracy=100.00% +/- 0.00
+multi / deep / 10000 updates: accuracy=34.36% +/- 0.33
+multi / deep / 30000 updates: accuracy=34.57% +/- 0.11
+multi / deep / 50000 updates: accuracy=34.50% +/- 0.15
+multi / shallow / 10000 updates: accuracy=34.46% +/- 0.13
+multi / shallow / 30000 updates: accuracy=34.65% +/- 0.11
+multi / shallow / 50000 updates: accuracy=34.63% +/- 0.08
+multi / sigmoid / 10000 updates: accuracy=34.80% +/- 0.17
+multi / sigmoid / 30000 updates: accuracy=34.77% +/- 0.17
+multi / sigmoid / 50000 updates: accuracy=34.87% +/- 0.20
+language / transformer / 10000 updates: accuracy=43.16% +/- 0.46, perplexity=7.20 +/- 0.20
+language / transformer / 30000 updates: accuracy=46.07% +/- 0.16, perplexity=6.77 +/- 0.05
+language / transformer / 50000 updates: accuracy=46.72% +/- 0.76, perplexity=6.81 +/- 0.11
+language / deep / 10000 updates: accuracy=43.25% +/- 0.38, perplexity=7.50 +/- 0.15
+language / deep / 30000 updates: accuracy=45.56% +/- 0.49, perplexity=7.42 +/- 0.07
+language / deep / 50000 updates: accuracy=46.73% +/- 0.32, perplexity=7.38 +/- 0.27
+language / shallow / 10000 updates: accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / shallow / 30000 updates: accuracy=46.75% +/- 0.38, perplexity=7.44 +/- 0.25
+language / shallow / 50000 updates: accuracy=47.09% +/- 0.30, perplexity=7.72 +/- 0.24
+language / sigmoid / 10000 updates: accuracy=39.96% +/- 0.44, perplexity=7.82 +/- 0.04
+language / sigmoid / 30000 updates: accuracy=46.03% +/- 0.23, perplexity=7.08 +/- 0.14
+language / sigmoid / 50000 updates: accuracy=47.41% +/- 0.09, perplexity=7.34 +/- 0.16
+
+Reproduce with `longer_training_100k.py --architecture transformer --seed 0|1|2`, then `summarize_longer_transformer.py`. Uses the previously validated two-block implementation from `depth_100k_test.py`, computing all causal states in block1 and only supervised outputs in block2. The10k checkpoint reproduces its historical model/task/seed loss and accuracy before continuing. Models are freshly initialized, and optimizer state never resets within a run. Saved NPZ milestones contain model weights only.

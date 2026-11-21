@@ -1,0 +1,31 @@
+Original sigmoid/no-normalization versus GELU/parameter-free pooled normalization.
+One hidden layer,d64,h576,learned positions,no residual/gate/final norm.
+Same initial parameters,data streams,held-out examples and parameter counts:100000 queries/81153 language.
+Three seeds,Adam .001,batch64,1000-update compiled chunks,continuous model/Adam state,no schedule/weight decay.
+Predeclared checkpoints10k/30k/50k; no best-step selection. Only sigmoid/no-norm newly trained; GELU/norm controls reused.
+Activation and pooled norm both change; this does not isolate either effect separately. No speed benchmark or Transformer runs.
+
+position / sigmoid_no_norm / 10000 updates: accuracy=18.72% +/- 0.58
+position / sigmoid_no_norm / 30000 updates: accuracy=38.53% +/- 0.56
+position / sigmoid_no_norm / 50000 updates: accuracy=57.04% +/- 0.44
+position / gelu_norm / 10000 updates: accuracy=71.20% +/- 0.83
+position / gelu_norm / 30000 updates: accuracy=82.90% +/- 3.92
+position / gelu_norm / 50000 updates: accuracy=88.83% +/- 3.86
+single / sigmoid_no_norm / 10000 updates: accuracy=30.52% +/- 0.23
+single / sigmoid_no_norm / 30000 updates: accuracy=30.80% +/- 0.25
+single / sigmoid_no_norm / 50000 updates: accuracy=30.46% +/- 0.02
+single / gelu_norm / 10000 updates: accuracy=29.15% +/- 0.50
+single / gelu_norm / 30000 updates: accuracy=45.62% +/- 0.25
+single / gelu_norm / 50000 updates: accuracy=46.07% +/- 0.32
+multi / sigmoid_no_norm / 10000 updates: accuracy=34.80% +/- 0.17
+multi / sigmoid_no_norm / 30000 updates: accuracy=34.77% +/- 0.17
+multi / sigmoid_no_norm / 50000 updates: accuracy=34.87% +/- 0.20
+multi / gelu_norm / 10000 updates: accuracy=34.46% +/- 0.13
+multi / gelu_norm / 30000 updates: accuracy=34.65% +/- 0.11
+multi / gelu_norm / 50000 updates: accuracy=34.63% +/- 0.08
+language / sigmoid_no_norm / 10000 updates: accuracy=39.96% +/- 0.44, perplexity=7.82 +/- 0.04
+language / sigmoid_no_norm / 30000 updates: accuracy=46.03% +/- 0.23, perplexity=7.08 +/- 0.14
+language / sigmoid_no_norm / 50000 updates: accuracy=47.41% +/- 0.09, perplexity=7.34 +/- 0.16
+language / gelu_norm / 10000 updates: accuracy=43.47% +/- 0.12, perplexity=7.45 +/- 0.12
+language / gelu_norm / 30000 updates: accuracy=46.75% +/- 0.38, perplexity=7.44 +/- 0.25
+language / gelu_norm / 50000 updates: accuracy=47.09% +/- 0.30, perplexity=7.72 +/- 0.24
