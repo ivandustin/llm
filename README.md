@@ -1,8 +1,75 @@
-# Position–Token Pooling
+# Last-Token-Conditioned Position–Token Pooling for Small Sequence Models
 
 Standalone Flax NNX implementations and reproducible experiments for small
 position–token pooling models and causal Transformers. All model and experiment
-code lives in this repository.
+code lives in this repository. The latest experiment conditions the pooled
+representation on the final token with no additional trainable parameters.
+
+## Latest results: last-token-conditioned pooling
+
+The new variant multiplies each previous position–token vector by the final
+token's embedding, then sums, normalizes, and predicts with one GELU hidden
+layer. The final token supplies the conditioning vector and is excluded from
+the sum. The same rule applies to all four tasks.
+
+```text
+pooled = sum(position[i] * token[i] * token[last] for i < last)
+logits = Linear(GELU(Linear(normalize(pooled))))
+```
+
+Here `*` is elementwise multiplication. Algebraically, the final-token product
+can move outside the sum, requiring only 64 extra multiplications per example
+at embedding width 64. The experiment implements the per-token form above;
+the factored form can differ slightly in floating-point rounding. No activation
+is applied before summation, and normalization has no learned scale or bias.
+No speed benchmark has been run for this variant.
+
+After **10,000 updates per task**, batch size 64, and three seeds:
+
+| Task | Parameters | Accuracy, mean ± sample SD |
+|---|---:|---:|
+| Position copying | 100,000 | 99.55% ± 0.75 |
+| Single-query associative recall | 100,000 | 95.21% ± 3.48 |
+| Multi-query associative recall | 100,000 | 98.09% ± 1.16 |
+| Next-character language prediction | 81,153 | 43.68% ± 0.33 |
+
+Language perplexity is **7.58 ± 0.14**. Dimensions are embedding width 64 and
+one hidden layer of width 576. Each task starts from scratch with Adam at 0.001,
+no schedule or weight decay, and continuous model/optimizer state across
+1,000-update scans. These are final 10k checkpoints, without best-step selection.
+Only this pooled model was newly trained in the four-task follow-up.
+
+Retrieval uses 16,384 held-out sequences. Single recall asks for one stored
+key's value; multi recall asks for three distinct keys' values, scoring answers
+individually. Each prediction sees only its causal prefix, including correct
+earlier answers but excluding current and future answers. Language retains the
+Tiny Shakespeare contiguous 80/10/10 split, context 32, and 4,096 test windows.
+
+A separate 3,000-update multi-query diagnostic used identical initialization,
+data, and exactly 100,000 parameters for each variant:
+
+| Pooling rule | Accuracy, mean ± sample SD |
+|---|---:|
+| Previous tokens only, without final-token interaction | 34.24% ± 0.28 |
+| Multiply by final-token embedding | 88.25% ± 0.93 |
+| Multiply, then GELU per token before summing | 87.93% ± 1.62 |
+
+All three diagnostic variants exclude the final token from the summed memory.
+The multiplication variant gets all three answers correct in 68.74% of
+sequences, distinct from its per-answer accuracy. Earlier experiments that
+concatenated the final-token embedding with the pool showed no short-run gain.
+
+The new variant has not been trained to 30k or 50k updates. Historical shallow
+models use a different initialization layout, so comparisons with them do not
+isolate the interaction alone. The previous six-layer CPU speed measurements
+also do not measure this variant.
+
+See the [10k summary](experiments/token-product100k-summary.json), raw runs for
+[seed 0](experiments/token-product100k-seed-0.json),
+[seed 1](experiments/token-product100k-seed-1.json), and
+[seed 2](experiments/token-product100k-seed-2.json), and the
+[3k diagnostic](experiments/token-interaction-shallow-probe.json).
+The [paper PDF](paper/paper.pdf) and [source](paper/paper.tex) include these results.
 
 ## Install
 
@@ -29,10 +96,15 @@ The experiments run on CPU with JAX JIT compilation. A GPU is not required.
 
 ## Model
 
-The default pipeline is learned position/token embeddings, elementwise product,
+The original package default is learned position/token embeddings, elementwise product,
 sum over positions, parameter-free normalization, six GELU hidden layers, and
 an output linear layer. It has no residuals, query gate, or final normalization.
-The original single-hidden-layer sigmoid baseline is also retained.
+The original single-hidden-layer sigmoid baseline is also retained. The latest
+last-token-conditioned variant is currently an experimental implementation in
+[`TokenInteraction`](experiments/last_token_probe.py), with the standard-task
+wrapper `TokenProductModel` in
+[`longer_training_100k.py`](experiments/longer_training_100k.py). The package
+default and the original-model example below retain their earlier behavior.
 
 ```python
 import jax.numpy as jnp
@@ -63,6 +135,11 @@ The commands in the historical experiment log also use this working directory. T
 ```sh
 cd experiments
 
+# Last-token-conditioned pooling: four tasks, 10k updates, three seeds.
+for seed in 0 1 2; do
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --steps 10000 --seed "$seed"
+done
+
 # Six-layer, approximately 100k-parameter pooling model, four tasks, one seed.
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark_100k.py --architecture ours --seed 0
 # Current two-block Transformer reference on the same tasks and data.
@@ -74,6 +151,14 @@ perform 10,000 updates per task and write result JSON and checkpoint files.
 The first script also retains a historical one-block Transformer option; the
 current reference uses two standard blocks. Wider, deeper, residual, and parallel
 branch experiments have their own scripts documented in the experiment log below.
+
+The conditioned runs write `token-product100k-seed-<seed>.json` and checkpoint
+directories of the same name in the current directory. To repeat the controlled
+3k multi-query diagnostic from `experiments/`:
+
+```sh
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.last_token_probe --layers 1 --hidden 576 --steps 3000 --seeds 3 --variants previous_pool token_product token_product_gelu --output token-interaction-shallow-probe.json
+```
 
 Training loops compile chunks of updates and preserve model/Adam state between
 chunks. Data preparation, evaluation, and saving are outside those compiled loops.
@@ -88,7 +173,10 @@ not evidence that this model generally replaces attention.
 
 The sections below preserve the configurations, controls, and results in the
 order they were investigated. Older one-block references remain explicitly
-historical; see the two-block and approximately 100k comparisons for newer results.
+historical; see the two-block and approximately 100k comparisons for later controls.
+Statements about weak associative recall or a paused paper describe those
+historical configurations and stages. The latest conditioned-pooling results
+and current paper are linked above.
 
 # Original language benchmark
 
