@@ -1,0 +1,139 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 3,
+    "layers": 1,
+    "hidden": 576,
+    "last_hidden": null,
+    "output": "experiments/token-interaction-shallow-probe.json",
+    "variants": [
+      "previous_pool",
+      "token_product",
+      "token_product_gelu"
+    ],
+    "task": "multi",
+    "batch": 64,
+    "lr": 0.001,
+    "width": 64,
+    "note": "Same training data per seed; final checkpoints; parameter counts recorded per run. Earlier answers are teacher-forced."
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "variant": "previous_pool",
+      "parameters": 100000,
+      "accuracy": 0.3402303059895833,
+      "per_query": [
+        0.298828125,
+        0.33172607421875,
+        0.39013671875
+      ],
+      "all_correct": 0.027099609375,
+      "seconds": 8.2078138020006
+    },
+    {
+      "seed": 0,
+      "variant": "token_product",
+      "parameters": 100000,
+      "accuracy": 0.8865152994791666,
+      "per_query": [
+        0.860107421875,
+        0.8870849609375,
+        0.912353515625
+      ],
+      "all_correct": 0.694580078125,
+      "seconds": 15.21029955999984
+    },
+    {
+      "seed": 0,
+      "variant": "token_product_gelu",
+      "parameters": 100000,
+      "accuracy": 0.8916015625,
+      "per_query": [
+        0.869873046875,
+        0.89093017578125,
+        0.91400146484375
+      ],
+      "all_correct": 0.71148681640625,
+      "seconds": 14.558706992000225
+    },
+    {
+      "seed": 1,
+      "variant": "previous_pool",
+      "parameters": 100000,
+      "accuracy": 0.3455607096354167,
+      "per_query": [
+        0.29974365234375,
+        0.33935546875,
+        0.3975830078125
+      ],
+      "all_correct": 0.0289306640625,
+      "seconds": 11.37546200399811
+    },
+    {
+      "seed": 1,
+      "variant": "token_product",
+      "parameters": 100000,
+      "accuracy": 0.8892415364583334,
+      "per_query": [
+        0.86553955078125,
+        0.88995361328125,
+        0.9122314453125
+      ],
+      "all_correct": 0.70245361328125,
+      "seconds": 12.346300709003117
+    },
+    {
+      "seed": 1,
+      "variant": "token_product_gelu",
+      "parameters": 100000,
+      "accuracy": 0.8853759765625,
+      "per_query": [
+        0.86456298828125,
+        0.8846435546875,
+        0.90692138671875
+      ],
+      "all_correct": 0.69573974609375,
+      "seconds": 14.157164768999792
+    },
+    {
+      "seed": 2,
+      "variant": "previous_pool",
+      "parameters": 100000,
+      "accuracy": 0.34136962890625,
+      "per_query": [
+        0.29766845703125,
+        0.32958984375,
+        0.3968505859375
+      ],
+      "all_correct": 0.028564453125,
+      "seconds": 11.411713838999276
+    },
+    {
+      "seed": 2,
+      "variant": "token_product",
+      "parameters": 100000,
+      "accuracy": 0.87188720703125,
+      "per_query": [
+        0.85369873046875,
+        0.87030029296875,
+        0.89166259765625
+      ],
+      "all_correct": 0.6651611328125,
+      "seconds": 12.457669256997178
+    },
+    {
+      "seed": 2,
+      "variant": "token_product_gelu",
+      "parameters": 100000,
+      "accuracy": 0.8609822591145834,
+      "per_query": [
+        0.82916259765625,
+        0.8602294921875,
+        0.8935546875
+      ],
+      "all_correct": 0.6317138671875,
+      "seconds": 14.67011499000364
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 3,
+    "output": "experiments/last-token-control.json",
+    "variants": [
+      "duplicate_pool"
+    ],
+    "task": "multi",
+    "batch": 64,
+    "lr": 0.001,
+    "width": 64,
+    "hidden": 120,
+    "layers": 6,
+    "note": "Same training data per seed; final checkpoints; last-token variant adds 7680 parameters. Earlier answers are teacher-forced."
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "variant": "duplicate_pool",
+      "parameters": 106864,
+      "accuracy": 0.3316853841145833,
+      "per_query": [
+        0.28662109375,
+        0.32110595703125,
+        0.3873291015625
+      ],
+      "all_correct": 0.0299072265625,
+      "seconds": 24.49363028699736
+    },
+    {
+      "seed": 1,
+      "variant": "duplicate_pool",
+      "parameters": 106864,
+      "accuracy": 0.3313802083333333,
+      "per_query": [
+        0.28656005859375,
+        0.3172607421875,
+        0.39031982421875
+      ],
+      "all_correct": 0.02850341796875,
+      "seconds": 14.907165888995223
+    },
+    {
+      "seed": 2,
+      "variant": "duplicate_pool",
+      "parameters": 106864,
+      "accuracy": 0.3363444010416667,
+      "per_query": [
+        0.287353515625,
+        0.32470703125,
+        0.39697265625
+      ],
+      "all_correct": 0.02838134765625,
+      "seconds": 15.069442936000996
+    }
+  ]
+}

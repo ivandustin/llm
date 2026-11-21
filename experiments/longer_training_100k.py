@@ -1,11 +1,15 @@
-"""Longer chunked training of pooled models or the two-block Transformer, with10k parity checks."""
+"""Chunked standard-task training, with 10k parity checks for existing models.
+
+The token_product variant tests last-token-conditioned pooling without adding
+parameters, using the same data and evaluation protocol as the other models.
+"""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 import optax
-from experiments.benchmark import nnx,np,jax,count,batch
+from experiments.benchmark import nnx,np,jax,jnp,count,batch
 from experiments.benchmark_100k import Model as DeepModel
 from experiments.parallel_mixture_100k import Model as ShallowModel
 from experiments.sigmoid_no_norm import Model as SigmoidModel
@@ -15,6 +19,22 @@ from experiments.mqar_test import generate as associative
 from experiments.language_depth_test import evaluate
 from experiments.readout_experiments import metrics,save_weights
 from experiments.speed_benchmark import compiled_training
+from experiments.last_token_probe import TokenInteraction
+
+
+class TokenProductModel(nnx.Module):
+    """Shared last-token multiplication for every task; no task-specific retrieval."""
+    def __init__(self, task, seed):
+        self.task = task
+        self.base = TokenInteraction(seed, 'token_product', 576, 1,
+                                    32 if task == 'language' else 16,
+                                    65 if task == 'language' else 96)
+
+    def __call__(self, x):
+        if self.task in ['single', 'multi']:
+            ends = [11] if self.task == 'single' else [11, 13, 15]
+            return jnp.stack([self.base(x[:, :end]) for end in ends], axis=1)
+        return self.base(x)
 
 TASKS=['position','single','multi','language']
 
@@ -42,7 +62,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product'],default='deep')
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
@@ -56,9 +76,10 @@ def main():
     checkpoints=sorted({s for s in [10000,30000,args.steps] if s<=args.steps})
     transformer=args.architecture=='transformer'
     sigmoid=args.architecture=='sigmoid'
-    shallow=args.architecture in ['shallow','sigmoid']
-    prefix='longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
-    baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
+    token_product=args.architecture=='token_product'
+    shallow=args.architecture in ['shallow','sigmoid','token_product']
+    prefix='token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
+    baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     config=dict(architecture=args.architecture,seed=args.seed,steps=args.steps,checkpoints=checkpoints,batch=64,lr=.001,
         optimizer='Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay',
         width=64,hidden=200 if transformer else 576 if shallow else 120,hidden_layers=1 if shallow or transformer else 6,blocks=2 if transformer else 0,residual=transformer,final_norm=transformer,
@@ -67,11 +88,13 @@ def main():
         training='compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state',
         evaluation='same fixed samples as original100k runs; predeclared update counts, no best-step selection',
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
+    if token_product:
+        config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP'
     print(json.dumps(config),flush=True)
     directory=Path(f'{prefix}-seed-{args.seed}');directory.mkdir(exist_ok=True)
     output=Path(f'{prefix}-seed-{args.seed}.json');runs=[]
     for task in args.tasks:
-        model=TransformerModel(task,args.seed,'transformer') if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
+        model=TokenProductModel(task,args.seed) if token_product else TransformerModel(task,args.seed,'transformer') if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)

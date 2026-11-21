@@ -1,0 +1,139 @@
+{
+  "config": {
+    "steps": 3000,
+    "seeds": 3,
+    "layers": 1,
+    "hidden": 576,
+    "last_hidden": 412,
+    "output": "experiments/last-token-shallow-probe.json",
+    "variants": [
+      "baseline",
+      "last_token",
+      "duplicate_pool"
+    ],
+    "task": "multi",
+    "batch": 64,
+    "lr": 0.001,
+    "width": 64,
+    "note": "Same training data per seed; final checkpoints; parameter counts recorded per run. Earlier answers are teacher-forced."
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "variant": "baseline",
+      "parameters": 100000,
+      "accuracy": 0.342041015625,
+      "per_query": [
+        0.2989501953125,
+        0.33441162109375,
+        0.39276123046875
+      ],
+      "all_correct": 0.0281982421875,
+      "seconds": 9.032967077000649
+    },
+    {
+      "seed": 0,
+      "variant": "last_token",
+      "parameters": 99964,
+      "accuracy": 0.33795166015625,
+      "per_query": [
+        0.2933349609375,
+        0.325927734375,
+        0.39459228515625
+      ],
+      "all_correct": 0.0283203125,
+      "seconds": 15.20653453200066
+    },
+    {
+      "seed": 0,
+      "variant": "duplicate_pool",
+      "parameters": 99964,
+      "accuracy": 0.3402303059895833,
+      "per_query": [
+        0.2913818359375,
+        0.33642578125,
+        0.39288330078125
+      ],
+      "all_correct": 0.0294189453125,
+      "seconds": 12.443572010997741
+    },
+    {
+      "seed": 1,
+      "variant": "baseline",
+      "parameters": 100000,
+      "accuracy": 0.3456217447916667,
+      "per_query": [
+        0.3006591796875,
+        0.3389892578125,
+        0.397216796875
+      ],
+      "all_correct": 0.0302734375,
+      "seconds": 12.809428848995594
+    },
+    {
+      "seed": 1,
+      "variant": "last_token",
+      "parameters": 99964,
+      "accuracy": 0.3416341145833333,
+      "per_query": [
+        0.29248046875,
+        0.33062744140625,
+        0.40179443359375
+      ],
+      "all_correct": 0.02874755859375,
+      "seconds": 13.279080225998769
+    },
+    {
+      "seed": 1,
+      "variant": "duplicate_pool",
+      "parameters": 99964,
+      "accuracy": 0.3432820638020833,
+      "per_query": [
+        0.29864501953125,
+        0.33673095703125,
+        0.39447021484375
+      ],
+      "all_correct": 0.029052734375,
+      "seconds": 11.991118542995537
+    },
+    {
+      "seed": 2,
+      "variant": "baseline",
+      "parameters": 100000,
+      "accuracy": 0.3398640950520833,
+      "per_query": [
+        0.294921875,
+        0.3282470703125,
+        0.39642333984375
+      ],
+      "all_correct": 0.02880859375,
+      "seconds": 11.82606854900223
+    },
+    {
+      "seed": 2,
+      "variant": "last_token",
+      "parameters": 99964,
+      "accuracy": 0.3372599283854167,
+      "per_query": [
+        0.291015625,
+        0.32537841796875,
+        0.3953857421875
+      ],
+      "all_correct": 0.0284423828125,
+      "seconds": 11.669744612998329
+    },
+    {
+      "seed": 2,
+      "variant": "duplicate_pool",
+      "parameters": 99964,
+      "accuracy": 0.3377685546875,
+      "per_query": [
+        0.28851318359375,
+        0.3284912109375,
+        0.39630126953125
+      ],
+      "all_correct": 0.02978515625,
+      "seconds": 10.961970497999573
+    }
+  ]
+}
