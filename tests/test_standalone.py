@@ -8,8 +8,8 @@ import numpy as np
 from flax import nnx
 
 from position_token_pooling import Model, NormalizedModel, StackedModel
-from readout_experiments import save_weights
-from validate_layer_depth import load_weights
+from experiments.readout_experiments import save_weights
+from experiments.validate_layer_depth import load_weights
 
 
 class StandaloneModels(unittest.TestCase):

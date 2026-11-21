@@ -19,6 +19,14 @@ python -m unittest discover -s tests -v
 Alternatively, install them with `python -m pip install -r requirements.txt`.
 The experiments run on CPU with JAX JIT compilation. A GPU is not required.
 
+## Repository layout
+
+- `position_token_pooling/`: reusable model package.
+- `experiments/`: experiment scripts, saved results, summaries, logs, and checkpoints.
+- `tests/`: package validation.
+- `data/`: input datasets.
+- `paper/`: paper source and PDF.
+
 ## Model
 
 The default pipeline is learned position/token embeddings, elementwise product,
@@ -39,18 +47,22 @@ example = jnp.stack([jnp.arange(context), tokens])
 logits = model(example)  # shape (vocab,)
 ```
 
-`position_token_pooling/` contains the reusable model implementations. Root-level
-scripts contain task generators, Transformer implementations, training, evaluation,
+`position_token_pooling/` contains the reusable model implementations. The scripts in `experiments/` contain task generators, Transformer implementations, training, evaluation,
 and timing tools. The compatibility imports `candidate_model.py` and
 `stacked_candidate_model.py` keep earlier experiment commands working. Parameter
 names and initialization order are preserved for existing `.npz` checkpoints.
 
 ## Reproduce experiments
 
-Run experiment scripts from the repository root. Tiny Shakespeare is included at
+Run experiment scripts from `experiments/` after installing the project with
+`python -m pip install -e .` from the repository root. Results, logs, and
+checkpoint directories live alongside these scripts, so new runs keep the root clean.
+The commands in the historical experiment log also use this working directory. Tiny Shakespeare is included at
 `data/shakespeare.txt`; its source and split protocol are documented below.
 
 ```sh
+cd experiments
+
 # Six-layer, approximately 100k-parameter pooling model, four tasks, one seed.
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark_100k.py --architecture ours --seed 0
 # Current two-block Transformer reference on the same tasks and data.

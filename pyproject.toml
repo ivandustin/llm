@@ -18,4 +18,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["position_token_pooling"]
+packages = ["position_token_pooling", "experiments"]
