@@ -1,1 +1,1 @@
-Last-Token-Conditioned Position–Token Pooling for Small Sequence Models
+Last-Token-Conditioned Pooling for Associative Recall and Language Prediction

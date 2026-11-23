@@ -1,425 +1,288 @@
 \documentclass[11pt]{article}
-\usepackage[margin=0.85in]{geometry}
-\usepackage{amsmath,amssymb,booktabs,hyperref}
-\hypersetup{colorlinks=true,urlcolor=blue,citecolor=blue}
-\title{Last-Token-Conditioned Position--Token Pooling for Small Sequence Models}
-\author{Ivan Dustin Bilon}
-\date{Preliminary experimental report}
-\setlength{\emergencystretch}{1em}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{microtype}
+\usepackage{xurl}
+\title{Last-Token-Conditioned Pooling for\\Associative Recall and Language Prediction}
+\author{}
+\date{}
+\newcommand{\sd}[2]{#1\,{\scriptstyle\pm\,#2}}
 \begin{document}
 \maketitle
 \begin{abstract}
-We study sequence models that multiply learned position and token embeddings, pool them into one vector, and predict through a feed-forward network. The original pool sums position-weighted tokens without multiplicative interactions between tokens. A last-token-conditioned variant multiplies the preceding-token pool by the final token's embedding, adding no parameters. With one GELU hidden layer, parameter-free pooled normalization, and 10,000 updates, this variant reaches $99.55\pm0.75$\% position copying, $95.21\pm3.48$\% single-query recall, and $98.09\pm1.16$\% multi-query recall across three seeds at 100k parameters. Language accuracy is $43.68\pm0.33$\% and perplexity $7.58\pm0.14$ at 81k parameters. A matched-initialization 3k-update diagnostic improves multi-query recall from 34.24\% without the interaction to 88.25\% with it. A matched 10k activation/normalization comparison reduces multi-query recall to 34.77\% for GELU without normalization and $41.70\pm11.86$\% for sigmoid with normalization, showing that the strong retrieval result depends on both choices under these settings. Separately, at matched 50k updates, the original six-layer pool and a two-block transformer have similar language accuracy, but transformer perplexity is lower and it solves multi-query recall. Existing CPU timings favor the original pool; the conditioned variant has not been timed. These exploratory short-context results show that a simple multiplicative interaction can substantially improve retrieval, without establishing a general replacement for attention.
+Can a small sequence model retrieve stored associations using a single pooled vector? We study last-token-conditioned position--token pooling: learned position and token embeddings are multiplied elementwise, multiplied by the final token's embedding, and summed over preceding positions. A parameter-free normalization and a one-hidden-layer GELU network produce the prediction. At width 64, the model has 100,000 parameters for retrieval and 81,153 for character prediction. Across three seeds and 50,000 updates, it achieves $99.99\%$ position-copying accuracy, $98.31\%$ single-query recall, and $99.37\%$ multi-query recall on short synthetic tasks. A two-block sinusoidal Transformer achieves $100.00\%$, $29.93\%$, and $100.00\%$, respectively, under the same update protocol. On Tiny Shakespeare, pooling reaches $46.91\%$ accuracy and perplexity 7.61, compared with $46.63\%$ and 6.79 for the Transformer. A controlled 3,000-update ablation increases multi-query accuracy from $34.24\%$ without conditioning to $88.25\%$ with conditioning. Local CPU measurements show lower latency and update cost for the pooling implementation. These results establish feasibility at short contexts and small budgets, while leaving long-context capacity, competitive language modeling, and general efficiency unresolved.
 \end{abstract}
 
+\section{Introduction}
+A sequence predictor must preserve useful information from its context and expose it to a readout. Causal self-attention provides a flexible mechanism for making intermediate representations depend on earlier tokens \cite{transformer}. A simpler alternative is to sum position-dependent token features into one vector. The resulting representation is inexpensive to compute, but its usefulness depends on whether the readout can recover the information relevant to the current prediction.
+
+We investigate a minimal conditioning mechanism for this pooled representation. The final input token multiplies the features accumulated from preceding positions. This changes the representation presented to the nonlinear readout without adding a query projection or any trainable parameters. The same computation serves position copying, associative recall, and next-character prediction. For recall, the final input token is a query key; for language prediction, it is the most recent observed character.
+
+Our contribution is an empirical study of this specific small architecture, rather than a claim that pooling replaces attention. First, a controlled ablation isolates the final-token product and finds a large improvement on a short multi-query recall task. Second, we compare the conditioned model with a two-block causal Transformer over three seeds and four declared training milestones. Third, we report warmed CPU inference and update measurements with explicit implementation and quality qualifications.
+
+The results are task dependent. Both models learn copying and multi-query recall to high accuracy. The pooling model learns single-query recall much more successfully under the selected training setup, while the Transformer achieves better language perplexity. The single-query Transformer result is a limitation of this baseline and protocol; it does not establish an intrinsic inability of attention to retrieve associations.
+
+\section{Related work}
+Transformers use attention to mix token representations according to input-dependent scores \cite{transformer}. Our reference retains causal attention, residual connections, and feed-forward blocks, but is a small decoder-style predictor rather than the original translation model. The proposed pooling rule has no attention score matrix or softmax over positions.
+
+Sum pooling followed by a readout is central to the Deep Sets formulation \cite{deepsets}. Here the pooled items include learned absolute positions, so exchanging tokens between fixed positions generally changes the output. The final token additionally conditions the pooled features. This connection concerns the aggregation structure; the experiments do not establish a new representation theorem.
+
+Associative recall is a useful diagnostic for efficient sequence architectures. Zoology studies recall and develops multi-query associative recall to examine differences among sequence models \cite{zoology}. Our task follows the broad idea of interleaved keys, values, and multiple queries, but uses a local short-sequence generator. Its scores are not results on the official Zoology benchmark. We evaluate a narrow setting with five stored pairs, rather than the larger capacity and scaling questions considered in that work.
+
 \section{Model}
-Let $L$ be the context length, $V$ the vocabulary size, and $d$ the embedding dimension. Each $x_i$ is the integer identifier of the token at position $i$. We learn token embeddings $E\in\mathbb{R}^{V\times d}$ and position embeddings $P\in\mathbb{R}^{L\times d}$. Pool the context as
-\begin{equation}
- z=\sum_{i=1}^{L}P_i\odot E_{x_i},\qquad
- \widetilde z=\frac{z-\mu(z)}{\sqrt{\sigma^2(z)+10^{-5}}},
-\end{equation}
-Here $P_i$ and $E_{x_i}$ are the position and token vectors selected from their tables, treated as column vectors in $\mathbb{R}^d$. The symbol $\odot$ means elementwise multiplication, $z$ is the pooled context vector, and $\widetilde z$ is its normalized version. The quantities $\mu(z)=d^{-1}\sum_{j=1}^d z_j$ and $\sigma^2(z)=d^{-1}\sum_{j=1}^d(z_j-\mu(z))^2$ are the mean and variance across coordinates; $10^{-5}$ is a numerical stabilizer. Normalization has no learned scale or bias. Position-dependent embeddings allow token order to affect the sum. A network with $K$ hidden layers predicts
+\subsection{Conditioned position--token pooling}
+Let $x_0,\ldots,x_{L-1}$ be an input sequence, $E\in\mathbb{R}^{V\times d}$ a learned token table, and $P\in\mathbb{R}^{C\times d}$ a learned position table for maximum context $C$. Define
 \begin{align}
- h_1&=\operatorname{GELU}(W_1\widetilde z+b_1),\\
- h_k&=\operatorname{GELU}(W_kh_{k-1}+b_k),\quad k=2,\ldots,K,\\
- p(x_{L+1}\mid x_{1:L})&=\operatorname{softmax}(W_oh_K+b_o).
+ m(x)&=\sum_{i=0}^{L-2}P_i\odot E_{x_i},\\
+ q(x)&=E_{x_{L-1}},\\
+ z(x)&=\sum_{i=0}^{L-2}P_i\odot E_{x_i}\odot q(x)
+      =m(x)\odot q(x),\label{eq:pool}
 \end{align}
-Here $K$ is the number of hidden layers, $h$ is their common width, and $h_k\in\mathbb{R}^h$ is the feature vector after layer $k$. The learned weights have sizes $W_1\in\mathbb{R}^{h\times d}$, $W_k\in\mathbb{R}^{h\times h}$ for $k\geq2$, and $W_o\in\mathbb{R}^{V\times h}$. Their learned biases are $b_k\in\mathbb{R}^h$ and $b_o\in\mathbb{R}^V$; subscript $o$ denotes the output layer. GELU is the Gaussian error linear unit activation. Softmax converts the output scores into probabilities over the $V$ possible next tokens. The notation $x_{1:L}$ denotes the entire context, and $p(x_{L+1}\mid x_{1:L})$ its next-token distribution. Including both embedding tables and biases, the total number of learned parameters $N$ is
+where $\odot$ denotes elementwise multiplication. The final token is excluded from the memory sum and uses the same token table as the memory tokens. No nonlinearity precedes the sum in the main model.
+
+We normalize across feature coordinates using
 \begin{equation}
- N=(L+V)d+(d+1)h+(K-1)(h^2+h)+(h+1)V.
+ \widehat z=\frac{z-\mu(z)}{\sqrt{\sigma^2(z)+10^{-5}}},
 \end{equation}
-The original main architecture uses six GELU hidden layers, with no residual connections or query gates; the conditioned follow-up below uses one hidden layer. Its pipeline is simply \emph{embed, multiply, sum, normalize, predict}.
-
-Attention forms query-dependent summaries of separate token states \cite{vaswani}; our model pools before output processing. Neither representation is guaranteed to preserve information. In particular, normalization removes the pooled vector's mean.
-
-\paragraph{Last-token-conditioned pooling.}
-For a causal prefix ending at position $t$, let $q_t=E_{x_t}$ be the final token's embedding. Our follow-up variant uses
+with population variance and no learned scale or bias. The output is
 \begin{equation}
- z_t^{\mathrm{last}}=\sum_{i=1}^{t-1}(P_i\odot E_{x_i}\odot q_t)
- =\left(\sum_{i=1}^{t-1}P_i\odot E_{x_i}\right)\odot q_t.
- \label{eq:lastpool}
+ \ell(x)=W_2\,\operatorname{GELU}(W_1\widehat z+b_1)+b_2.
 \end{equation}
-We apply the same parameter-free normalization and GELU readout to this vector. The final token is excluded from the sum and supplies the conditioning vector instead; its embedding shares the existing token table. There is no activation before summation in this variant. It uses the same rule for language, copying, and associative recall, without identifying key/value pairs or adding task-specific retrieval code. The parameter-count formula is unchanged. Relative to pooling the preceding tokens, the factored form requires $d$ additional multiplications per prediction. Our experiment implements the per-token form on the left; the forms are algebraically equivalent, but floating-point summation order may differ. No timing measurement for this variant is reported. Unlike the original pool, its summary depends multiplicatively on the final token before normalization and readout; it still produces only one vector rather than separate attention-weighted token states.
+Softmax cross-entropy supervises the target token. All experiments in the main comparison use $d=64$ and hidden width $h=576$, with separate models trained from scratch for each task.
 
-\section{Setup}
-Unless stated otherwise, configurations use three seeds, Adam at learning rate 0.001, batch size 64, and 10,000 updates. Longer-training experiments extend the six-layer and single-hidden-layer pooled models and the default two-block transformer to 50,000 updates, with predeclared 10k/30k/50k evaluations. Models receive identical training examples within each task and seed. We report final checkpoints, not whichever checkpoint scores best. Parameter budgets are approximate, with actual counts shown below.
+The parameter count is
+\begin{equation}
+ N=Cd+Vd+dh+h+hV+V.
+\end{equation}
+For retrieval, $C=16$ and $V=96$ give 100,000 parameters. For language, $C=32$ and $V=65$ give 81,153. The reusable package also contains earlier pooling architectures; the model studied here is the experimental \texttt{TokenInteraction}, exposed through \texttt{TokenProductModel}.
 
-Historical transformer controls have one causal attention block; the current reference has two. Both use four heads, pre-layer normalization, residual paths around attention and its feed-forward network, and a final normalization and output projection. Its standard feed-forward network has one hidden layer. We selected our six-layer configuration through exploratory depth and width experiments, mainly on position copying; this selection was not separately optimized for language.
+\subsection{Interpretation and computational scope}
+Equation~\ref{eq:pool} is a diagonal, query-dependent transformation of a fixed-width memory. The query changes the coordinates supplied to the normalized nonlinear readout. It does not compute separate scalar relevance weights for positions, nor does it create an explicit key--value table. In particular, the memory sum contains position--token features, not products between adjacent key and value embeddings. Successful recall is an empirical property of the complete learned representation and readout; it is not an exact symbolic lookup guarantee.
 
-At the smaller scale, our main model uses $(d,h,K)=(64,12,6)$; at the larger scale it uses $(64,120,6)$. Internal dimensions stay fixed across tasks. Vocabulary and context sizes change parameter counts. Historical one-block transformer embedding/FFN widths are $(16,162)$ for smaller query tests, $(16,144)$ for smaller language tests, and $(64,536)$ across the larger tests. The new approximately 100k reference uses two blocks with embedding width 64 and FFN width 200 in each, unchanged across tasks.
+For one context, forming the pool requires $O(Ld)$ arithmetic, followed by $O(dh+hV)$ readout work. In exact arithmetic the query can move outside the sum, requiring only $d$ extra multiplications after memory formation. The implementation evaluated here uses the per-token expression; reassociation may change floating-point rounding. Learned positions require $O(Cd)$ parameters and provide no evaluated extrapolation beyond the trained context.
 
-\paragraph{Language prediction.}
-Tiny Shakespeare \cite{data} contains 1,115,394 characters and 65 character types. Contiguous 80/10/10 percent splits define training, validation, and test data. Each input contains 32 characters and supervises one next-character target for both architectures. Evaluation uses 4,096 sampled windows per held-out split; windows may overlap, but never cross split boundaries. Lower perplexity, defined as the exponential of mean negative log-likelihood, indicates better probabilistic prediction. Accuracy checks the highest-scoring character.
+An accumulated $m(x)$ could support an incremental implementation at fixed absolute positions, but we do not benchmark such a cache. Sliding windows require additional care because shifting relative positions changes their embeddings. Likewise, linear cost for one context does not imply linear total cost if every prefix is recomputed independently.
 
-\paragraph{Retrieval.}
-Position copying presents 15 random symbols and a query indicating which position to return. Associative recall presents five unique keys paired with values drawn from 16 types. Single-query recall asks for one key's value. The multi-query variant asks three distinct keys sequentially; each answer is predicted from its causal prefix. Previous answers are supplied as context, but current and future answers are excluded. Single-query training supervises one answer per sequence; multi-query training supervises three. These are controlled associative-recall variants inspired by MQAR \cite{zoology}, not the official benchmark. Retrieval scores average 16,384 independently generated evaluation sequences, shared across models.
+\section{Experimental setup}
+\subsection{Tasks and causal supervision}
+\paragraph{Position copying.}
+A length-16 sequence contains 15 independently sampled symbols from 16 possible values. The final token encodes a uniformly sampled index from 0 through 14 using a distinct query-token range. The target is the symbol at that position. Predictions use a 96-class output vocabulary, including unused classes. Uniform guessing among the 16 possible target symbols gives $6.25\%$ accuracy.
+
+\paragraph{Single-query associative recall.}
+Five distinct keys are sampled from 32 key symbols. Each is paired with a value sampled independently from 16 value symbols in a disjoint token range; values may repeat. The memory consists of ten alternating key/value tokens. One stored key is then presented as a query, and the model predicts its associated value from this length-11 prefix. Uniform guessing over the value symbols gives $6.25\%$ accuracy, although exploiting values visible in the memory provides stronger shortcuts. This is the single-query mode of the same generator used for the multi-query task.
+
+\paragraph{Multi-query associative recall.}
+Three distinct stored keys are selected as queries. The complete 16-token sequence has the form
+\begin{equation*}
+ k_1,v_1,\ldots,k_5,v_5,q_1,a_1,q_2,a_2,q_3,a_3.
+\end{equation*}
+Predictions use prefixes of lengths 11, 13, and 15. Each prefix ends with its current query and excludes its target and all subsequent tokens. Earlier correct answers are included by teacher forcing. The reported metric averages correctness over answers, rather than requiring all three answers to be correct. Consequently, it does not measure free-running error propagation.
+
+Both recall tasks use a nominal context allocation of 16 and vocabulary size 96. The pooling model processes the required prefixes separately. The Transformer shares causal computation and selects the supervised positions; its final block computes attention queries and feed-forward outputs only at those positions. The causal masks prevent access to current or future answers.
+
+\paragraph{Next-character prediction.}
+We use the Tiny Shakespeare text distributed with \texttt{char-rnn} \cite{shakespeare}: 1,115,394 characters and 65 character types. A contiguous 80/10/10 split yields 892,315 training, 111,539 validation, and 111,540 test characters. Windows do not cross split boundaries. The vocabulary is enumerated from the complete text, without using held-out frequencies or targets in optimization. Each length-32 context predicts one following character; neither model receives all-position language supervision in this experiment.
+
+\subsection{Transformer reference}
+The reference has two causal pre-LayerNorm Transformer blocks, width 64, four heads, and a GELU feed-forward layer of width 200 in each block. It adds fixed sinusoidal positions with base 10,000 to learned token embeddings. Attention and feed-forward sublayers have residual connections. A learned final LayerNorm and linear vocabulary projection produce logits. Parameter counts are 98,032 for retrieval and 94,033 for language. Thus the budgets are close but not identical, especially for language.
+
+Sinusoidal positions are the current default. Historical learned-position results are not mixed into the main comparison. A separate 10k positional-encoding study gives multi-query recall of $100.00\%\pm0.00$ for sinusoidal positions and $78.80\%\pm36.72$ for learned positions across three seeds. This sensitivity motivates stating the positional encoding explicitly.
+
+\subsection{Optimization, evaluation, and reporting}
+We use Adam with learning rate 0.001, $\beta_1=0.9$, $\beta_2=0.999$, and $\epsilon=10^{-8}$, batch size 64, and no learning-rate schedule or weight decay. Compiled scans contain 1,000 updates and preserve model and optimizer state between chunks. Each task has three runs with seeds 0, 1, and 2. Within a seed, the two architectures receive identical task data streams. Synthetic batches are generated throughout training; language windows are sampled from the training split.
+
+The primary endpoint is 50,000 updates. We also report the declared 1k, 10k, and 30k milestones without selecting the best checkpoint. Equal updates do not imply equal floating-point work, elapsed time, or supervision across different tasks: multi-query examples contribute three targets, whereas single-query and language examples contribute one.
+
+Retrieval test sets contain 16,384 generated sequences, shared across runs; the multi-query set supplies 49,152 answer labels. Language evaluation uses 4,096 sampled test windows, which may overlap and are shared across seeds. Monitoring uses separate evaluation samples. We report means and sample standard deviations across seeds. Language perplexity is computed from each run's mean cross-entropy and then averaged across seeds. These standard deviations describe training-seed variation, not confidence intervals over independent datasets.
 
 \section{Results}
-\subsection{Language}
-Table~\ref{tab:language} retains single-hidden-layer controls because depth is not uniformly beneficial. At the smaller matched budget, the shallow pooled model outperforms the six-layer model. The approximately 18k-parameter shallow version slightly improves perplexity over its transformer reference, while its accuracy is slightly lower.
+\subsection{Final checkpoint comparison}
+Table~\ref{tab:main} reports the declared 50k endpoint. Pooling nearly solves copying and achieves high recall in both settings. The Transformer reaches approximately perfect copying and multi-query recall, but remains near $30\%$ on single-query recall. The difference between the two recall settings warrants caution: adding query targets and teacher-forced earlier answers changes the learning problem, even though both settings use the same stored-pair generator. We have not isolated the cause of the baseline's single-query plateau.
 
-Against the historical one-block reference at the larger scale, the six-layer model reaches 43.25\% accuracy versus 43.47\%, a gap of 0.22 percentage points. Its perplexity is approximately 2.6\% higher. Thus language quality improves substantially with capacity and approaches the reference, while remaining weaker on both metrics.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrr}
-\toprule
-Model & Parameters & Perplexity $\downarrow$ & Accuracy (\%) $\uparrow$\\
-\midrule
-Pooled, 1 hidden & 8,613 & $8.94\pm0.26$ & $37.65\pm0.65$\\
-Pooled, 6 hidden & 8,613 & $9.78\pm0.04$ & $35.31\pm0.34$\\
-Transformer & 8,609 & $8.43\pm0.16$ & $38.25\pm0.56$\\
-\midrule
-Pooled, 1 hidden & 18,065 & $7.81\pm0.12$ & $40.36\pm0.25$\\
-Transformer & 18,017 & $7.92\pm0.16$ & $40.84\pm0.14$\\
-\midrule
-Pooled, 6 hidden & 94,473 & $7.50\pm0.15$ & $43.25\pm0.38$\\
-Transformer & 96,665 & $7.31\pm0.12$ & $43.47\pm0.36$\\
-\bottomrule
-\end{tabular}
-\caption{Next-character prediction: mean $\pm$ sample standard deviation across three seeds. Shallow pooled dimensions are $(d,h)=(64,18)$ at 8.6k and $(32,152)$ at 18k. The 18k transformer uses widths $(32,128)$. All transformers in this table have one block; the two-block reference is reported in Table~\ref{tab:depth100k}.}
-\label{tab:language}
-\end{table}
-
-\subsection{Retrieval}
-Position copying is learned well, but increasing capacity does not improve our result (Table~\ref{tab:retrieval}). Associative retrieval with the original pooling rule remains weak. A shortcut that ignores the queried key and guesses the most frequent stored value scores 30.57\% for single queries and 30.68\% for multiple queries. Most scores remain near this baseline. Our larger model exceeds it modestly on multi-query recall, but neither the original pooled models nor the one-block references solve these associative tasks. The larger two-block reference substantially changes multi-query results, as reported below.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Model & Parameters & Position & Single assoc. & Multi assoc.\\
-\midrule
-Pooled & 9,976 & $98.08\pm0.76$ & $23.42\pm2.13$ & $29.73\pm1.09$\\
-Transformer & 9,970 & $100.00\pm0.00$ & $30.02\pm0.11$ & $31.49\pm1.54$\\
-\midrule
-Pooled & 99,184 & $97.61\pm1.38$ & $29.07\pm0.80$ & $34.36\pm0.33$\\
-Transformer & 99,640 & $100.00\pm0.00$ & $29.25\pm0.58$ & $30.66\pm0.12$\\
-\bottomrule
-\end{tabular}
-\caption{Retrieval accuracy (\%), mean $\pm$ sample standard deviation. Multi-query accuracy averages individual answers, not entirely correct sequences. Transformers in this table have one block. All retrieval models retain a shared 96-symbol input/output vocabulary, including symbols unused by a particular task.}
-\label{tab:retrieval}
-\end{table}
-
-\subsection{Pooled depth and two-block reference at 100k}
-We compare six, eight, and twelve pooled hidden layers under a 100k-parameter ceiling (Table~\ref{tab:depth100k}). All retain 64 embedding dimensions, learned positions, GELU, parameter-free pooled normalization, and no residual paths or final normalization. Hidden widths are 120, 103, and 84, respectively, and remain fixed across tasks. Thus this tests depth allocation within the budget, not adding layers at constant hidden width. We reuse the six-layer results and train the deeper configurations and two-block transformer with the same batches, evaluation examples, three seeds, and 10,000-update protocol.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Metric & Pooled, 6 & Pooled, 8 & Pooled, 12 & TF, 2 blocks\\
-\midrule
-Position (\%) & $97.61\pm1.38$ & $98.31\pm0.75$ & $96.91\pm2.98$ & $100.00\pm0.00$\\
-Single assoc. (\%) & $29.07\pm0.80$ & $28.32\pm0.21$ & $24.92\pm0.58$ & $28.77\pm0.66$\\
-Multi assoc. (\%) & $34.36\pm0.33$ & $34.32\pm0.24$ & $32.68\pm0.08$ & $80.21\pm34.18$\\
-Language acc. (\%) & $43.25\pm0.38$ & $42.05\pm0.97$ & $39.94\pm0.42$ & $43.16\pm0.46$\\
-Language perplexity & $7.50\pm0.15$ & $7.55\pm0.15$ & $8.19\pm0.31$ & $7.20\pm0.20$\\
-\midrule
-Retrieval parameters & 99,184 & 98,831 & 99,328 & 99,056\\
-Language parameters & 94,473 & 94,647 & 95,733 & 96,081\\
-\bottomrule
-\end{tabular}
-\caption{Approximately 100k-parameter depth comparison: mean $\pm$ sample standard deviation. Pooled column numbers count hidden layers. The transformer has two standard blocks, width 64, four heads, and FFN width 200 per block. Every trainable parameter is included.}
-\label{tab:depth100k}
-\end{table}
-
-Eight layers slightly improve mean copying accuracy, but reduce language accuracy; twelve layers are weaker overall. Six layers remain our default. Against the two-block reference, six-layer pooled language accuracy is similar, without an equivalence claim, but perplexity is about 4.2\% higher. Single-query associative recall remains weak in both architectures. At 10k updates, multi-query transformer accuracy is highly seed-sensitive: 40.74\%, 99.96\%, and 99.93\%, versus 34.36\% on average for pooling. Two seeds nearly solve the multi-query task, so associative weakness cannot be generalized from our one-block results to the two-block architecture. Multi-query training supervises three answers per sequence, whereas single-query training supervises one; the two tasks are trained separately. The transformer seed gap closes with longer training, as shown in Table~\ref{tab:matchedlonger}.
-
-\subsection{Wider embeddings with six hidden layers}
-We increase embedding width to 128, 256, and 512 while retaining six GELU hidden layers, learned positions, parameter-free pooled normalization, and no residuals or final normalization (Table~\ref{tab:width100k}). Hidden widths are reduced to keep total query parameters below 100k. Each configuration keeps its internal dimensions unchanged across tasks; language parameter counts therefore differ and are below the query budget. This reallocates capacity between embeddings and the readout, rather than increasing embedding width with all other dimensions fixed. We reuse the 64-dimensional control and train the new models with the same examples, evaluation sets, three seeds, optimizer, and 10,000-update protocol.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Metric & $d=64$ & $d=128$ & $d=256$ & $d=512$\\
-\midrule
-Hidden width $h$ & 120 & 109 & 88 & 49\\
-Position (\%) & $97.61\pm1.38$ & $98.69\pm0.49$ & $99.06\pm0.12$ & $96.25\pm3.27$\\
-Single assoc. (\%) & $29.07\pm0.80$ & $29.13\pm0.70$ & $28.74\pm0.62$ & $28.39\pm0.56$\\
-Multi assoc. (\%) & $34.36\pm0.33$ & $34.41\pm0.37$ & $34.24\pm0.60$ & $33.88\pm0.14$\\
-Language acc. (\%) & $43.25\pm0.38$ & $42.94\pm0.64$ & $42.48\pm0.28$ & $41.24\pm0.26$\\
-Language perplexity & $7.50\pm0.15$ & $7.49\pm0.05$ & $7.72\pm0.36$ & $8.24\pm0.14$\\
-\midrule
-Retrieval parameters & 99,184 & 98,907 & 98,992 & 99,531\\
-Language parameters & 94,473 & 93,577 & 92,393 & 90,301\\
-\bottomrule
-\end{tabular}
-\caption{Embedding-width comparison with six hidden layers: mean $\pm$ sample standard deviation. All trainable embeddings, affine weights, and biases are counted. No speed comparison is conducted for the wider models.}
-\label{tab:width100k}
-\end{table}
-
-Copying improves up to 256 dimensions, but falls at 512. Wider embeddings do not improve associative retrieval. Language accuracy decreases with width, while perplexity at 128 dimensions is nearly unchanged from 64 and worsens at 256 and 512. Because the language parameter count and hidden width also decrease, these results do not isolate an effect of embedding dimension alone. We retain 64 dimensions as the overall default; 256 dimensions gives the strongest copying result in this sweep.
-
-\subsection{Longer training of the original pooled model}
-We first extend the original $(d,h,K)=(64,120,6)$ pooled configuration to 50,000 updates, retaining GELU, learned positions, parameter-free pooled normalization, and no residuals or final normalization (Table~\ref{tab:longer}). It has 99,184 retrieval parameters and 94,473 language parameters. Adam remains at learning rate 0.001 with no schedule or weight decay. We predeclare evaluations at 10,000, 30,000, and 50,000 updates and report all three, rather than choosing the best checkpoint.
-
-Each task and seed starts from the original random initialization, with the same training-data stream and held-out evaluation examples as earlier experiments. Batches are generated and loaded in chunks of 1,000 updates, and model parameters and Adam state carry continuously between compiled scans. Every task/seed reproduces its earlier 10,000-update held-out loss and accuracy within numerical tolerance. The saved milestone files contain model weights only; optimizer state remains in memory throughout training.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrr}
-\toprule
-Metric & 10k updates & 30k updates & 50k updates\\
-\midrule
-Position (\%) & $97.61\pm1.38$ & $99.68\pm0.11$ & $99.24\pm0.26$\\
-Single assoc. (\%) & $29.07\pm0.80$ & $30.32\pm0.13$ & $29.89\pm0.60$\\
-Multi assoc. (\%) & $34.36\pm0.33$ & $34.57\pm0.11$ & $34.50\pm0.15$\\
-Language acc. (\%) & $43.25\pm0.38$ & $45.56\pm0.49$ & $46.73\pm0.32$\\
-Language perplexity & $7.50\pm0.15$ & $7.42\pm0.07$ & $7.38\pm0.27$\\
-\bottomrule
-\end{tabular}
-\caption{Longer training of our six-layer model: mean $\pm$ sample standard deviation across three seeds. Parameters, data protocol, batch size, and optimizer are unchanged. The matched longer-trained transformer is reported separately in Table~\ref{tab:matchedlonger}.}
-\label{tab:longer}
-\end{table}
-
-More updates improve language accuracy by 3.48 percentage points at 50k, but perplexity falls by only about 1.6\%. Copying improves, with the strongest mean at 30k rather than 50k. Associative-query accuracy changes little, remaining near 30\% for single queries and 34.5\% for multiple queries. Longer training therefore helps some predictions but does not remove the six-layer model's observed associative-retrieval limitation; the shallow follow-up below behaves differently on single queries. These pooled 50k results must not be compared as matched training against earlier 10k transformer runs; the matched-update follow-up is reported in Table~\ref{tab:matchedlonger}.
-
-\subsection{Longer training of a wide single-hidden-layer model}
-We also extend the wide single-hidden-layer control, $(d,h,K)=(64,576,1)$, to 50,000 updates (Table~\ref{tab:shallowlonger}). This is a single FFN, not a multi-branch mixture. It retains learned positions, GELU, parameter-free pooled normalization, and no residuals or final normalization. Total parameters are 100,000 for retrieval and 81,153 for language, versus 99,184 and 94,473 for the six-layer model. Internal widths stay fixed across tasks. Retrieval budgets are closely matched, but the shallow model has fewer language parameters, and its initialization layout differs; this is not an isolated depth-only ablation.
-
-We use the same three seeds, data streams, held-out examples, Adam settings, and predeclared 10k/30k/50k evaluations as the six-layer longer-training experiment. Training starts afresh, with continuous Adam state between 1,000-update scans. Every shallow task/seed reproduces its earlier 10k loss and accuracy. The six-layer controls below reuse the completed longer-training runs; the matched transformer follow-up appears below.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Metric & Shallow, 10k & Shallow, 30k & Shallow, 50k & Six-layer, 50k\\
-\midrule
-Position (\%) & $71.20\pm0.83$ & $82.90\pm3.92$ & $88.83\pm3.86$ & $99.24\pm0.26$\\
-Single assoc. (\%) & $29.15\pm0.50$ & $45.62\pm0.25$ & $46.07\pm0.32$ & $29.89\pm0.60$\\
-Multi assoc. (\%) & $34.46\pm0.13$ & $34.65\pm0.11$ & $34.63\pm0.08$ & $34.50\pm0.15$\\
-Language acc. (\%) & $43.47\pm0.12$ & $46.75\pm0.38$ & $47.09\pm0.30$ & $46.73\pm0.32$\\
-Language perplexity & $7.45\pm0.12$ & $7.44\pm0.25$ & $7.72\pm0.24$ & $7.38\pm0.27$\\
-\bottomrule
-\end{tabular}
-\caption{Longer shallow training and the six-layer control: mean $\pm$ sample standard deviation. Column update counts are training steps, not parameter counts. All columns use the same held-out samples.}
-\label{tab:shallowlonger}
-\end{table}
-
-Single-query accuracy improves by 16.92 percentage points from 10k to 50k, substantially exceeding the six-layer model at the same update count, but still leaving many queries incorrect. Multi-query recall barely changes. Language accuracy rises by 3.62 percentage points, while perplexity worsens at 50k: improved top-1 accuracy does not imply improved probability estimates. At 50k, the six-layer model retains much stronger copying and lower language perplexity, while the shallow model has stronger single-query recall and slightly higher language accuracy. These results qualify any general claim that depth is better: architecture and training duration interact, and neither pooled configuration dominates across tasks.
-
-\subsection{Original sigmoid without normalization at longer training}
-We replace GELU and pooled normalization in the wide shallow model with the original sigmoid/no-normalization pipeline: learned position/token products, sum pooling, input linear layer, sigmoid, and output linear layer (Table~\ref{tab:sigmoidlonger}). Dimensions remain $(d,h,K)=(64,576,1)$, with 100,000 retrieval parameters and 81,153 language parameters. Initial embedding and affine weights are identical to the shallow GELU/normalization control within each seed. Thus architecture size, initial weights, data streams, held-out samples, and optimizer are matched; activation and normalization change together, so their individual effects are not isolated.
-
-Only the sigmoid model is newly trained, for three seeds and 50,000 updates, using the established Adam settings and continuous state across 1,000-update scans. We retain all predeclared 10k/30k/50k evaluations. The control columns reuse the preceding shallow experiments; the matched transformer follow-up appears below.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Metric & Sigmoid, 10k & Sigmoid, 30k & Sigmoid, 50k & GELU/norm, 50k\\
-\midrule
-Position (\%) & $18.72\pm0.58$ & $38.53\pm0.56$ & $57.04\pm0.44$ & $88.83\pm3.86$\\
-Single assoc. (\%) & $30.52\pm0.23$ & $30.80\pm0.25$ & $30.46\pm0.02$ & $46.07\pm0.32$\\
-Multi assoc. (\%) & $34.80\pm0.17$ & $34.77\pm0.17$ & $34.87\pm0.20$ & $34.63\pm0.08$\\
-Language acc. (\%) & $39.96\pm0.44$ & $46.03\pm0.23$ & $47.41\pm0.09$ & $47.09\pm0.30$\\
-Language perplexity & $7.82\pm0.04$ & $7.08\pm0.14$ & $7.34\pm0.16$ & $7.72\pm0.24$\\
-\bottomrule
-\end{tabular}
-\caption{Original sigmoid without normalization versus the matched wide shallow GELU/parameter-free-normalization control: mean $\pm$ sample standard deviation. Update counts denote training steps. Parameter counts and initial weights match between variants.}
-\label{tab:sigmoidlonger}
-\end{table}
-
-Language learns more slowly initially, but the sigmoid variant reaches perplexity 7.08 at 30k, versus 7.44 for the GELU/normalization control at the same update count. At 50k, sigmoid has slightly higher language accuracy and lower perplexity than that control. Its own perplexity worsens from 30k to 50k while accuracy rises, again separating top-1 accuracy from probabilistic quality. Copying remains much weaker, and single-query associative recall stays near the frequency shortcut. Multi-query results remain close to the other pooled models. Thus the original simple pipeline remains competitive on this language task after longer training, despite poorer retrieval; the short-training activation comparison does not establish a universal advantage for GELU and normalization. A matched-duration transformer comparison follows; these longer pooled results should not be compared as matched training with historical 10k transformer controls.
-
-\subsection{Matched longer training of the two-block transformer}
-We extend the default transformer to the same predeclared 10k/30k/50k update counts, reusing the completed pooled runs for comparison (Table~\ref{tab:matchedlonger}). It retains two standard blocks, embedding width 64, four heads, FFN width 200 per block, learned positions, and its standard learned LayerNorm and residual paths. All architectures receive the same examples in the same order within each task and seed, batch size 64, and Adam at 0.001 without a schedule or weight decay. Each task starts from its original initialization and carries model/optimizer state continuously through 1,000-update scans. All twelve transformer task/seed runs reproduce their earlier 10k loss and accuracy before continuing.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Metric & Pooled, 6 layers & Shallow GELU & Shallow sigmoid & TF, 2 blocks\\
-\midrule
-Position (\%) & $99.24\pm0.26$ & $88.83\pm3.86$ & $57.04\pm0.44$ & $100.00\pm0.00$\\
-Single assoc. (\%) & $29.89\pm0.60$ & $46.07\pm0.32$ & $30.46\pm0.02$ & $29.99\pm0.31$\\
-Multi assoc. (\%) & $34.50\pm0.15$ & $34.63\pm0.08$ & $34.87\pm0.20$ & $100.00\pm0.00$\\
-Language acc. (\%) & $46.73\pm0.32$ & $47.09\pm0.30$ & $47.41\pm0.09$ & $46.72\pm0.76$\\
-Language perplexity & $7.38\pm0.27$ & $7.72\pm0.24$ & $7.34\pm0.16$ & $6.81\pm0.11$\\
-\midrule
-Retrieval parameters & 99,184 & 100,000 & 100,000 & 99,056\\
-Language parameters & 94,473 & 81,153 & 81,153 & 96,081\\
-\bottomrule
-\end{tabular}
-\caption{Matched 50,000-update comparison: mean $\pm$ sample standard deviation across three seeds. All models use 64 embedding dimensions. Pooled GELU models use parameter-free pooled normalization; sigmoid uses none. Every trainable parameter is counted. Shallow language variants have fewer parameters. Equal updates and examples do not imply equal compute.}
-\label{tab:matchedlonger}
-\end{table}
-
-The transformer maintains 100\% copying throughout. Single-query accuracy changes from $28.77\pm0.66$\% at 10k to $30.09\pm0.31$\% at 30k and $29.99\pm0.31$\% at 50k. In contrast, its multi-query mean rises from $80.21\pm34.18$\% at 10k to $100.00\pm0.00$\% at both 30k and 50k: the previously weak seed catches up. The earlier seed variability therefore reflects different learning times in these runs, rather than a persistent failure at 50k.
-
-Transformer language accuracy rises from $43.16\pm0.46$\% at 10k to $46.07\pm0.16$\% at 30k and $46.72\pm0.76$\% at 50k. Perplexity changes from $7.20\pm0.20$ to $6.77\pm0.05$ and $6.81\pm0.11$, respectively. Thus it also improves with longer training, without monotonic gains in every metric. At matched 50k updates, pooled top-1 language accuracies remain close, without a statistical equivalence claim, while transformer perplexity is lower. The shallow GELU model retains a substantial single-query advantage, but the transformer solves multi-query recall while these original, unconditioned pooled models do not. The conditioned variant below is evaluated separately at 10k updates. No architecture dominates every metric; these results do not establish general interchangeability.
-
-\subsection{Last-token-conditioned pooling at 10k updates}
-We evaluate Equation~\ref{eq:lastpool} with $(d,h,K)=(64,576,1)$ on all four standard tasks. The final-token interaction adds no trainable parameters: retrieval uses exactly 100,000 and language 81,153. All tasks retain learned positions, parameter-free pooled normalization, one GELU hidden layer, and no residual paths or final normalization. Each task is trained separately from scratch for 10,000 updates with three seeds, batch size 64, and Adam at 0.001 without a schedule or weight decay. Data streams, splits, causal prefixes, and held-out samples follow the established protocol. Model and optimizer state carry continuously through 1,000-update scans. We report the final 10k checkpoint, without best-checkpoint selection. Only the conditioned pooled model is newly trained in this four-task follow-up; no new transformer runs are included.
-
-\begin{table}[ht]
-\centering\small
+\begin{table}[htbp]
+\centering
+\caption{Test results after 50,000 updates. Mean $\pm$ sample SD over three seeds. Accuracies are percentages; lower perplexity is better.}
+\label{tab:main}
 \begin{tabular}{lrr}
 \toprule
-Metric & Parameters & Conditioned pool, 10k\\
+Metric & Conditioned pooling & Sinusoidal Transformer\\
 \midrule
-Position accuracy (\%) & 100,000 & $99.55\pm0.75$\\
-Single associative accuracy (\%) & 100,000 & $95.21\pm3.48$\\
-Multi associative accuracy (\%) & 100,000 & $98.09\pm1.16$\\
-Language accuracy (\%) & 81,153 & $43.68\pm0.33$\\
-Language perplexity & 81,153 & $7.58\pm0.14$\\
+Position copying & $\sd{99.99}{0.01}$ & $\sd{100.00}{0.00}$\\
+Single-query recall & $\sd{98.31}{0.91}$ & $\sd{29.93}{0.39}$\\
+Multi-query recall & $\sd{99.37}{0.30}$ & $\sd{100.00}{0.01}$\\
+Language accuracy & $\sd{46.91}{0.27}$ & $\sd{46.63}{0.42}$\\
+Language perplexity & $\sd{7.61}{0.22}$ & $\sd{6.79}{0.20}$\\
 \bottomrule
 \end{tabular}
-\caption{Last-token-conditioned pooling after 10,000 updates: mean $\pm$ sample standard deviation across three seeds. Multi-query accuracy averages individual answers. All trainable embeddings, weights, and biases are counted.}
-\label{tab:lastpool}
 \end{table}
 
-Single-query accuracies are 91.72\%, 95.21\%, and 98.69\%; multi-query accuracies are 97.49\%, 97.37\%, and 99.43\%. Thus the conditioned pool substantially exceeds the original pooling results on both associative tasks, though neither is fully solved across seeds at 10k. Language accuracy remains near the historical shallow 10k result of $43.47\pm0.12$\%, with slightly higher perplexity than its $7.45\pm0.12$. These historical models use a different initialization layout, so their comparison does not isolate the interaction alone. The conditioned variant has not been trained to 30k or 50k, and its 10k quality must not be treated as a matched-duration comparison with Table~\ref{tab:matchedlonger}.
+Language accuracy is similar in magnitude, with a small descriptive difference in favor of pooling. Perplexity favors the Transformer by 0.82 at 50k. Accuracy measures the top-ranked character; cross-entropy also depends on the probability assigned to the target. The metrics therefore need not rank models identically. Their divergence here supports reporting both, rather than treating top-1 accuracy as equivalent language-model quality.
 
-\paragraph{Short controlled diagnostic.}
-Before the four-task follow-up, we trained matched-initialization single-hidden-layer models for 3,000 updates on multi-query recall. Each has exactly 100,000 parameters, the same three seeds, batches, and held-out samples. A preceding-token-only pool, $\sum_{i<t}P_i\odot E_{x_i}$, scores $34.24\pm0.28$\%; multiplying by the final-token embedding scores $88.25\pm0.93$\%. Adding GELU to each token product before summation scores $87.93\pm1.62$\%, providing no observed advantage over multiplication alone in this diagnostic. The multiplication variant gets all three answers correct in 68.74\% of sequences on average, distinct from its per-answer accuracy. These controls all exclude the final token from the summed memory, isolating the multiplicative interaction within that setup. A separate last-token concatenation diagnostic showed no short-run gain; it is not the architecture in Table~\ref{tab:lastpool}.
+\subsection{Training milestones}
+Table~\ref{tab:trajectory} shows all declared milestones. The Transformer learns copying earlier, while pooling improves gradually to near-perfect performance. On multi-query recall both models rise sharply between 1k and 10k. Pooling single-query recall improves from $31.17\%$ at 1k to $95.21\%$ at 10k and $98.31\%$ at 50k.
 
-\paragraph{Reproduction.}
-The four-task follow-up uses the Python module \path{experiments.longer_training_100k} with \texttt{--architecture token\_product}, \texttt{--steps 10000}, and \texttt{--seed} set separately to 0, 1, and 2. Raw outputs are \path{experiments/token-product100k-seed-*.json}; their aggregate is \path{experiments/token-product100k-summary.json}. The 3k diagnostic is implemented in \path{experiments.last_token_probe}, with results in \path{experiments/token-interaction-shallow-probe.json}. Saved 10k milestones contain model weights, not optimizer state.
-
-\subsection{Activation and normalization in the conditioned pool}
-We complete a two-by-two comparison of GELU versus sigmoid and parameter-free pooled normalization versus no normalization for the last-token-conditioned architecture (Table~\ref{tab:conditionedactivation}). All variants use $(d,h,K)=(64,576,1)$, identical initial embedding and affine parameters within each seed, the same training examples in the same order, the established held-out samples, and the same 10,000-update Adam protocol. Parameter counts are exactly 100,000 for retrieval and 81,153 for language in every variant. The GELU/normalization results reuse Table~\ref{tab:lastpool}; the other three configurations are newly trained on all four tasks across three seeds. Final 10k checkpoints are reported without selection, and model/optimizer state is continuous across 1,000-update scans. No transformer or speed runs are added.
-
-Normalization, when enabled, operates across the 64 coordinates of each summed conditioned vector before the input linear layer, using mean subtraction, variance scaling, and $\epsilon=10^{-5}$. It has no learned scale or bias. Only the readout activation and this pooled normalization change; there is no activation before summation in any of these four configurations.
-
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering\small
-\begin{tabular}{lrrrr}
+\caption{Milestone test means across three seeds. P: conditioned pooling; T: sinusoidal Transformer. Accuracy is in percent. Complete seed dispersion appears in the experiment summaries.}
+\label{tab:trajectory}
+\begin{tabular}{llrrrr}
 \toprule
-Metric & GELU/norm & GELU/no norm & Sigmoid/norm & Sigmoid/no norm\\
+Metric & Model & 1k & 10k & 30k & 50k\\
 \midrule
-Position (\%) & $99.55\pm0.75$ & $99.93\pm0.03$ & $99.98\pm0.02$ & $96.98\pm1.49$\\
-Single assoc. (\%) & $95.21\pm3.48$ & $30.15\pm0.35$ & $30.16\pm0.25$ & $30.54\pm0.23$\\
-Multi assoc. (\%) & $98.09\pm1.16$ & $34.77\pm0.17$ & $41.70\pm11.86$ & $34.78\pm0.12$\\
-Language acc. (\%) & $43.68\pm0.33$ & $40.16\pm0.44$ & $40.64\pm0.41$ & $40.31\pm0.40$\\
-Language perplexity & $7.58\pm0.14$ & $8.19\pm0.25$ & $8.10\pm0.13$ & $7.99\pm0.16$\\
+Copy accuracy & P & 75.52 & 99.55 & 100.00 & 99.99\\
+ & T & 100.00 & 100.00 & 100.00 & 100.00\\
+Single recall & P & 31.17 & 95.21 & 98.08 & 98.31\\
+ & T & 28.65 & 28.63 & 30.03 & 29.93\\
+Multi recall & P & 37.02 & 98.09 & 99.17 & 99.37\\
+ & T & 32.50 & 100.00 & 100.00 & 100.00\\
+Language accuracy & P & 34.62 & 43.68 & 46.29 & 46.91\\
+ & T & 33.73 & 42.97 & 45.46 & 46.63\\
+Language perplexity & P & 10.14 & 7.58 & 7.52 & 7.61\\
+ & T & 10.17 & 7.22 & 6.79 & 6.79\\
 \bottomrule
 \end{tabular}
-\caption{Matched activation and normalization comparison for last-token-conditioned pooling at 10,000 updates: mean $\pm$ sample standard deviation over three seeds. Accuracy is higher-is-better; perplexity is lower-is-better. Every column has identical parameter counts and matched initialization.}
-\label{tab:conditionedactivation}
 \end{table}
 
-Removing normalization while retaining GELU reduces single-query accuracy from 95.21\% to 30.15\% and multi-query accuracy from 98.09\% to 34.77\%, while copying remains above 99.9\%. Replacing GELU with sigmoid while retaining normalization reduces single-query accuracy to 30.16\% and multi-query accuracy to $41.70\pm11.86$\%. The latter is seed-sensitive: multi-query accuracies are 34.77\%, 34.94\%, and 55.40\%. Sigmoid without normalization reaches 30.54\% single-query and 34.78\% multi-query accuracy. Thus neither GELU alone nor pooled normalization alone reproduces the strong associative results at this training duration; their combination is the strongest of the four tested configurations for recall and language. Copying does not follow the same pattern: each configuration exceeds 96\% mean accuracy, and the GELU/normalization mean is slightly below both GELU/no-normalization and sigmoid/normalization.
+Pooling language accuracy improves through 50k, while mean perplexity decreases to 7.52 at 30k and rises to 7.61 at 50k. We retain the final checkpoint rather than selecting 30k post hoc. The trajectory illustrates that longer training under a fixed learning rate does not guarantee improvement in every held-out metric.
 
-These matched comparisons establish an empirical dependence on activation and normalization under the tested settings, not its mechanism or a universal advantage for GELU. Sigmoid's derivative is at most $1/4$ and vanishes at large input magnitudes; GELU permits larger positive responses and retains gradients near one for large positive inputs. These properties could affect optimization and the learning of coordinate interactions. We have not measured saturation, activation distributions, or gradient flow, so these are hypotheses rather than explanations established by the experiments. Longer training, alternative initialization, and separately tuned learning rates could change the ranking.
+\subsection{Controlled final-token ablation}
+We compare three pooling rules at 3,000 updates on multi-query recall. All use identical initialization of their trainable parameters, the same per-seed data, width 64, hidden width 576, pooled normalization, and 100,000 parameters. All exclude the final token from the memory. The unconditioned control pools preceding position--token products; the conditioned variant multiplies them by the final token; a third variant additionally applies GELU to each conditioned memory vector before summation.
 
-Learned pooled scale and bias remain untested for the conditioned model. They would add $2d=128$ parameters; since normalization is immediately followed by an affine layer, their scale and offset can be absorbed into that layer's weights and bias. They therefore change parameterization and potentially optimization, rather than enlarging this readout's representable function class. The historical learned-normalization results below concern different, unconditioned configurations.
+\begin{table}[htbp]
+\centering
+\caption{Controlled multi-query ablation at 3,000 updates; accuracy in percent, mean $\pm$ sample SD over three seeds.}
+\label{tab:ablation}
+\begin{tabular}{lr}
+\toprule
+Pooling rule & Per-answer accuracy\\
+\midrule
+Previous tokens, no final-token product & $\sd{34.24}{0.28}$\\
+Final-token product & $\sd{88.25}{0.93}$\\
+Final-token product, per-token GELU & $\sd{87.93}{1.62}$\\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\paragraph{Reproduction and validation.}
-Use \path{experiments.longer_training_100k} with \texttt{--steps 10000} and each of seeds 0, 1, and 2. The architecture options are \path{token_product}, \path{token_product_gelu_no_norm}, \path{token_product_sigmoid_norm}, and \path{token_product_sigmoid}, respectively. Raw per-seed outputs and aggregates are saved under \path{experiments/}, named \path{token-product*-seed-*.json} and \path{token-product*-summary.json}. Each configuration records its activation and normalization settings. The module \path{experiments.check_token_product_activation} checks shared initialization and parameter counts, the expected pooling/activation formula, causal masking, and five-step compiled versus ordinary loss and complete model/Adam-state parity for multi-query and language shapes. Select \texttt{--activation gelu} or \texttt{--activation sigmoid}, adding \texttt{--norm} for normalized variants.
+The final-token product improves mean accuracy by 54.01 percentage points in this controlled setting. Adding per-token GELU gives no observed mean improvement. The main conditioned variant answers all three queries correctly in $68.74\%$ of sequences on average, which is distinct from its $88.25\%$ per-answer score. This ablation supports the conditioning mechanism at this budget and training duration, without establishing its value at other lengths or scales.
 
-\subsection{Historical activation and pooled normalization}
+\subsection{Readout and normalization follow-ups}
+Table~\ref{tab:activation} compares 10k runs with different readout activations and pooled normalization. All retain the final-token interaction and the same dimensions. Removing normalization from the GELU model or replacing GELU with sigmoid substantially reduces recall in these runs. Copying remains high in several weakened variants, so success on copying alone would not identify the best overall configuration.
 
-We isolate activation and pooled-normalization choices in a one-hidden-layer model (Table~\ref{tab:poolnorm}). Normalization is applied before the input linear layer, not before the output layer. Parameter-free normalization uses Equation~(1); learned LayerNorm additionally applies $\gamma\odot\widetilde z+\beta$, where $\gamma,\beta\in\mathbb{R}^d$ are learned scale and bias, initialized to ones and zeros. All variants learn both position and token embeddings, with no final normalization.
-
-The position-copy diagnostic uses $(d,h,K)=(255,240,1)$ and 113,136 parameters without learned scale/bias, or 113,646 with them. Language uses $(32,152,1)$ and 18,065 or 18,129 parameters. Models share initial embedding and affine weights within each task and seed, training examples, and the same three-seed, 10,000-update Adam protocol. Copy controls reuse the earlier diagnostic runs; their 4,096-example evaluation set is reused exactly for the learned-normalization variants. This differs from the 16,384-example retrieval evaluations above. All six language variants are rerun on the established splits and test windows.
-
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering\small
+\caption{10k follow-ups, mean $\pm$ sample SD across three seeds. Accuracies are percentages.}
+\label{tab:activation}
 \begin{tabular}{llrrr}
 \toprule
-Activation & Pooled norm & Copy acc. (\%) & Language acc. (\%) & Language PPL\\
+Activation & Pool norm & Single recall & Multi recall & Language PPL\\
 \midrule
-Sigmoid & None & $18.59\pm0.56$ & $38.12\pm0.27$ & $8.19\pm0.07$\\
-Sigmoid & Parameter-free & $58.27\pm1.73$ & $38.50\pm0.23$ & $8.22\pm0.08$\\
-Sigmoid & Learned & $66.89\pm1.87$ & $39.75\pm0.14$ & $7.81\pm0.08$\\
-GELU & None & $41.38\pm4.35$ & $38.92\pm0.34$ & $8.17\pm0.06$\\
-GELU & Parameter-free & $98.02\pm0.35$ & $40.36\pm0.25$ & $7.81\pm0.12$\\
-GELU & Learned & $97.81\pm0.42$ & $40.60\pm0.32$ & $7.85\pm0.10$\\
+GELU & Yes & $\sd{95.21}{3.48}$ & $\sd{98.09}{1.16}$ & $\sd{7.58}{0.14}$\\
+GELU & No & $\sd{30.15}{0.35}$ & $\sd{34.77}{0.17}$ & $\sd{8.19}{0.25}$\\
+Sigmoid & Yes & $\sd{30.16}{0.25}$ & $\sd{41.70}{11.86}$ & $\sd{8.10}{0.13}$\\
+Sigmoid & No & $\sd{30.54}{0.23}$ & $\sd{34.78}{0.12}$ & $\sd{7.99}{0.16}$\\
 \bottomrule
 \end{tabular}
-\caption{Activation and pooled-normalization comparison: mean $\pm$ sample standard deviation. Copy and language use different model sizes, specified in the text. Accuracy is higher-is-better; PPL denotes perplexity, lower-is-better. Learned normalization adds $2d$ parameters.}
-\label{tab:poolnorm}
 \end{table}
 
-Learned scale and bias improve the sigmoid model over parameter-free normalization on both tasks. With GELU, differences are small and mixed: learned normalization slightly increases language accuracy, but has slightly worse perplexity and copy accuracy. These results do not establish an overall benefit from learned normalization for GELU, so our default retains the simpler parameter-free form. The longer-training sigmoid/no-normalization results above further show that these short-training findings do not apply uniformly across training durations and tasks.
+These results motivate retaining normalization and GELU. They do not show that other activations or unnormalized models cannot work after retuning optimization or initialization. The final architecture was selected through exploratory experiments, although the reported checkpoints within runs were fixed in advance.
 
-\subsection{Transformer depth at a fixed budget}
-We compare one, two, and four standard transformer blocks under a 10k-parameter ceiling (Table~\ref{tab:blocks}). All use learned positions, embedding width 16, four heads, and one FFN hidden layer per block. Retrieval FFN widths are 162, 63, and 14; language widths are 186, 75, and 19. Thus adding blocks requires narrower FFNs. All models receive identical training batches in the same order within each seed, the same held-out examples, and the same optimizer and update count. For context, we include our default learned-position, six-hidden-layer pooled model without final normalization.
+\section{CPU implementation measurements}
+We benchmark the seed-0 50k checkpoints in FP32 on an Intel Core Ultra 7 155H with JAX 0.10.1 on CPU. Runs use CPU affinity 0--21, \texttt{OMP\_NUM\_THREADS=1}, and \texttt{OPENBLAS\_NUM\_THREADS=1}. Seven warmed trials alternate the two models, with no concurrent benchmark jobs. Inputs are resident on device. Compilation, data generation, and host transfers are excluded; neither model uses a key/value cache.
 
-\begin{table}[ht]
+Inference trials contain 20 warmups and 500 timed requests, synchronizing each request. Training trials use batch size 64 and 200 Adam updates with fresh optimizer state per trial. A compiled scan preserves model and optimizer state across those updates and synchronizes the complete final state. Five-update comparisons verify loss and complete model/Adam-state agreement with the reference update loop within relative tolerance $10^{-4}$ and absolute tolerance $10^{-5}$. Timing updates are discarded and checkpoint files remain unchanged.
+
+\begin{table}[htbp]
 \centering\small
-\begin{tabular}{lrrrr}
+\caption{Median CPU milliseconds per request or update across seven trials. P: pooling; T: Transformer. The ratio is T/P. Multi-query requests produce three causal answers.}
+\label{tab:speed}
+\begin{tabular}{llrrr}
 \toprule
-Metric & Pooled & TF, 1 block & TF, 2 blocks & TF, 4 blocks\\
+Task & Mode & P (ms) & T (ms) & Ratio\\
 \midrule
-Position (\%) & $98.08\pm0.76$ & $100.00\pm0.00$ & $100.00\pm0.00$ & $100.00\pm0.00$\\
-Single assoc. (\%) & $23.42\pm2.13$ & $30.02\pm0.11$ & $29.73\pm0.21$ & $29.45\pm0.68$\\
-Multi assoc. (\%) & $29.73\pm1.09$ & $31.49\pm1.54$ & $34.57\pm0.05$ & $34.37\pm0.03$\\
-Language acc. (\%) & $35.31\pm0.34$ & $38.24\pm0.52$ & $38.70\pm0.50$ & $37.64\pm0.67$\\
-Language perplexity & $9.78\pm0.04$ & $8.36\pm0.13$ & $8.43\pm0.09$ & $8.62\pm0.11$\\
+Copy & Inference, batch 1 & 0.440 & 1.234 & 2.80\\
+Single & Inference, batch 1 & 0.457 & 1.292 & 2.83\\
+Multi & Inference, batch 1 & 0.495 & 1.303 & 2.63\\
+Language & Inference, batch 1 & 0.494 & 1.370 & 2.77\\
 \midrule
-Retrieval parameters & 9,976 & 9,970 & 9,950 & 9,976\\
-Language parameters & 8,613 & 9,995 & 9,975 & 9,869\\
+Copy & Inference, batch 64 & 0.662 & 2.344 & 3.54\\
+Single & Inference, batch 64 & 0.652 & 2.398 & 3.68\\
+Multi & Inference, batch 64 & 1.062 & 2.878 & 2.71\\
+Language & Inference, batch 64 & 0.904 & 4.107 & 4.54\\
+\midrule
+Copy & Compiled update, batch 64 & 1.111 & 5.707 & 5.14\\
+Single & Compiled update, batch 64 & 1.114 & 5.365 & 4.82\\
+Multi & Compiled update, batch 64 & 2.712 & 7.257 & 2.68\\
+Language & Compiled update, batch 64 & 1.088 & 9.078 & 8.35\\
 \bottomrule
 \end{tabular}
-\caption{Block-depth comparison: mean $\pm$ sample standard deviation across three seeds and 10,000 updates. Accuracy is higher-is-better; perplexity is lower-is-better. All trainable parameters are counted. Pooled language results use fewer parameters than these transformer configurations.}
-\label{tab:blocks}
 \end{table}
 
-Two blocks improve multi-query accuracy over one block, but single-query recall remains near the frequency shortcut. Four blocks offer no further gain. Language results are mixed: two blocks have slightly higher accuracy, while one block has lower perplexity. Transformers outperform our default small pooled model on these metrics, with a larger language parameter count. These results concern depth allocation within a small budget, not scaling at fixed FFN width. No speed comparison was conducted for these small multi-block configurations; the CPU timings below use a separate approximately 100k-parameter two-block reference.
+Pooling has lower measured cost in all listed modes. These are measurements of short-context implementations on one CPU, including their dispatch and synchronization behavior, rather than hardware-independent ratios. The models differ in parameter count, internal computation, and achieved quality. In particular, the language update ratio does not establish faster training to the Transformer's perplexity, which pooling does not attain at the reported checkpoints. Full trial ranges and Python-loop update measurements are retained with the raw timing artifacts.
 
-\subsection{Fixed positional encoding}
-We also replace learned position tables in both architectures with fixed sinusoidal vectors, using the sine/cosine construction with frequency base 10,000 from \cite{vaswani}. Positions are indexed from zero. Our model multiplies these vectors with token embeddings before pooling; the transformer adds them to token embeddings. Fixed positions contribute no learned parameters, removing $Ld$ parameters from the pooled model's count.
+\section{Limitations and next experiments}
+The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses 32 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
-We reuse the same tasks, data, three seeds, and 10,000-update protocol, and allocate the freed budget to hidden width (Table~\ref{tab:fixed}). The pooled model retains $d=64$ and six hidden layers, with $h=15$ for retrieval and $h=23$ for language. The transformer retains $d=16$ and one standard block, with FFN widths 170 and 201, respectively. Because hidden widths also change, this is a matched-budget comparison, not an isolated positional-encoding ablation.
+The baseline comparison also has limited scope. We compare one Transformer configuration and one shared optimizer setup, without architecture-specific hyperparameter searches or equal-compute training. The low single-query Transformer result particularly needs diagnosis before it can support a broader comparative conclusion. Useful controls include a learning-rate sweep, alternative initialization, additional attention depth, and checks of how the number and placement of supervised queries affect learning.
 
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrr}
-\toprule
-Metric & Pooled & Transformer\\
-\midrule
-Position-copy accuracy (\%) & $21.11\pm0.54$ & $100.00\pm0.00$\\
-Single associative accuracy (\%) & $26.99\pm1.26$ & $29.77\pm0.19$\\
-Multi associative accuracy (\%) & $30.30\pm0.64$ & $31.15\pm0.60$\\
-Language accuracy (\%) & $27.19\pm0.49$ & $37.70\pm0.84$\\
-Language perplexity $\downarrow$ & $13.10\pm0.15$ & $8.60\pm0.21$\\
-\bottomrule
-\end{tabular}
-\caption{Fixed sinusoidal positions: mean $\pm$ sample standard deviation. Retrieval parameter counts are 9,855 (pooled) and 9,978 (transformer); language counts are 9,975 and 9,978. All counts include every trainable parameter.}
-\label{tab:fixed}
-\end{table}
+Three seeds provide a modest view of training variation. Shared evaluation samples, overlapping language windows, and a single language split limit statistical generalization. Rounded values of $100.00\%$ need not imply zero errors, and sample standard deviations are not significance tests. Prior exploratory architecture selection also means that a fixed final checkpoint does not make the whole research process a preregistered comparison.
 
-Despite its larger hidden widths, the fixed-position pooled configuration performs much worse on copying and language than the smaller learned-position configuration in Tables~\ref{tab:language} and~\ref{tab:retrieval}. We therefore retain learned positions as the default. This result concerns the tested sinusoidal construction, not all fixed encodings; no long-context or timing comparison was conducted for this variant.
-
-\section{Context and limitations}
-Embedding-based feed-forward prediction is established in neural language modeling \cite{bengio}. Elementwise position weighting followed by summation also appears in memory networks \cite{memory}. We study a particular small-model configuration and its empirical tradeoffs; we do not claim position-weighted pooling itself is a new principle.
-
-Our evidence covers short contexts, one character corpus, small parameter budgets, and three training seeds. Evaluation sets were reused during exploratory development, so these are not blind confirmatory results. We report no statistical equivalence or significance claim. Historical baselines use one attention block; the current reference has two. We evaluate two and four blocks at the smaller budget, and two blocks on all four tasks at approximately 100k parameters. The large multi-query result has substantial seed variation at 10k updates, which disappears by 30k in the tested runs. Larger transformer stacks remain untested at that scale. Neither architecture received an exhaustive, equal-budget tuning search. Equal parameters and updates also do not imply equal training computation.
-
-Experiments use compiled training loops, not an entirely compiled end-to-end pipeline. In the main 10,000-update comparisons, Python prepares all training batches in memory, then invokes compiled scans of 1,000, 2,000, and 7,000 updates, evaluating after cumulative updates 1,000, 3,000, and 10,000. Each scan includes forward prediction, loss, gradient computation, and Adam updates. Model parameters and optimizer state carry across scans without resetting. Data preparation, evaluation, and checkpoint saving remain outside the compiled scans. Preloading all batches is an implementation choice, not a requirement of compiled training. The longer-training experiments and conditioned-pooling 10k follow-up instead generate and load batches per 1,000-update scan, while preserving model and optimizer state. The historical copy controls in the activation comparison used individual JIT-compiled updates; five-step checks verify matching compiled-loop losses and complete model/optimizer state for the new learned-normalization variants. In the multi-block comparison, preceding blocks compute all causal token states, while the final block computes only supervised outputs. For the one-block transformer, we compute attention outputs and feed-forward activations only at supervised positions, retaining all permitted keys and values. Logits and parameter gradients were checked against the full-position implementation. The timing comparison below uses two blocks, computing all states in the first and only the supervised output in the second. Two blocks are our reference for future experiments; earlier quality tables retain their explicitly labeled baselines.
-
-\section{CPU performance}
-We benchmark the approximately 100k-parameter retrieval configurations on an Intel Core Ultra 7 155H CPU using JAX 0.10.1 and Flax 0.12.7, with FP32 values and all 22 logical CPUs available. Context length is 16. Models run sequentially in one process, with alternating order over seven warmed-up trials. We report median time per request or update. Inputs are resident in memory; data generation, transfers and compilation are excluded. Timing uses seed-0 position-copy checkpoints and does not average over training seeds. The pooled model retains $(d,h,K)=(64,120,6)$ without final normalization. The transformer has two standard blocks, embedding width 64, four heads, and FFN width 200 in each block. Both use learned positions. The two-block checkpoint is trained for 10,000 updates and reaches 100\% position-copy accuracy on its held-out set; timing remains a single-checkpoint measurement, separate from the three-seed quality comparison in Table~\ref{tab:depth100k}.
-
-\begin{table}[ht]
-\centering\small
-\begin{tabular}{lrrr}
-\toprule
-Measurement & Pooled (ms) & Transformer (ms) & Speedup\\
-\midrule
-Inference, batch 1 & 1.570 & 2.587 & 1.65$\times$\\
-Inference, batch 64 & 1.970 & 4.211 & 2.14$\times$\\
-Python-driven training, batch 64 & 3.357 & 8.977 & 2.67$\times$\\
-Compiled-loop training, batch 64 & 1.415 & 7.445 & 5.26$\times$\\
-\bottomrule
-\end{tabular}
-\caption{Isolated CPU timings against the optimized two-block transformer: 99,184 pooled parameters versus 99,056 transformer parameters. Training batches contain 64 examples.}
-\end{table}
-
-Each inference request is synchronized. Python-driven training retains per-update dispatch; compiled-loop training executes 200 Adam updates inside a compiled scan and synchronizes all resulting state. Each timed scan receives a prebuilt sequence of resident batches. The reported time per update is scan execution time divided by 200; it excludes data preparation, evaluation, checkpointing, and compilation, and is not total end-to-end training time. Both implementations agree on five-step losses and complete model/optimizer state within numerical tolerance. The pooled model is faster in this setting, most clearly in compiled training. Batch-1 inference varies noticeably across trials: pooled trial averages range from 0.800 to 1.690 ms, versus 1.651 to 2.660 ms for the transformer. Absolute times also differ from earlier timing sessions; ratios here compare models within this run. Fresh contexts are processed without a KV cache. The transformer's first block has quadratic attention work in context length, while pooling has linear work; context 16 alone does not establish a long-context scaling advantage. These are per-update measurements, not time to equal accuracy: the transformer learns position copying in fewer updates. No GPU, long-context, cached generation, or memory benchmark is reported.
+Teacher-forced multi-query evaluation does not establish reliable autoregressive retrieval. A follow-up should feed predicted earlier answers back into subsequent queries and report both per-answer and all-answers-correct accuracy. More demanding retrieval tests should vary memory size, repeated keys, distractors, query positions, and key/value distributions. Equal-quality timing, GPU measurements, optimized incremental implementations, and comparisons with other simple pooling and recurrent baselines would better characterize practical efficiency.
 
 \section{Conclusion}
-Position--token pooling offers a simple computational tradeoff in small models, and its retrieval behavior depends strongly on how the current token interacts with pooled memory. A parameter-free last-token multiplication raises multi-query recall from 34.24\% to 88.25\% in a matched-initialization 3k-update diagnostic. At 10k updates, the conditioned one-hidden-layer model reaches $95.21\pm3.48$\% single-query and $98.09\pm1.16$\% multi-query recall, with $99.55\pm0.75$\% copying. Its language accuracy is $43.68\pm0.33$\% with perplexity $7.58\pm0.14$; longer training remains untested. Matched activation/normalization tests reduce multi-query recall to 34.77\% without normalization and $41.70\pm11.86$\% with sigmoid and normalization. Both choices matter at 10k updates, although their optimization mechanism and longer-duration behavior remain unresolved. Separately, the original six-layer model has similar language accuracy to a two-block transformer at matched 50k updates but worse perplexity, and unconditioned pooled models remain near 35\% on multi-query recall while the transformer reaches 100\%. Existing context-16 CPU measurements show faster updates and batched inference for the original six-layer model, but do not measure the conditioned variant or time to equal quality. Longer contexts, larger datasets, subword tokens, matched longer-duration conditioned runs, and broader baselines are needed to assess the generality of these findings.
+Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. A controlled ablation identifies a substantial gain from the final-token product without adding parameters, while follow-ups favor pooled normalization and a GELU readout. At 50k updates, the model has language accuracy close to the selected Transformer but worse perplexity, and its measured CPU costs are lower in the tested implementations. The evidence supports further study of conditioned pooling as a small-model design, with capacity, baseline optimization, and broader language evaluation remaining open.
 
-\begin{thebibliography}{9}\small
-\bibitem{vaswani} A. Vaswani et al. \emph{Attention Is All You Need}. 2017. \url{https://arxiv.org/abs/1706.03762}.
-\bibitem{bengio} Y. Bengio et al. \emph{A Neural Probabilistic Language Model}. JMLR, 2003. \url{https://www.jmlr.org/papers/v3/bengio03a.html}.
-\bibitem{memory} S. Sukhbaatar et al. \emph{End-To-End Memory Networks}. 2015. \url{https://arxiv.org/abs/1503.08895}.
-\bibitem{zoology} S. Arora et al. \emph{Zoology: Measuring and Improving Recall in Efficient Language Models}. 2023. \url{https://arxiv.org/abs/2312.04927}.
-\bibitem{data} A. Karpathy. Tiny Shakespeare, distributed with \emph{char-rnn}. \url{https://github.com/karpathy/char-rnn/tree/master/data/tinyshakespeare}.
+\appendix
+\section{Reproducibility and artifact map}
+All paths below are relative to the repository root. Main quality results are in \path{experiments/current64-50k/summary.json} and \path{summary.txt}; per-seed files in that directory retain each task's metrics and checkpoints. The controlled conditioning ablation is in \path{experiments/token-interaction-shallow-probe.json}. Readout follow-ups are in the \path{token-product100k}, \path{token-product-sigmoid100k}, \path{token-product-sigmoid-norm100k}, and \path{token-product-gelu-no-norm100k} summary JSON files under \path{experiments/}. The separate positional-encoding control is \path{experiments/tf-positions-multi-10k-summary.json}.
+
+Timing methodology, medians, and trial ranges are recorded in \path{experiments/current64-50k/speed-summary.txt}; raw records are \path{speed-position.json}, \path{speed-single.json}, \path{speed-multi.json}, and \path{speed-language.json} in the same directory. Training and evaluation use JAX/Flax NNX. Tested dependencies are JAX/JAXlib 0.10.1, Flax 0.12.7, Optax 0.2.6, and NumPy 2.3.4.
+
+After installing the project, the main comparison can be reproduced from the repository root with:
+\begin{verbatim}
+python -m experiments.run_current64_50k
+\end{verbatim}
+This runs both architectures for seeds 0--2 and summarizes the declared milestones. It performs new training rather than merely rebuilding tables. To summarize existing runs only:
+\begin{verbatim}
+python -m experiments.run_current64_50k --summarize-only
+\end{verbatim}
+For the controlled ablation, run from the repository root:
+\begin{verbatim}
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+python -m experiments.last_token_probe \
+  --layers 1 --hidden 576 --steps 3000 --seeds 3 \
+  --variants previous_pool token_product token_product_gelu \
+  --output experiments/token-interaction-shallow-probe.json
+\end{verbatim}
+For each timing task, use:
+\begin{verbatim}
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+python -m experiments.current_speed --task language \
+  --output experiments/current64-50k/speed-language.json
+\end{verbatim}
+Replace \texttt{language} with \texttt{position}, \texttt{single}, or \texttt{multi} for the other timing tasks. Saved model-weight files do not contain optimizer state for exact training resumption. Continuous Adam state is maintained within each original training run.
+
+The Tiny Shakespeare source file is \path{data/shakespeare.txt}, with SHA-256:
+\begin{center}\small\texttt{86c4e6aa9db7c042ec79f339dcb96d42b}\par
+\texttt{0075e16b8fc2e86bf0ca57e2dc565ed}.\end{center}
+
+\begin{thebibliography}{9}
+\bibitem{transformer}
+Ashish Vaswani et al. 2017.
+\emph{Attention Is All You Need}. NeurIPS.
+\url{https://arxiv.org/abs/1706.03762}.
+\bibitem{deepsets}
+Manzil Zaheer et al. 2017.
+\emph{Deep Sets}. NeurIPS.
+\url{https://arxiv.org/abs/1703.06114}.
+\bibitem{zoology}
+Simran Arora et al. 2024.
+\emph{Zoology: Measuring and Improving Recall in Efficient Language Models}.
+ICLR. \url{https://arxiv.org/abs/2312.04927}.
+\bibitem{shakespeare}
+Andrej Karpathy. \emph{Tiny Shakespeare}, distributed with \texttt{char-rnn}.
+\url{https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt}.
 \end{thebibliography}
 \end{document}
