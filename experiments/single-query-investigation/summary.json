@@ -1,0 +1,95 @@
+{
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "steps": 10000,
+  "final_test_seed": 2026112403,
+  "final_test_examples": 16384,
+  "trained_from_scratch": true,
+  "tuning_note": "Exploratory: lower LR selected after seed-0 diagnostic; seeds 1 and 2 are replication. Final test is separate from diagnostic curves.",
+  "results": {
+    "lr_0003": {
+      "accuracy_by_seed": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_by_seed": [
+        0.0003468642244115472,
+        0.0002395604969933629,
+        0.00020313571440055966
+      ]
+    },
+    "reference_lr_001": {
+      "accuracy_by_seed": [
+        0.28485107421875,
+        0.2872314453125,
+        0.289306640625
+      ],
+      "accuracy_mean": 0.2871297200520833,
+      "accuracy_sd": 0.0022295243935828587,
+      "loss_by_seed": [
+        1.4889250993728638,
+        1.4813677072525024,
+        1.4838671684265137
+      ]
+    }
+  },
+  "lower_lr_probes": [
+    {
+      "seed": 0,
+      "all_five_query_accuracy": 1.0,
+      "same_prediction_for_all_keys": 0.000244140625,
+      "layer2_correct_value_by_head": [
+        0.8759570121765137,
+        0.9562242031097412,
+        0.9471204280853271,
+        0.8787757158279419
+      ],
+      "layer1_value_to_preceding_key_by_head": [
+        0.26071563363075256,
+        0.9289726614952087,
+        0.5064871311187744,
+        0.4576747417449951
+      ]
+    },
+    {
+      "seed": 1,
+      "all_five_query_accuracy": 1.0,
+      "same_prediction_for_all_keys": 0.000244140625,
+      "layer2_correct_value_by_head": [
+        0.9571555852890015,
+        0.8887770175933838,
+        0.9410125017166138,
+        0.9413010478019714
+      ],
+      "layer1_value_to_preceding_key_by_head": [
+        0.12540310621261597,
+        0.8515893816947937,
+        0.9299336671829224,
+        0.2744278907775879
+      ]
+    },
+    {
+      "seed": 2,
+      "all_five_query_accuracy": 1.0,
+      "same_prediction_for_all_keys": 0.000244140625,
+      "layer2_correct_value_by_head": [
+        0.9333055019378662,
+        0.9553360939025879,
+        0.9172840714454651,
+        0.9169620275497437
+      ],
+      "layer1_value_to_preceding_key_by_head": [
+        0.29794198274612427,
+        0.28053590655326843,
+        0.8191203474998474,
+        0.7854710221290588
+      ]
+    }
+  ]
+}

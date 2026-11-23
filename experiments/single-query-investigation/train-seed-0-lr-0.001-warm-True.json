@@ -1,0 +1,25 @@
+{
+  "seed": 0,
+  "lr": 0.001,
+  "steps": 1000,
+  "warmstart": true,
+  "evaluation_seed": 2026112402,
+  "initial": {
+    "accuracy": [
+      1.0
+    ],
+    "loss": 1.3294396921992302e-05
+  },
+  "history": [
+    {
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 4.8189423978328705e-05
+      },
+      "train_loss": 3.363192081451416e-05
+    }
+  ]
+}

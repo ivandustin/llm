@@ -1,0 +1,129 @@
+{
+  "seed": 1,
+  "lr": 0.0003,
+  "steps": 10000,
+  "warmstart": false,
+  "evaluation_seed": 2026112402,
+  "initial": {
+    "accuracy": [
+      0.03662109375
+    ],
+    "loss": 4.536994457244873
+  },
+  "history": [
+    {
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.287353515625
+        ],
+        "loss": 1.7821136713027954
+      },
+      "train_loss": 1.7288563251495361
+    },
+    {
+      "step": 2000,
+      "metrics": {
+        "accuracy": [
+          0.296142578125
+        ],
+        "loss": 1.6644866466522217
+      },
+      "train_loss": 1.6893209218978882
+    },
+    {
+      "step": 3000,
+      "metrics": {
+        "accuracy": [
+          0.303955078125
+        ],
+        "loss": 1.5715484619140625
+      },
+      "train_loss": 1.7151777744293213
+    },
+    {
+      "step": 4000,
+      "metrics": {
+        "accuracy": [
+          0.918701171875
+        ],
+        "loss": 0.2442328929901123
+      },
+      "train_loss": 0.21993382275104523
+    },
+    {
+      "step": 5000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.005624358542263508
+      },
+      "train_loss": 0.003318294882774353
+    },
+    {
+      "step": 6000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.0018925628392025828
+      },
+      "train_loss": 0.0014385133981704712
+    },
+    {
+      "step": 7000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.0008975889068096876
+      },
+      "train_loss": 0.0007026195526123047
+    },
+    {
+      "step": 8000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.0007321345619857311
+      },
+      "train_loss": 0.0005185455083847046
+    },
+    {
+      "step": 9000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.00048236618749797344
+      },
+      "train_loss": 0.0005233585834503174
+    },
+    {
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          1.0
+        ],
+        "loss": 0.00023543275892734528
+      },
+      "train_loss": 0.00021344423294067383
+    }
+  ],
+  "final_test_seed": 2026112403,
+  "final_test": {
+    "accuracy": [
+      1.0
+    ],
+    "loss": 0.0002395604969933629
+  },
+  "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+  "reference_lr_001_10k_same_test": {
+    "accuracy": [
+      0.2872314453125
+    ],
+    "loss": 1.4813677072525024
+  }
+}

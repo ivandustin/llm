@@ -1,0 +1,260 @@
+{
+  "sample_seed": 2026112401,
+  "examples": 16384,
+  "bag_mode_accuracy": 0.31256103515625,
+  "bag_optimal_expected_accuracy": 0.30816650390625,
+  "runs": [
+    {
+      "seed": 0,
+      "task": "single",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.29779052734375
+        ],
+        "loss": 1.6104624271392822
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.28798828125,
+      "same_prediction_for_all_keys": 0.749267578125,
+      "prediction_matches_bag_mode": 0.47332763671875
+    },
+    {
+      "seed": 0,
+      "task": "single",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          0.28839111328125
+        ],
+        "loss": 1.485052466392517
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.2828369140625,
+      "same_prediction_for_all_keys": 0.87347412109375,
+      "prediction_matches_bag_mode": 0.4381103515625
+    },
+    {
+      "seed": 0,
+      "task": "single",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          0.31085205078125
+        ],
+        "loss": 1.4544891119003296
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.303857421875,
+      "same_prediction_for_all_keys": 0.9188232421875,
+      "prediction_matches_bag_mode": 0.5494384765625
+    },
+    {
+      "seed": 0,
+      "task": "multi",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.2972412109375,
+          0.32611083984375,
+          0.36260986328125
+        ],
+        "loss": 1.4589232206344604
+      }
+    },
+    {
+      "seed": 0,
+      "task": "multi",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "loss": 1.3267544090922456e-05
+      }
+    },
+    {
+      "seed": 0,
+      "task": "multi",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          0.99993896484375,
+          1.0,
+          1.0
+        ],
+        "loss": 5.848209184478037e-05
+      }
+    },
+    {
+      "seed": 1,
+      "task": "single",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.29449462890625
+        ],
+        "loss": 1.6037768125534058
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.29068603515625,
+      "same_prediction_for_all_keys": 0.76171875,
+      "prediction_matches_bag_mode": 0.46148681640625
+    },
+    {
+      "seed": 1,
+      "task": "single",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          0.295166015625
+        ],
+        "loss": 1.4751076698303223
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.2884765625,
+      "same_prediction_for_all_keys": 0.8553466796875,
+      "prediction_matches_bag_mode": 0.56817626953125
+    },
+    {
+      "seed": 1,
+      "task": "single",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          0.30535888671875
+        ],
+        "loss": 1.463509202003479
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.3013427734375,
+      "same_prediction_for_all_keys": 0.91900634765625,
+      "prediction_matches_bag_mode": 0.49176025390625
+    },
+    {
+      "seed": 1,
+      "task": "multi",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.293701171875,
+          0.317626953125,
+          0.35736083984375
+        ],
+        "loss": 1.4710593223571777
+      }
+    },
+    {
+      "seed": 1,
+      "task": "multi",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "loss": 0.00014891239698044956
+      }
+    },
+    {
+      "seed": 1,
+      "task": "multi",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "loss": 1.493026502430439e-08
+      }
+    },
+    {
+      "seed": 2,
+      "task": "single",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.28936767578125
+        ],
+        "loss": 1.6330605745315552
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.2839111328125,
+      "same_prediction_for_all_keys": 0.77410888671875,
+      "prediction_matches_bag_mode": 0.44140625
+    },
+    {
+      "seed": 2,
+      "task": "single",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          0.293212890625
+        ],
+        "loss": 1.4785643815994263
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.28890380859375,
+      "same_prediction_for_all_keys": 0.858642578125,
+      "prediction_matches_bag_mode": 0.44232177734375
+    },
+    {
+      "seed": 2,
+      "task": "single",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          0.30438232421875
+        ],
+        "loss": 1.4593349695205688
+      },
+      "implementation_checks": "full-prefix logits/gradients and suffix exclusion passed",
+      "all_five_query_accuracy": 0.3001953125,
+      "same_prediction_for_all_keys": 0.91058349609375,
+      "prediction_matches_bag_mode": 0.51300048828125
+    },
+    {
+      "seed": 2,
+      "task": "multi",
+      "step": 1000,
+      "metrics": {
+        "accuracy": [
+          0.28973388671875,
+          0.31964111328125,
+          0.35675048828125
+        ],
+        "loss": 1.4677197933197021
+      }
+    },
+    {
+      "seed": 2,
+      "task": "multi",
+      "step": 10000,
+      "metrics": {
+        "accuracy": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "loss": 1.8063137758872472e-05
+      }
+    },
+    {
+      "seed": 2,
+      "task": "multi",
+      "step": 50000,
+      "metrics": {
+        "accuracy": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "loss": 2.0089075405849144e-05
+      }
+    }
+  ]
+}

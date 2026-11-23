@@ -67,6 +67,16 @@ CPU implementation timings do not measure time to equal quality.
   multi-query recall, and 46.63% ± 0.42 language, with perplexity 6.79 ± 0.20.
 - Implementation: `experiments/depth_100k_test.py`; longer training uses
   `experiments/longer_training_100k.py --architecture transformer`.
+- Single-query failure diagnostic: changing only Adam's learning rate from
+  0.001 to 0.0003 yields 100.00% ± 0.00 across three seeds at 10k updates on
+  a separate 16,384-sequence test; the original 0.001 checkpoints score
+  28.71% ± 0.22 on that same sample. The failed models largely ignore the
+  queried key and choose frequent stored values. This is evidence of a
+  training-regime failure, not a demonstrated Transformer capacity limit.
+  The lower rate was selected exploratorily using seed 0 and replicated with
+  seeds 1–2; existing reference tables retain Adam 0.001. See
+  `experiments/single-query-investigation/summary.txt` and the reproducible
+  diagnostic `experiments/investigate_single_query.py`.
 
 The table below is the **historical learned-position** reference, not the new
 sinusoidal default.

@@ -1,0 +1,40 @@
+Single-query Transformer investigation (2026-11-24)
+
+Two-block sinusoidal Transformer: d64, four heads, FF200, 98032 parameters.
+Adam, batch64, 10000 updates; same initial seed and training stream as reference.
+Only learning rate changed. No schedule, weight decay, architecture or generator changes.
+Three seeds; means +/- sample SD. Final test: 16384 sequences, seed2026112403.
+Exploratory LR selection used seed0 diagnostic curves; seeds1/2 replicate the finding.
+The final test sample is separate from the 4096-example diagnostic curves.
+
+lr_0003: 100.0000% +/- 0.0000; seeds=[1.0, 1.0, 1.0]
+reference_lr_001: 28.7130% +/- 0.2230; seeds=[0.28485107421875, 0.2872314453125, 0.289306640625]
+
+Checkpoint diagnosis (checkpoints.json and attention.json):
+- Independent full-prefix logits and gradients match the optimized single-query path.
+- Removing all tokens after the first query leaves predictions unchanged.
+- Failed 50k models predict the same answer for all five queried keys in 91-92% of memories.
+- Failed models select a most-frequent stored value in 96-98% of the attention-probe examples.
+- A value-frequency-only oracle has approximately 30.8% expected accuracy on the checkpoint sample.
+- Multi-trained models solve the first query without previous answers; no future answer is needed.
+- Attention is consistent with first-layer key/value binding and second-layer retrieval in successful models.
+  Attention weights are descriptive evidence, not a causal intervention.
+- Seed0 multi10k -> single supervision with fresh Adam .001 remains at 100% after1000 updates.
+- Seed0 LR .003 remains at24.02% after10k on the diagnostic sample.
+
+Conclusion: the .001 result is an optimization/shortcut failure under that training regime.
+LR .0003 supplies a successful from-scratch counterexample with the same architecture and data.
+This does not isolate why multi-query training escapes: label density, query positions, and contexts differ.
+Reference .001 tables are preserved. A broader tuned comparison should give both architectures equal tuning budgets.
+
+Reproduce from repository root:
+  python -m experiments.investigate_single_query
+  python -m experiments.investigate_single_query --attention
+  python -m experiments.investigate_single_query --train --lr .0003 --seed 0
+  python -m experiments.investigate_single_query --train --lr .0003 --seed 1
+  python -m experiments.investigate_single_query --train --lr .0003 --seed 2
+  python -m experiments.investigate_single_query --train --lr .003 --seed 0
+  python -m experiments.investigate_single_query --train --warmstart --steps 1000
+  python -m experiments.investigate_single_query --summarize
+Execution used OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 and CPU affinity subsets.
+Checkpoints contain weights only; Adam state was continuous in memory during each run.
