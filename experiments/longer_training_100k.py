@@ -25,11 +25,11 @@ from experiments.last_token_probe import TokenInteraction
 class TokenProductModel(nnx.Module):
     """Shared last-token multiplication for every task; no task-specific retrieval."""
     def __init__(self, task, seed, sigmoid_no_norm=False, gelu_no_norm=False,
-                 sigmoid_norm=False):
+                 sigmoid_norm=False, variant='token_product'):
         if sum([sigmoid_no_norm, gelu_no_norm, sigmoid_norm]) > 1:
             raise ValueError('select only one activation variant')
         self.task = task
-        self.base = TokenInteraction(seed, 'token_product', 576, 1,
+        self.base = TokenInteraction(seed, variant, 576, 1,
                                     32 if task == 'language' else 16,
                                     65 if task == 'language' else 96,
                                     activation='sigmoid' if sigmoid_no_norm or sigmoid_norm else 'gelu',

@@ -1,0 +1,104 @@
+{
+  "config": {
+    "steps": 10000,
+    "seed": 2,
+    "batch": 64,
+    "optimizer": "Adam",
+    "lr": 0.001,
+    "width": 64,
+    "hidden": 576,
+    "hidden_layers": 1,
+    "activation": "GELU",
+    "pooled_norm": "parameter-free epsilon 1e-5",
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "evaluation": "final checkpoint; 16384 retrieval sequences, 4096 language windows",
+    "variants": {
+      "token_product": "last-token query; excludes last position from memory",
+      "global_query": "learned 64-vector initialized to ones; includes all positions"
+    }
+  },
+  "runs": [
+    {
+      "task": "position",
+      "variant": "token_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.001025527948513627,
+        "accuracy": 0.999755859375
+      },
+      "seconds": 12.656791354999768
+    },
+    {
+      "task": "position",
+      "variant": "global_query",
+      "parameters": 100064,
+      "final": {
+        "loss": 0.8571697450242937,
+        "accuracy": 0.715576171875
+      },
+      "seconds": 9.719427185000313
+    },
+    {
+      "task": "single",
+      "variant": "token_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.040102009661495686,
+        "accuracy": 0.98687744140625
+      },
+      "seconds": 17.885736307000116
+    },
+    {
+      "task": "single",
+      "variant": "global_query",
+      "parameters": 100064,
+      "final": {
+        "loss": 1.4705097395926714,
+        "accuracy": 0.2958984375
+      },
+      "seconds": 17.220183542000086
+    },
+    {
+      "task": "multi",
+      "variant": "token_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.016332257546309847,
+        "accuracy": 0.9942627162672579
+      },
+      "seconds": 30.570065881999653
+    },
+    {
+      "task": "multi",
+      "variant": "global_query",
+      "parameters": 100064,
+      "final": {
+        "loss": 1.2545283483341336,
+        "accuracy": 0.3461303801741451
+      },
+      "seconds": 29.834363183000278
+    },
+    {
+      "task": "language",
+      "variant": "token_product",
+      "parameters": 81153,
+      "final": {
+        "loss": 2.02928327023983,
+        "accuracy": 0.439453125,
+        "perplexity": 7.608631071706963
+      },
+      "seconds": 11.123838992000856
+    },
+    {
+      "task": "language",
+      "variant": "global_query",
+      "parameters": 81217,
+      "final": {
+        "loss": 1.9743600264191628,
+        "accuracy": 0.432861328125,
+        "perplexity": 7.202009083113963
+      },
+      "seconds": 10.24323388599987
+    }
+  ]
+}

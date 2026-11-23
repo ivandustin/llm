@@ -1,0 +1,67 @@
+{
+  "config": {
+    "steps": 10000,
+    "seed": 2,
+    "batch": 64,
+    "optimizer": "Adam",
+    "lr": 0.001,
+    "width": 64,
+    "hidden": 576,
+    "hidden_layers": 1,
+    "activation": "GELU",
+    "pooled_norm": "parameter-free epsilon 1e-5",
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "evaluation": "final checkpoint; 16384 retrieval sequences, 4096 language windows",
+    "variants": {
+      "token_product": "last-token query; excludes last position from memory",
+      "global_query": "learned 64-vector initialized to ones; includes all positions",
+      "token_position_product": "last token times last position query; excludes last position from memory"
+    },
+    "selected_variants": [
+      "token_position_product"
+    ]
+  },
+  "runs": [
+    {
+      "task": "position",
+      "variant": "token_position_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.005229792674072087,
+        "accuracy": 0.99859619140625
+      },
+      "seconds": 11.405473009000161
+    },
+    {
+      "task": "single",
+      "variant": "token_position_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.09625392287853174,
+        "accuracy": 0.9779052734375
+      },
+      "seconds": 17.856183932999556
+    },
+    {
+      "task": "multi",
+      "variant": "token_position_product",
+      "parameters": 100000,
+      "final": {
+        "loss": 0.23753928404767066,
+        "accuracy": 0.9104411005973816
+      },
+      "seconds": 29.042741164999825
+    },
+    {
+      "task": "language",
+      "variant": "token_position_product",
+      "parameters": 81153,
+      "final": {
+        "loss": 2.0378847755491734,
+        "accuracy": 0.439697265625,
+        "perplexity": 7.67435902669938
+      },
+      "seconds": 12.289473339000324
+    }
+  ]
+}

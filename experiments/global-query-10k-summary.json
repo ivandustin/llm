@@ -1,0 +1,128 @@
+{
+  "steps": 10000,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "sources": [
+    "experiments/global-query-10k-seed-0.json",
+    "experiments/global-query-10k-seed-1.json",
+    "experiments/global-query-10k-seed-2.json"
+  ],
+  "standard_deviation": "sample (ddof=1)",
+  "results": [
+    {
+      "task": "position",
+      "variant": "token_product",
+      "parameters": 100000,
+      "loss": {
+        "mean": 0.012569086131406948,
+        "std": 0.020825358150446522
+      },
+      "accuracy": {
+        "mean": 0.9955240885416666,
+        "std": 0.007542062007876081
+      }
+    },
+    {
+      "task": "position",
+      "variant": "global_query",
+      "parameters": 100064,
+      "loss": {
+        "mean": 0.8471613290409247,
+        "std": 0.0087448223667416
+      },
+      "accuracy": {
+        "mean": 0.7181599934895834,
+        "std": 0.006243611090269659
+      }
+    },
+    {
+      "task": "single",
+      "variant": "token_product",
+      "parameters": 100000,
+      "loss": {
+        "mean": 0.12913833748704442,
+        "std": 0.08883253963349388
+      },
+      "accuracy": {
+        "mean": 0.95208740234375,
+        "std": 0.03482059676011739
+      }
+    },
+    {
+      "task": "single",
+      "variant": "global_query",
+      "parameters": 100064,
+      "loss": {
+        "mean": 1.4735130130623777,
+        "std": 0.0048128377823190615
+      },
+      "accuracy": {
+        "mean": 0.29339599609375,
+        "std": 0.004334355658589109
+      }
+    },
+    {
+      "task": "multi",
+      "variant": "token_product",
+      "parameters": 100000,
+      "loss": {
+        "mean": 0.05180838494804144,
+        "std": 0.030739067839241817
+      },
+      "accuracy": {
+        "mean": 0.9809434879571199,
+        "std": 0.011552019771118726
+      }
+    },
+    {
+      "task": "multi",
+      "variant": "global_query",
+      "parameters": 100064,
+      "loss": {
+        "mean": 1.2537014341602724,
+        "std": 0.0007224220562426626
+      },
+      "accuracy": {
+        "mean": 0.34490289523576695,
+        "std": 0.001308478191035477
+      }
+    },
+    {
+      "task": "language",
+      "variant": "token_product",
+      "parameters": 81153,
+      "loss": {
+        "mean": 2.025475968917211,
+        "std": 0.01870514656886496
+      },
+      "accuracy": {
+        "mean": 0.436767578125,
+        "std": 0.003284576183367605
+      },
+      "perplexity": {
+        "mean": 7.580600212437772,
+        "std": 0.14140144550385808
+      }
+    },
+    {
+      "task": "language",
+      "variant": "global_query",
+      "parameters": 81217,
+      "loss": {
+        "mean": 1.9812508299946785,
+        "std": 0.009495390702232934
+      },
+      "accuracy": {
+        "mean": 0.4386393229166667,
+        "std": 0.005005379008685476
+      },
+      "perplexity": {
+        "mean": 7.252026397611591,
+        "std": 0.06902829461453819
+      }
+    }
+  ]
+}

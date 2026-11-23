@@ -44,7 +44,7 @@ class LastToken(nnx.Module):
 class Probe(nnx.Module):
     def __init__(self, seed, variant, hidden=120, layers=6, last_hidden=None):
         self.base = (TokenInteraction(seed, variant, hidden, layers)
-                     if variant in ['previous_pool', 'token_product', 'token_product_gelu'] else
+                     if variant in ['previous_pool', 'token_product', 'token_product_gelu', 'global_query', 'token_position_product'] else
                      LastToken(seed, variant == 'duplicate_pool', last_hidden or hidden, layers)
                      if variant != 'baseline' else
                      BatchedCandidate(16, 96, 64, hidden, seed, layers))
@@ -54,10 +54,13 @@ class Probe(nnx.Module):
 
 
 class TokenInteraction(nnx.Module):
-    """Query-conditioned pooling with no added trainable parameters.
+    """Query-conditioned pooling (global_query adds 64 trainable parameters).
 
-    All variants exclude the final token from memory; previous_pool is the
-    corresponding no-query control. Only token_product_gelu applies GELU per
+    global_query includes every token and uses a learned, input-independent
+    query initialized to ones. Other variants exclude the final token from
+    memory. token_position_product multiplies the last token and its position
+    to form the query, reusing the existing embedding tables.
+    previous_pool is the no-query control. Only token_product_gelu applies GELU per
     token before the sum. Readout activation and pooled normalization can be
     changed without changing parameter initialization or counts.
     """
@@ -69,13 +72,19 @@ class TokenInteraction(nnx.Module):
         self.activation = activation
         self.pooled_norm = pooled_norm
         self.base = BatchedCandidate(context, vocab, 64, hidden, seed, layers).model
+        if variant == 'global_query':
+            self.query = nnx.Param(jnp.ones(64))
 
     def __call__(self, tokens):
         positions = jnp.broadcast_to(jnp.arange(tokens.shape[-1]), tokens.shape)
         def one(x):
             e = self.base.embeds(x)
-            memory = jnp.prod(e[:, :-1], axis=0)
-            if self.variant != 'previous_pool':
+            memory = jnp.prod(e if self.variant == 'global_query' else e[:, :-1], axis=0)
+            if self.variant == 'global_query':
+                memory = memory * self.query[...]
+            elif self.variant == 'token_position_product':
+                memory = memory * (e[0, -1] * e[1, -1])
+            elif self.variant != 'previous_pool':
                 memory = memory * e[1, -1]
             if self.variant == 'token_product_gelu':
                 memory = jax.nn.gelu(memory)
@@ -99,7 +108,7 @@ def main():
     parser.add_argument('--last-hidden', type=int)
     parser.add_argument('--output', default='experiments/last-token-probe.json')
     parser.add_argument('--variants', nargs='+', choices=['baseline', 'last_token', 'duplicate_pool',
-                        'previous_pool', 'token_product', 'token_product_gelu'],
+                        'previous_pool', 'token_product', 'token_product_gelu', 'global_query', 'token_position_product'],
                         default=['baseline', 'last_token', 'duplicate_pool'])
     args = parser.parse_args()
     if min(args.steps, args.seeds, args.layers, args.hidden, args.last_hidden or args.hidden) < 1:
