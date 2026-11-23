@@ -40,7 +40,13 @@ The conditioned model now has three-seed results at 1k/10k/30k/50k updates in
 [the current comparison](experiments/current64-50k/summary.txt). At 50k, accuracy
 is 99.99% ± 0.01 copying, 98.31% ± 0.91 single-query recall, 99.37% ± 0.30
 multi-query recall, and 46.91% ± 0.27 language, with perplexity 7.61 ± 0.22.
-No speed benchmark has been run for it.
+CPU speed benchmarks against the current sinusoidal Transformer are in
+[the speed comparison](experiments/current64-50k/speed-summary.txt). Seven warmed,
+alternating trials on an Intel Core Ultra 7 155H show token-product speedups of
+2.63–2.83x for batch-one inference, 2.71–4.54x for batch-64 inference, and
+2.68–8.35x for compiled batch-64 Adam updates across the four tasks. These use
+seed-0 50k checkpoints, resident inputs, and exclude compilation/data generation;
+CPU implementation timings do not measure time to equal quality.
 
 ## Current Transformer reference
 

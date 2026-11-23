@@ -1,0 +1,47 @@
+Current token-product pooling vs sinusoidal Transformer: CPU speed benchmark
+2026-11-24; seed-0 50,000-update checkpoints; FP32; Intel Core Ultra 7 155H.
+JAX 0.10.1 CPU backend; affinity CPUs 0-21; OMP_NUM_THREADS=1; OPENBLAS_NUM_THREADS=1.
+Seven alternating warmed trials. Median milliseconds/request or update; speedup = Transformer / pooling.
+Inference: 500 requests/trial, 20 warmups, synchronized each request.
+Training: batch64, Adam .001, 200 updates/trial; Python loop synchronizes complete final state;
+compiled scan carries continuous model/Adam state across 200 updates. Fresh Adam state per trial.
+Compilation, input generation, and host transfers excluded; resident inputs; no KV cache.
+Each compiled trainer passed five-update loss and full model/Adam state parity (rtol1e-4, atol1e-5).
+No concurrent benchmark jobs. Timing updates discarded; checkpoint files unchanged.
+
+Task | Mode | Pooling ms | Transformer ms | Speedup | Pooling trial range | Transformer trial range
+position | inference_batch_1 | 0.440 | 1.234 | 2.80x | 0.419-0.449 | 1.192-1.256
+position | inference_batch_64 | 0.662 | 2.344 | 3.54x | 0.652-0.673 | 2.327-2.614
+position | python_training_batch_64 | 1.152 | 6.640 | 5.77x | 1.117-1.188 | 6.584-6.733
+position | compiled_training_batch_64 | 1.111 | 5.707 | 5.14x | 1.084-1.148 | 5.675-5.882
+single | inference_batch_1 | 0.457 | 1.292 | 2.83x | 0.445-0.465 | 1.267-1.344
+single | inference_batch_64 | 0.652 | 2.398 | 3.68x | 0.648-0.677 | 2.375-2.480
+single | python_training_batch_64 | 1.168 | 7.040 | 6.03x | 1.123-1.257 | 6.570-7.388
+single | compiled_training_batch_64 | 1.114 | 5.365 | 4.82x | 0.859-1.246 | 5.286-5.986
+multi | inference_batch_1 | 0.495 | 1.303 | 2.63x | 0.485-0.524 | 1.281-1.318
+multi | inference_batch_64 | 1.062 | 2.878 | 2.71x | 1.054-1.094 | 2.704-3.020
+multi | python_training_batch_64 | 2.423 | 7.165 | 2.96x | 2.325-2.695 | 7.112-7.396
+multi | compiled_training_batch_64 | 2.712 | 7.257 | 2.68x | 2.440-2.789 | 6.589-7.322
+language | inference_batch_1 | 0.494 | 1.370 | 2.77x | 0.479-0.508 | 1.341-1.402
+language | inference_batch_64 | 0.904 | 4.107 | 4.54x | 0.881-0.950 | 3.943-4.515
+language | python_training_batch_64 | 1.511 | 10.411 | 6.89x | 1.435-1.609 | 10.364-10.756
+language | compiled_training_batch_64 | 1.088 | 9.078 | 8.35x | 1.029-1.130 | 8.881-9.236
+
+Retrieval context16/vocab96: pooling100000 vs Transformer98032 parameters.
+Language context32/vocab65: pooling81153 vs Transformer94033 parameters.
+Multi-query requests predict three answers, each seeing its causal prefix; rates count sequences.
+These measurements describe these implementations and short contexts on this CPU, not general architecture superiority.
+Per-update speed is not time to equal quality. Existing 3-seed 50k quality (not re-evaluated here):
+Task | Pooling accuracy | Transformer accuracy
+Position | 99.99% +/-0.01 | 100.00% +/-0.00
+Single-query | 98.31% +/-0.91 | 29.93% +/-0.39
+Multi-query | 99.37% +/-0.30 | 100.00% +/-0.01
+Language | 46.91% +/-0.27 | 46.63% +/-0.42
+Language perplexity: pooling7.61 +/-0.22; Transformer6.79 +/-0.20 (lower is better).
+Quality source: experiments/current64-50k/summary.txt.
+
+Reproduce from repository root:
+for task in position single multi language; do
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.current_speed --task "$task" --output "experiments/current64-50k/speed-$task.json"
+done
+Raw trial timings, software, compilation timings, and throughput: speed-{task}.json in this directory.

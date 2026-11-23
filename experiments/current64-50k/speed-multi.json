@@ -1,0 +1,230 @@
+{
+  "config": {
+    "trials": 7,
+    "train_steps": 200,
+    "infer_steps": 500,
+    "scan_steps": 200,
+    "warmup": 20,
+    "output": "experiments/current64-50k/speed-multi.json",
+    "task": "multi",
+    "checkpoint_root": "experiments/current64-50k",
+    "cpu": "Intel(R) Core(TM) Ultra 7 155H",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "devices": [
+      "cpu:0"
+    ],
+    "software": {
+      "jax": "0.10.1",
+      "jaxlib": "0.10.1",
+      "flax": "0.12.7",
+      "optax": "0.2.6",
+      "numpy": "2.3.4"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "XLA_FLAGS": null
+    },
+    "transformer_blocks": 2,
+    "transformer_width": 64,
+    "transformer_ff_hidden": 200,
+    "candidate_width": 64,
+    "candidate_hidden": 576,
+    "candidate_hidden_layers": 1,
+    "positions": "sinusoidal",
+    "context": 16,
+    "vocab": 96,
+    "training_batch": 64,
+    "inference_batches": [
+      1,
+      64
+    ],
+    "checkpoint_seed": 0,
+    "checkpoint_step": 50000,
+    "lr": 0.001,
+    "timing_note": "One process; no competing experiment jobs; alternating model order; resident FP32 model and int32 inputs; data generation and host transfers excluded. Training optimizer states start fresh; timing updates discarded.",
+    "parameters": {
+      "candidate": 100000,
+      "transformer": 98032
+    }
+  },
+  "results": {
+    "inference_batch_1": {
+      "candidate": {
+        "milliseconds_per_step_median": 0.49467866399936616,
+        "milliseconds_per_step_min": 0.48471269599394873,
+        "milliseconds_per_step_max": 0.5242969419996371,
+        "milliseconds_per_step_sd": 0.012736932752920378,
+        "examples_per_second": 2021.5143137875082,
+        "seconds_per_step_trials": [
+          0.0005242969419996371,
+          0.0004908442919986556,
+          0.0004847126959939487,
+          0.0004936459020027542,
+          0.0004971145180024905,
+          0.0004946786639993661,
+          0.0005028993999949307
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 1.3027984380023554,
+        "milliseconds_per_step_min": 1.2812615439979709,
+        "milliseconds_per_step_max": 1.3175211799971294,
+        "milliseconds_per_step_sd": 0.011661075428290323,
+        "examples_per_second": 767.5784456215259,
+        "seconds_per_step_trials": [
+          0.0013175211799971293,
+          0.0012945602360050544,
+          0.001281261543997971,
+          0.0013030478359942208,
+          0.0013105399580017546,
+          0.0012973367640006473,
+          0.0013027984380023555
+        ]
+      }
+    },
+    "inference_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 1.0619827499976964,
+        "milliseconds_per_step_min": 1.054262646001007,
+        "milliseconds_per_step_max": 1.0941583480016561,
+        "milliseconds_per_step_sd": 0.012881525888191055,
+        "examples_per_second": 60264.63235880134,
+        "seconds_per_step_trials": [
+          0.0010619827499976963,
+          0.0010604423059994588,
+          0.0010542626460010068,
+          0.0010941583480016562,
+          0.001061648189999687,
+          0.001066937304000021,
+          0.001066844635999587
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 2.8776455340048415,
+        "milliseconds_per_step_min": 2.704442292000749,
+        "milliseconds_per_step_max": 3.0199246019983548,
+        "milliseconds_per_step_sd": 0.13622926767871382,
+        "examples_per_second": 22240.404262345233,
+        "seconds_per_step_trials": [
+          0.002704442292000749,
+          0.0027168365559991797,
+          0.0027435477580002045,
+          0.0028776455340048415,
+          0.0030004701080033557,
+          0.0029465578739982447,
+          0.0030199246019983546
+        ]
+      }
+    },
+    "python_training_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 2.4225303899947903,
+        "milliseconds_per_step_min": 2.324714224996569,
+        "milliseconds_per_step_max": 2.6953140949990484,
+        "milliseconds_per_step_sd": 0.12445393097817303,
+        "examples_per_second": 26418.657228955395,
+        "seconds_per_step_trials": [
+          0.0026953140949990484,
+          0.0023738886399951296,
+          0.0023397196600126336,
+          0.002324714224996569,
+          0.0024377435550013617,
+          0.0024230588899990836,
+          0.0024225303899947904
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 7.164545069990709,
+        "milliseconds_per_step_min": 7.112345984987769,
+        "milliseconds_per_step_max": 7.396142779998627,
+        "milliseconds_per_step_sd": 0.10386089988009299,
+        "examples_per_second": 8932.877017979732,
+        "seconds_per_step_trials": [
+          0.007164545069990709,
+          0.007123589540005923,
+          0.007112345984987769,
+          0.007133282719987619,
+          0.007283364844988682,
+          0.007396142779998627,
+          0.00719140236498788
+        ]
+      }
+    },
+    "compiled_training_batch_64": {
+      "candidate": {
+        "milliseconds_per_step_median": 2.712202359998628,
+        "milliseconds_per_step_min": 2.4395414399987203,
+        "milliseconds_per_step_max": 2.7889186649917974,
+        "milliseconds_per_step_sd": 0.13790941082728925,
+        "examples_per_second": 23597.05932857915,
+        "seconds_per_step_trials": [
+          0.00261014099998647,
+          0.002765996024991182,
+          0.0027122023599986276,
+          0.0027889186649917973,
+          0.002751279869989958,
+          0.00243954143999872,
+          0.0025036453199936658
+        ]
+      },
+      "transformer": {
+        "milliseconds_per_step_median": 7.257129740009987,
+        "milliseconds_per_step_min": 6.589180794999265,
+        "milliseconds_per_step_max": 7.321681299999909,
+        "milliseconds_per_step_sd": 0.32924107801526215,
+        "examples_per_second": 8818.91357779583,
+        "seconds_per_step_trials": [
+          0.007257129740009987,
+          0.007300961404998816,
+          0.0073216812999999095,
+          0.007190511865010194,
+          0.006613593550009682,
+          0.006589180794999265,
+          0.007282831110005645
+        ]
+      }
+    }
+  },
+  "candidate_speedup": {
+    "inference_batch_1": 2.633625690401769,
+    "inference_batch_64": 2.7096914088398174,
+    "python_training_batch_64": 2.957463443835731,
+    "compiled_training_batch_64": 2.6757331410970595
+  },
+  "compilation": {
+    "inference_batch_1_candidate_first_call_seconds": 0.1789129620010499,
+    "inference_batch_1_transformer_first_call_seconds": 0.20455138500255998,
+    "inference_batch_64_candidate_first_call_seconds": 0.14717373800158384,
+    "inference_batch_64_transformer_first_call_seconds": 0.2134506180009339,
+    "python_training_candidate_first_call_seconds": 0.5452798789992812,
+    "python_training_transformer_first_call_seconds": 0.7648479480012611,
+    "compiled_training_candidate_trace_compile_seconds": 0.48733523999908357,
+    "compiled_training_transformer_trace_compile_seconds": 0.655783951999183
+  },
+  "validation": "Compiled training losses and all model/Adam state leaves match five ordinary updates within rtol 1e-4 / atol 1e-5."
+}
