@@ -1,0 +1,42 @@
+{
+  "config": {
+    "steps": 10000,
+    "seed": 1,
+    "width": 64,
+    "blocks": 2,
+    "heads": 4,
+    "ff_hidden": 200,
+    "batch": 64,
+    "lr": 0.001,
+    "optimizer": "Adam",
+    "tasks": [
+      "multi"
+    ],
+    "token_scaling": "unchanged, no sqrt(d) scaling",
+    "evaluation": "16384 retrieval sequences; 4096 language test windows; final checkpoint"
+  },
+  "runs": [
+    {
+      "task": "multi",
+      "positions": "learned",
+      "parameters": 99056,
+      "train_seconds_including_compile": 69.419488731,
+      "final": {
+        "loss": 2.2458417646475937e-05,
+        "accuracy": 1.0,
+        "perplexity": 1.0000224586698385
+      }
+    },
+    {
+      "task": "multi",
+      "positions": "sinusoidal",
+      "parameters": 98032,
+      "train_seconds_including_compile": 71.73481884599983,
+      "final": {
+        "loss": 7.913372490975235e-05,
+        "accuracy": 1.0,
+        "perplexity": 1.0000791368560655
+      }
+    }
+  ]
+}

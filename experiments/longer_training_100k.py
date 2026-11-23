@@ -68,6 +68,8 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
     parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm'],default='deep')
+    parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
+                        help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
@@ -86,12 +88,14 @@ def main():
     token_product=args.architecture in ['token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm']
     shallow=args.architecture in ['shallow','sigmoid','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm']
     prefix='token-product-sigmoid-norm100k' if sigmoid_norm else 'token-product-gelu-no-norm100k' if gelu_no_norm else 'token-product-sigmoid100k' if token_product and sigmoid else 'token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
+    if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
+    if transformer and args.positions=='sinusoidal':baseline=None
     config=dict(architecture=args.architecture,seed=args.seed,steps=args.steps,checkpoints=checkpoints,batch=64,lr=.001,
         optimizer='Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay',
         width=64,hidden=200 if transformer else 576 if shallow else 120,hidden_layers=1 if shallow or transformer else 6,blocks=2 if transformer else 0,residual=transformer,final_norm=transformer,
-        positions='learned',pooled_norm='not applicable' if transformer else 'none' if (sigmoid and not sigmoid_norm) or gelu_no_norm else 'non-learned epsilon1e-5',activation='sigmoid' if sigmoid else 'GELU',
-        parameters=dict(query=99056 if transformer else 100000 if shallow else 99184,language=96081 if transformer else 81153 if shallow else 94473),tasks=args.tasks,
+        positions=args.positions if transformer else 'learned',pooled_norm='not applicable' if transformer else 'none' if (sigmoid and not sigmoid_norm) or gelu_no_norm else 'non-learned epsilon1e-5',activation='sigmoid' if sigmoid else 'GELU',
+        parameters=dict(query=(98032 if args.positions=='sinusoidal' else 99056) if transformer else 100000 if shallow else 99184,language=(94033 if args.positions=='sinusoidal' else 96081) if transformer else 81153 if shallow else 94473),tasks=args.tasks,
         training='compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state',
         evaluation='same fixed samples as original100k runs; predeclared update counts, no best-step selection',
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
@@ -101,7 +105,7 @@ def main():
     directory=Path(f'{prefix}-seed-{args.seed}');directory.mkdir(exist_ok=True)
     output=Path(f'{prefix}-seed-{args.seed}.json');runs=[]
     for task in args.tasks:
-        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm) if token_product else TransformerModel(task,args.seed,'transformer') if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
+        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm) if token_product else TransformerModel(task,args.seed,'transformer',positions=args.positions) if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)

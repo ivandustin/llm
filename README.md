@@ -124,6 +124,25 @@ and timing tools. The compatibility imports `candidate_model.py` and
 `stacked_candidate_model.py` keep earlier experiment commands working. Parameter
 names and initialization order are preserved for existing `.npz` checkpoints.
 
+## Current Transformer positional encoding
+
+The current two-block Transformer now defaults to fixed sinusoidal positions
+(base 10,000), added to token embeddings. Width 64, four heads, FF width 200,
+normalization and residuals are unchanged. It has 98,032 trainable parameters
+for retrieval and 94,033 for language. Pooling still uses learned positions.
+
+At 10,000 updates, multi-query recall across seeds 0–2 is **100.00% ± 0.00**
+with sinusoidal positions versus **78.80% ± 36.72** with learned positions
+(sample standard deviations). See [results](experiments/tf-positions-multi-10k-summary.json).
+Other sinusoidal tasks currently have only seed 0; language perplexity was 7.32
+versus 7.09 learned. No sinusoidal 30k/50k results exist yet. Historical tables
+below retain their original positional encodings and results.
+
+`longer_training_100k.py --architecture transformer` uses sinusoidal positions
+and writes `longer-transformer-sinusoidal100k-*` artifacts. Add
+`--positions learned` to reproduce historical learned-position runs.
+`depth_100k_test.py` writes new runs under `depth100k-sinusoidal-*`.
+
 ## Reproduce experiments
 
 Run experiment scripts from `experiments/` after installing the project with

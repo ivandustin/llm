@@ -1,0 +1,78 @@
+{
+  "task": "multi",
+  "steps": 10000,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "sources": [
+    "experiments/tf-positions-10k-seed-0.json",
+    "experiments/tf-positions-10k-seed-1.json",
+    "experiments/tf-positions-10k-seed-2.json"
+  ],
+  "runs": [
+    {
+      "seed": 0,
+      "positions": "learned",
+      "loss": 1.2476890310645103,
+      "accuracy": 0.3639526457991451,
+      "perplexity": 3.4822861963609006
+    },
+    {
+      "seed": 0,
+      "positions": "sinusoidal",
+      "loss": 1.4457308701310012e-05,
+      "accuracy": 1.0,
+      "perplexity": 1.0000144574132086
+    },
+    {
+      "seed": 1,
+      "positions": "learned",
+      "loss": 2.2458417646475937e-05,
+      "accuracy": 1.0,
+      "perplexity": 1.0000224586698385
+    },
+    {
+      "seed": 1,
+      "positions": "sinusoidal",
+      "loss": 7.913372490975235e-05,
+      "accuracy": 1.0,
+      "perplexity": 1.0000791368560655
+    },
+    {
+      "seed": 2,
+      "positions": "learned",
+      "loss": 1.616690671824017e-05,
+      "accuracy": 1.0,
+      "perplexity": 1.0000161670374035
+    },
+    {
+      "seed": 2,
+      "positions": "sinusoidal",
+      "loss": 3.7026088392622114e-05,
+      "accuracy": 1.0,
+      "perplexity": 1.0000370267738667
+    }
+  ],
+  "summary": {
+    "learned": {
+      "accuracy_percent": [
+        36.39526457991451,
+        100.0,
+        100.0
+      ],
+      "mean": 78.79842152663817,
+      "sample_sd": 36.72221111652128
+    },
+    "sinusoidal": {
+      "accuracy_percent": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "mean": 100.0,
+      "sample_sd": 0.0
+    }
+  }
+}

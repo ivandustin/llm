@@ -3,10 +3,12 @@ from experiments.benchmark import nnx,np,jnp,jax,count
 from experiments.budget_sweep import BatchedCandidate
 from experiments.capabilities import ProbeTransformer
 from experiments.two_block_100k import Model as TwoBlock
+from experiments.positional_encoding import SinusoidalPositions
 
 SPECS=dict(eight=(8,103),twelve=(12,84))
 class Model(nnx.Module):
- def __init__(self,task,seed,architecture):
+ def __init__(self,task,seed,architecture,positions="sinusoidal"):
+  if positions not in ["learned", "sinusoidal"]:raise ValueError(positions)
   self.task=task;self.architecture=architecture
   vocab=65 if task=='language' else 96;context=32 if task=='language' else 16
   if architecture=='transformer':
@@ -14,6 +16,7 @@ class Model(nnx.Module):
    # Keep identical internal dimensions across language and retrieval.
    self.base.hidden=200
    self.base.base=ProbeTransformer(vocab,context,64,nnx.Rngs(seed),depth=2,ff_hidden=200)
+   if positions=="sinusoidal":self.base.base.position=SinusoidalPositions(64)
   else:
    layers,hidden=SPECS[architecture]
    self.base=BatchedCandidate(context,vocab,64,hidden,seed,layers)
@@ -29,6 +32,7 @@ if __name__=='__main__':
  source=Path(__file__).with_name('benchmark_100k.py').read_text();source=source[source.index('def main():'):]
  source=source.replace("choices=['ours','transformer']","choices=['eight','twelve','transformer']")
  source=source.replace("expected=(94473 if task=='language' else 99184) if a.architecture=='ours' else (96665 if task=='language' else 99640)","expected=count(model)")
- source=source.replace('large-','depth100k-')
- source=source.replace("hidden=120 if a.architecture=='ours' else 536,hidden_layers=6 if a.architecture=='ours' else 1,blocks=0 if a.architecture=='ours' else 1","hidden=200 if a.architecture=='transformer' else SPECS[a.architecture][1],hidden_layers=1 if a.architecture=='transformer' else SPECS[a.architecture][0],blocks=2 if a.architecture=='transformer' else 0,pooled_norm='non-learned',positions='learned',residual=a.architecture=='transformer',final_norm=a.architecture=='transformer',budget=100000")
+ source=source.replace('large-', 'depth100k-').replace('depth100k-{a.architecture}', 'depth100k-{output_architecture}')
+ source=source.replace('rows=[]', "output_architecture='sinusoidal-transformer' if a.architecture=='transformer' else a.architecture;rows=[]")
+ source=source.replace("hidden=120 if a.architecture=='ours' else 536,hidden_layers=6 if a.architecture=='ours' else 1,blocks=0 if a.architecture=='ours' else 1","hidden=200 if a.architecture=='transformer' else SPECS[a.architecture][1],hidden_layers=1 if a.architecture=='transformer' else SPECS[a.architecture][0],blocks=2 if a.architecture=='transformer' else 0,pooled_norm='non-learned',positions='sinusoidal' if a.architecture=='transformer' else 'learned',residual=a.architecture=='transformer',final_norm=a.architecture=='transformer',budget=100000")
  env=vars(protocol).copy();env.update(Model=Model,SPECS=SPECS,__name__='__main__');exec(compile(source,__file__,'exec'),env)

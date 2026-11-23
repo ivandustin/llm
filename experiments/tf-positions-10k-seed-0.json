@@ -1,0 +1,105 @@
+{
+  "config": {
+    "steps": 10000,
+    "seed": 0,
+    "width": 64,
+    "blocks": 2,
+    "heads": 4,
+    "ff_hidden": 200,
+    "batch": 64,
+    "lr": 0.001,
+    "optimizer": "Adam",
+    "token_scaling": "unchanged, no sqrt(d) scaling",
+    "evaluation": "16384 retrieval sequences; 4096 language test windows; final checkpoint"
+  },
+  "runs": [
+    {
+      "task": "position",
+      "positions": "learned",
+      "parameters": 99056,
+      "train_seconds_including_compile": 51.15931810899997,
+      "final": {
+        "loss": 2.1011801436543465e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.0000021011823512
+      }
+    },
+    {
+      "task": "position",
+      "positions": "sinusoidal",
+      "parameters": 98032,
+      "train_seconds_including_compile": 56.263528522000115,
+      "final": {
+        "loss": 3.884837497025728e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.000003884845043
+      }
+    },
+    {
+      "task": "single",
+      "positions": "learned",
+      "parameters": 99056,
+      "train_seconds_including_compile": 64.72572089799996,
+      "final": {
+        "loss": 1.4930057059973478,
+        "accuracy": 0.28009033203125,
+        "perplexity": 4.4504521866683495
+      }
+    },
+    {
+      "task": "single",
+      "positions": "sinusoidal",
+      "parameters": 98032,
+      "train_seconds_including_compile": 66.99369923099994,
+      "final": {
+        "loss": 1.4923367612063885,
+        "accuracy": 0.28155517578125,
+        "perplexity": 4.44747607539871
+      }
+    },
+    {
+      "task": "multi",
+      "positions": "learned",
+      "parameters": 99056,
+      "train_seconds_including_compile": 83.22163216900003,
+      "final": {
+        "loss": 1.2476890310645103,
+        "accuracy": 0.3639526457991451,
+        "perplexity": 3.4822861963609006
+      }
+    },
+    {
+      "task": "multi",
+      "positions": "sinusoidal",
+      "parameters": 98032,
+      "train_seconds_including_compile": 79.14352198400002,
+      "final": {
+        "loss": 1.4457308701310012e-05,
+        "accuracy": 1.0,
+        "perplexity": 1.0000144574132086
+      }
+    },
+    {
+      "task": "language",
+      "positions": "learned",
+      "parameters": 96081,
+      "train_seconds_including_compile": 101.25587610399998,
+      "final": {
+        "loss": 1.958898313343525,
+        "accuracy": 0.432861328125,
+        "perplexity": 7.091510137951821
+      }
+    },
+    {
+      "task": "language",
+      "positions": "sinusoidal",
+      "parameters": 94033,
+      "train_seconds_including_compile": 96.50902349399985,
+      "final": {
+        "loss": 1.9900367334485054,
+        "accuracy": 0.43212890625,
+        "perplexity": 7.315802492027968
+      }
+    }
+  ]
+}
