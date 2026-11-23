@@ -159,6 +159,16 @@ for seed in 0 1 2; do
   OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --steps 10000 --seed "$seed"
 done
 
+# 16-dimensional token-product pooling, <=10k parameters per task.
+for seed in 0 1 2; do
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --width 16 --budget 10000 --steps 10000 --seed "$seed" --output-prefix token-product-d16-10k
+done
+
+# 16-dimensional two-block sinusoidal Transformer, <=10k parameters per task.
+for seed in 0 1 2; do
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture transformer --width 16 --budget 10000 --steps 10000 --seed "$seed" --output-prefix transformer-d16-10k
+done
+
 # Six-layer, approximately 100k-parameter pooling model, four tasks, one seed.
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark_100k.py --architecture ours --seed 0
 # Current two-block Transformer reference on the same tasks and data.

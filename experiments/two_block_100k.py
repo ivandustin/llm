@@ -13,16 +13,17 @@ class Model(nnx.Module):
   self.base=ProbeTransformer(vocab,context,64,nnx.Rngs(seed),depth=2,ff_hidden=self.hidden)
  def __call__(self,tokens):
   m=self.base;b,l=tokens.shape
+  width=m.token.embedding.shape[-1];head_width=width//4
   x=m.token(tokens)+m.position(jnp.arange(l))
   x=m.blocks[0](x)
   block=m.blocks[1]
   pos=jnp.array([10] if self.task=='single' else [10,12,14] if self.task=='multi' else [l-1])
-  qkv=block.qkv(block.n1(x)).reshape(b,l,3,4,16)
+  qkv=block.qkv(block.n1(x)).reshape(b,l,3,4,head_width)
   q=jnp.take(qkv[:,:,0],pos,axis=1).transpose(0,2,1,3)
   k=qkv[:,:,1].transpose(0,2,1,3);v=qkv[:,:,2].transpose(0,2,1,3)
   mask=jnp.arange(l)[None,:]<=pos[:,None]
-  w=jax.nn.softmax(jnp.where(mask,(q@k.swapaxes(-1,-2))/4.,-1e9),axis=-1)
-  h=jnp.take(x,pos,axis=1)+block.proj((w@v).transpose(0,2,1,3).reshape(b,len(pos),64))
+  w=jax.nn.softmax(jnp.where(mask,(q@k.swapaxes(-1,-2))/jnp.sqrt(float(head_width)),-1e9),axis=-1)
+  h=jnp.take(x,pos,axis=1)+block.proj((w@v).transpose(0,2,1,3).reshape(b,len(pos),width))
   h=h+block.down(jax.nn.gelu(block.up(block.n2(h))))
   logits=m.head(m.norm(h))
   return logits if self.task in ['single','multi'] else logits[:,0]

@@ -25,15 +25,15 @@ from experiments.last_token_probe import TokenInteraction
 class TokenProductModel(nnx.Module):
     """Shared last-token multiplication for every task; no task-specific retrieval."""
     def __init__(self, task, seed, sigmoid_no_norm=False, gelu_no_norm=False,
-                 sigmoid_norm=False, variant='token_product'):
+                 sigmoid_norm=False, variant='token_product', width=64, hidden=576):
         if sum([sigmoid_no_norm, gelu_no_norm, sigmoid_norm]) > 1:
             raise ValueError('select only one activation variant')
         self.task = task
-        self.base = TokenInteraction(seed, variant, 576, 1,
+        self.base = TokenInteraction(seed, variant, hidden, 1,
                                     32 if task == 'language' else 16,
                                     65 if task == 'language' else 96,
                                     activation='sigmoid' if sigmoid_no_norm or sigmoid_norm else 'gelu',
-                                    pooled_norm=not (sigmoid_no_norm or gelu_no_norm))
+                                    pooled_norm=not (sigmoid_no_norm or gelu_no_norm), width=width)
 
     def __call__(self, x):
         if self.task in ['single', 'multi']:
@@ -73,7 +73,16 @@ def main():
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
+    parser.add_argument('--width',type=int,default=64,help='Token-product or Transformer embedding width')
+    parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
+    parser.add_argument('--output-prefix',help='Output path prefix, excluding seed suffix')
     args=parser.parse_args()
+    if args.width < 1 or (args.budget is not None and args.budget < 1):
+        parser.error('width and budget must be positive')
+    if (args.width != 64 or args.budget is not None) and not (args.architecture.startswith('token_product') or args.architecture=='transformer'):
+        parser.error('custom width/budget require token-product or transformer')
+    if args.architecture=='transformer' and args.width%4:
+        parser.error('Transformer width must be divisible by four heads')
     if args.steps<10000 or args.steps%1000 or args.chunk!=1000:
         parser.error('use >=10000 steps, a multiple of1000, and chunk1000 for this protocol')
     raw=(Path(__file__).resolve().parents[1] / 'data/shakespeare.txt').read_bytes();text=raw.decode()
@@ -101,11 +110,35 @@ def main():
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
     if token_product:
         config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; ' + ('normalize then sigmoid MLP' if sigmoid_norm else 'sigmoid MLP, no normalization' if sigmoid else 'GELU MLP, no normalization' if gelu_no_norm else 'normalize then GELU MLP')
+    hidden_by_task={task:576 for task in TASKS}
+    if token_product:
+        from experiments.budget_sweep import hidden_for_budget
+        if args.budget is not None:
+            hidden_by_task={task:hidden_for_budget(32 if task=='language' else 16,65 if task=='language' else 96,args.width,args.budget) for task in TASKS}
+            if min(hidden_by_task.values())<1:parser.error('budget too small for embeddings and hidden layer')
+        config.update(width=args.width,hidden=hidden_by_task,parameter_budget=args.budget)
+        config['parameters']={key:count(TokenProductModel(task,args.seed,width=args.width,hidden=hidden_by_task[task])) for key,task in [('query','position'),('language','language')]}
+        if args.width!=64 or args.budget is not None:
+            prefix=f'{prefix}-d{args.width}-budget{args.budget or "custom"}'
+    if transformer:
+        hidden_by_task={task:200 for task in TASKS}
+        if args.budget is not None:
+            for task in TASKS:
+                base=count(TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=1))
+                hidden_by_task[task]=1+(args.budget-base)//(2*(2*args.width+1))
+            if min(hidden_by_task.values())<1:parser.error('budget too small for Transformer')
+        config.update(width=args.width,hidden=hidden_by_task,heads=4,parameter_budget=args.budget)
+        config['parameters']={key:count(TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=hidden_by_task[task])) for key,task in [('query','position'),('language','language')]}
+        if args.width!=64 or args.budget is not None:
+            prefix=f'{prefix}-d{args.width}-budget{args.budget or "custom"}'
+            baseline=None
+            config['baseline']=None
+    if args.output_prefix:prefix=args.output_prefix
     print(json.dumps(config),flush=True)
     directory=Path(f'{prefix}-seed-{args.seed}');directory.mkdir(exist_ok=True)
     output=Path(f'{prefix}-seed-{args.seed}.json');runs=[]
     for task in args.tasks:
-        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm) if token_product else TransformerModel(task,args.seed,'transformer',positions=args.positions) if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
+        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm,width=args.width,hidden=hidden_by_task[task]) if token_product else TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=hidden_by_task[task]) if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)

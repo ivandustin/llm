@@ -65,15 +65,15 @@ class TokenInteraction(nnx.Module):
     changed without changing parameter initialization or counts.
     """
     def __init__(self, seed, variant, hidden, layers, context=16, vocab=96,
-                 activation='gelu', pooled_norm=True):
+                 activation='gelu', pooled_norm=True, width=64):
         if activation not in ['gelu', 'sigmoid']:
             raise ValueError('activation must be gelu or sigmoid')
         self.variant = variant
         self.activation = activation
         self.pooled_norm = pooled_norm
-        self.base = BatchedCandidate(context, vocab, 64, hidden, seed, layers).model
+        self.base = BatchedCandidate(context, vocab, width, hidden, seed, layers).model
         if variant == 'global_query':
-            self.query = nnx.Param(jnp.ones(64))
+            self.query = nnx.Param(jnp.ones(width))
 
     def __call__(self, tokens):
         positions = jnp.broadcast_to(jnp.arange(tokens.shape[-1]), tokens.shape)

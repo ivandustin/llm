@@ -1,0 +1,703 @@
+{
+  "configs": [
+    {
+      "architecture": "token_product",
+      "seed": 0,
+      "steps": 10000,
+      "checkpoints": [
+        10000
+      ],
+      "batch": 64,
+      "lr": 0.001,
+      "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+      "width": 16,
+      "hidden": {
+        "position": 71,
+        "single": 71,
+        "multi": 71,
+        "language": 102
+      },
+      "hidden_layers": 1,
+      "blocks": 0,
+      "residual": false,
+      "final_norm": false,
+      "positions": "learned",
+      "pooled_norm": "non-learned epsilon1e-5",
+      "activation": "GELU",
+      "parameters": {
+        "query": 9911,
+        "language": 9981
+      },
+      "tasks": [
+        "position",
+        "single",
+        "multi",
+        "language"
+      ],
+      "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+      "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+      "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+      "baseline": null,
+      "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+      "parameter_budget": 10000
+    },
+    {
+      "architecture": "token_product",
+      "seed": 1,
+      "steps": 10000,
+      "checkpoints": [
+        10000
+      ],
+      "batch": 64,
+      "lr": 0.001,
+      "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+      "width": 16,
+      "hidden": {
+        "position": 71,
+        "single": 71,
+        "multi": 71,
+        "language": 102
+      },
+      "hidden_layers": 1,
+      "blocks": 0,
+      "residual": false,
+      "final_norm": false,
+      "positions": "learned",
+      "pooled_norm": "non-learned epsilon1e-5",
+      "activation": "GELU",
+      "parameters": {
+        "query": 9911,
+        "language": 9981
+      },
+      "tasks": [
+        "position",
+        "single",
+        "multi",
+        "language"
+      ],
+      "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+      "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+      "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+      "baseline": null,
+      "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+      "parameter_budget": 10000
+    },
+    {
+      "architecture": "token_product",
+      "seed": 2,
+      "steps": 10000,
+      "checkpoints": [
+        10000
+      ],
+      "batch": 64,
+      "lr": 0.001,
+      "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+      "width": 16,
+      "hidden": {
+        "position": 71,
+        "single": 71,
+        "multi": 71,
+        "language": 102
+      },
+      "hidden_layers": 1,
+      "blocks": 0,
+      "residual": false,
+      "final_norm": false,
+      "positions": "learned",
+      "pooled_norm": "non-learned epsilon1e-5",
+      "activation": "GELU",
+      "parameters": {
+        "query": 9911,
+        "language": 9981
+      },
+      "tasks": [
+        "position",
+        "single",
+        "multi",
+        "language"
+      ],
+      "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+      "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+      "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+      "baseline": null,
+      "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+      "parameter_budget": 10000
+    }
+  ],
+  "summary": {
+    "position": {
+      "parameters": 9911,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "accuracy": {
+        "mean": 0.5941569010416666,
+        "std": 0.13612512505679988,
+        "values": [
+          0.44146728515625,
+          0.70281982421875,
+          0.63818359375
+        ]
+      },
+      "loss": {
+        "mean": 1.1678985604085028,
+        "std": 0.2210328952373422,
+        "values": [
+          1.4096354991197586,
+          0.9761218396015465,
+          1.1179383425042033
+        ]
+      },
+      "perplexity": {
+        "mean": 3.269049264563729,
+        "std": 0.7428762561680241,
+        "values": [
+          4.09446269678405,
+          2.654143064253134,
+          3.0585420326540027
+        ]
+      }
+    },
+    "single": {
+      "parameters": 9911,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "accuracy": {
+        "mean": 0.2931111653645833,
+        "std": 0.00896953795069826,
+        "values": [
+          0.29193115234375,
+          0.3026123046875,
+          0.2847900390625
+        ]
+      },
+      "loss": {
+        "mean": 1.6064815601954858,
+        "std": 0.08521110666764843,
+        "values": [
+          1.615253479219973,
+          1.5172237986698747,
+          1.6869674026966095
+        ]
+      },
+      "perplexity": {
+        "mean": 4.997260809649513,
+        "std": 0.4226644762520182,
+        "values": [
+          5.0291625501165615,
+          4.559549380921275,
+          5.403070497910702
+        ]
+      }
+    },
+    "multi": {
+      "parameters": 9911,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "accuracy": {
+        "mean": 0.35303413557509583,
+        "std": 0.0062304148991217875,
+        "values": [
+          0.35487875482067466,
+          0.3460896913893521,
+          0.3581339605152607
+        ]
+      },
+      "loss": {
+        "mean": 1.2977252090349793,
+        "std": 0.024560406843391787,
+        "values": [
+          1.2947452692314982,
+          1.2747907331213355,
+          1.3236396247521043
+        ]
+      },
+      "perplexity": {
+        "mean": 3.661696502377441,
+        "std": 0.09012373990044774,
+        "values": [
+          3.650066071573408,
+          3.5779525847827163,
+          3.757070850776199
+        ]
+      }
+    },
+    "language": {
+      "parameters": 9981,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "accuracy": {
+        "mean": 0.3642578125,
+        "std": 0.0034440273387856164,
+        "values": [
+          0.360595703125,
+          0.367431640625,
+          0.36474609375
+        ]
+      },
+      "loss": {
+        "mean": 2.211410705000162,
+        "std": 0.004756720972749781,
+        "values": [
+          2.208714246749878,
+          2.216902993619442,
+          2.2086148746311665
+        ]
+      },
+      "perplexity": {
+        "mean": 9.128653966658586,
+        "std": 0.04348189165550563,
+        "values": [
+          9.1040033627078,
+          9.178859813714366,
+          9.103098723553591
+        ]
+      }
+    }
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 0,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 2.1407615058124065,
+          "accuracy": 0.263671875,
+          "step": 5000,
+          "last_train_loss": 2.384580612182617
+        },
+        {
+          "loss": 1.431429449468851,
+          "accuracy": 0.429931640625,
+          "step": 10000,
+          "last_train_loss": 1.4673893451690674
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.4096354991197586,
+            "accuracy": 0.44146728515625,
+            "perplexity": 4.09446269678405
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.4096354991197586,
+        "accuracy": 0.44146728515625,
+        "perplexity": 4.09446269678405
+      }
+    },
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.6992795877158642,
+          "accuracy": 0.304443359375,
+          "step": 5000,
+          "last_train_loss": 1.4914638996124268
+        },
+        {
+          "loss": 1.604935422539711,
+          "accuracy": 0.2919921875,
+          "step": 10000,
+          "last_train_loss": 1.5496439933776855
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.615253479219973,
+            "accuracy": 0.29193115234375,
+            "perplexity": 5.0291625501165615
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.615253479219973,
+        "accuracy": 0.29193115234375,
+        "perplexity": 5.0291625501165615
+      }
+    },
+    {
+      "task": "multi",
+      "seed": 0,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.3548169061541557,
+          "accuracy": 0.3450520932674408,
+          "step": 5000,
+          "last_train_loss": 1.3193635940551758
+        },
+        {
+          "loss": 1.2932439893484116,
+          "accuracy": 0.3579915454611182,
+          "step": 10000,
+          "last_train_loss": 1.2760565280914307
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.2947452692314982,
+            "accuracy": 0.35487875482067466,
+            "perplexity": 3.650066071573408
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.2947452692314982,
+        "accuracy": 0.35487875482067466,
+        "perplexity": 3.650066071573408
+      }
+    },
+    {
+      "task": "language",
+      "seed": 0,
+      "parameters": 9981,
+      "history": [
+        {
+          "loss": 2.2460489943623543,
+          "accuracy": 0.34521484375,
+          "step": 5000,
+          "last_train_loss": 2.2373859882354736
+        },
+        {
+          "loss": 2.134148634970188,
+          "accuracy": 0.37353515625,
+          "step": 10000,
+          "last_train_loss": 2.2002668380737305
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 2.208714246749878,
+            "accuracy": 0.360595703125,
+            "perplexity": 9.1040033627078
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 2.208714246749878,
+        "accuracy": 0.360595703125,
+        "perplexity": 9.1040033627078
+      }
+    },
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.960540048778057,
+          "accuracy": 0.32763671875,
+          "step": 5000,
+          "last_train_loss": 2.0031204223632812
+        },
+        {
+          "loss": 0.9692179001867771,
+          "accuracy": 0.703857421875,
+          "step": 10000,
+          "last_train_loss": 1.230832576751709
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 0.9761218396015465,
+            "accuracy": 0.70281982421875,
+            "perplexity": 2.654143064253134
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 0.9761218396015465,
+        "accuracy": 0.70281982421875,
+        "perplexity": 2.654143064253134
+      }
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.6386439763009548,
+          "accuracy": 0.306640625,
+          "step": 5000,
+          "last_train_loss": 1.539873480796814
+        },
+        {
+          "loss": 1.5256593711674213,
+          "accuracy": 0.288818359375,
+          "step": 10000,
+          "last_train_loss": 1.5775995254516602
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.5172237986698747,
+            "accuracy": 0.3026123046875,
+            "perplexity": 4.559549380921275
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.5172237986698747,
+        "accuracy": 0.3026123046875,
+        "perplexity": 4.559549380921275
+      }
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.3743674755096436,
+          "accuracy": 0.3448893344029784,
+          "step": 5000,
+          "last_train_loss": 1.395501971244812
+        },
+        {
+          "loss": 1.2755702026188374,
+          "accuracy": 0.3510742289945483,
+          "step": 10000,
+          "last_train_loss": 1.293391227722168
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.2747907331213355,
+            "accuracy": 0.3460896913893521,
+            "perplexity": 3.5779525847827163
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.2747907331213355,
+        "accuracy": 0.3460896913893521,
+        "perplexity": 3.5779525847827163
+      }
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 9981,
+      "history": [
+        {
+          "loss": 2.248350825160742,
+          "accuracy": 0.348388671875,
+          "step": 5000,
+          "last_train_loss": 2.245884895324707
+        },
+        {
+          "loss": 2.1410195864737034,
+          "accuracy": 0.37890625,
+          "step": 10000,
+          "last_train_loss": 2.0996341705322266
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 2.216902993619442,
+            "accuracy": 0.367431640625,
+            "perplexity": 9.178859813714366
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 2.216902993619442,
+        "accuracy": 0.367431640625,
+        "perplexity": 9.178859813714366
+      }
+    },
+    {
+      "task": "position",
+      "seed": 2,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.8094694018363953,
+          "accuracy": 0.387451171875,
+          "step": 5000,
+          "last_train_loss": 1.8660776615142822
+        },
+        {
+          "loss": 1.1337491869926453,
+          "accuracy": 0.631591796875,
+          "step": 10000,
+          "last_train_loss": 0.8998070359230042
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.1179383425042033,
+            "accuracy": 0.63818359375,
+            "perplexity": 3.0585420326540027
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.1179383425042033,
+        "accuracy": 0.63818359375,
+        "perplexity": 3.0585420326540027
+      }
+    },
+    {
+      "task": "single",
+      "seed": 2,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.7998869344592094,
+          "accuracy": 0.2919921875,
+          "step": 5000,
+          "last_train_loss": 1.7438743114471436
+        },
+        {
+          "loss": 1.6812295280396938,
+          "accuracy": 0.286865234375,
+          "step": 10000,
+          "last_train_loss": 1.609410285949707
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.6869674026966095,
+            "accuracy": 0.2847900390625,
+            "perplexity": 5.403070497910702
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.6869674026966095,
+        "accuracy": 0.2847900390625,
+        "perplexity": 5.403070497910702
+      }
+    },
+    {
+      "task": "multi",
+      "seed": 2,
+      "parameters": 9911,
+      "history": [
+        {
+          "loss": 1.4868804290890694,
+          "accuracy": 0.3432617262005806,
+          "step": 5000,
+          "last_train_loss": 1.4908779859542847
+        },
+        {
+          "loss": 1.3229770958423615,
+          "accuracy": 0.35677084513008595,
+          "step": 10000,
+          "last_train_loss": 1.2876629829406738
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.3236396247521043,
+            "accuracy": 0.3581339605152607,
+            "perplexity": 3.757070850776199
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.3236396247521043,
+        "accuracy": 0.3581339605152607,
+        "perplexity": 3.757070850776199
+      }
+    },
+    {
+      "task": "language",
+      "seed": 2,
+      "parameters": 9981,
+      "history": [
+        {
+          "loss": 2.232425130903721,
+          "accuracy": 0.3583984375,
+          "step": 5000,
+          "last_train_loss": 2.2946910858154297
+        },
+        {
+          "loss": 2.1172277629375458,
+          "accuracy": 0.3857421875,
+          "step": 10000,
+          "last_train_loss": 2.280336380004883
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 2.2086148746311665,
+            "accuracy": 0.36474609375,
+            "perplexity": 9.103098723553591
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 2.2086148746311665,
+        "accuracy": 0.36474609375,
+        "perplexity": 9.103098723553591
+      }
+    }
+  ]
+}

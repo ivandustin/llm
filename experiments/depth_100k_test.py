@@ -7,16 +7,16 @@ from experiments.positional_encoding import SinusoidalPositions
 
 SPECS=dict(eight=(8,103),twelve=(12,84))
 class Model(nnx.Module):
- def __init__(self,task,seed,architecture,positions="sinusoidal"):
+ def __init__(self,task,seed,architecture,positions="sinusoidal",width=64,ff_hidden=200):
   if positions not in ["learned", "sinusoidal"]:raise ValueError(positions)
   self.task=task;self.architecture=architecture
   vocab=65 if task=='language' else 96;context=32 if task=='language' else 16
   if architecture=='transformer':
    self.base=TwoBlock(task,seed)
    # Keep identical internal dimensions across language and retrieval.
-   self.base.hidden=200
-   self.base.base=ProbeTransformer(vocab,context,64,nnx.Rngs(seed),depth=2,ff_hidden=200)
-   if positions=="sinusoidal":self.base.base.position=SinusoidalPositions(64)
+   self.base.hidden=ff_hidden
+   self.base.base=ProbeTransformer(vocab,context,width,nnx.Rngs(seed),depth=2,ff_hidden=ff_hidden)
+   if positions=="sinusoidal":self.base.base.position=SinusoidalPositions(width)
   else:
    layers,hidden=SPECS[architecture]
    self.base=BatchedCandidate(context,vocab,64,hidden,seed,layers)
