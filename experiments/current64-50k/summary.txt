@@ -1,0 +1,37 @@
+Current d64 references; three seeds, mean +/- sample standard deviation.
+Pooling: 100000 retrieval / 81153 language parameters; Transformer: 98032 / 94033.
+Adam .001, batch 64, continuous state; identical task data streams and fixed evaluation samples.
+Equal updates do not imply equal compute. No best-checkpoint selection.
+
+token_product / position / 1000: 75.52% +/- 0.53
+token_product / position / 10000: 99.55% +/- 0.75
+token_product / position / 30000: 100.00% +/- 0.00
+token_product / position / 50000: 99.99% +/- 0.01
+token_product / single / 1000: 31.17% +/- 0.71
+token_product / single / 10000: 95.21% +/- 3.48
+token_product / single / 30000: 98.08% +/- 0.98
+token_product / single / 50000: 98.31% +/- 0.91
+token_product / multi / 1000: 37.02% +/- 3.05
+token_product / multi / 10000: 98.09% +/- 1.16
+token_product / multi / 30000: 99.17% +/- 0.39
+token_product / multi / 50000: 99.37% +/- 0.30
+token_product / language / 1000: 34.62% +/- 0.40; perplexity 10.14 +/- 0.15
+token_product / language / 10000: 43.68% +/- 0.33; perplexity 7.58 +/- 0.14
+token_product / language / 30000: 46.29% +/- 0.21; perplexity 7.52 +/- 0.11
+token_product / language / 50000: 46.91% +/- 0.27; perplexity 7.61 +/- 0.22
+transformer / position / 1000: 100.00% +/- 0.00
+transformer / position / 10000: 100.00% +/- 0.00
+transformer / position / 30000: 100.00% +/- 0.00
+transformer / position / 50000: 100.00% +/- 0.00
+transformer / single / 1000: 28.65% +/- 0.02
+transformer / single / 10000: 28.63% +/- 0.43
+transformer / single / 30000: 30.03% +/- 0.40
+transformer / single / 50000: 29.93% +/- 0.39
+transformer / multi / 1000: 32.50% +/- 0.32
+transformer / multi / 10000: 100.00% +/- 0.00
+transformer / multi / 30000: 100.00% +/- 0.00
+transformer / multi / 50000: 100.00% +/- 0.01
+transformer / language / 1000: 33.73% +/- 0.43; perplexity 10.17 +/- 0.15
+transformer / language / 10000: 42.97% +/- 0.47; perplexity 7.22 +/- 0.15
+transformer / language / 30000: 45.46% +/- 0.46; perplexity 6.79 +/- 0.21
+transformer / language / 50000: 46.63% +/- 0.42; perplexity 6.79 +/- 0.20

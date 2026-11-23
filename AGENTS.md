@@ -36,8 +36,11 @@ Final results after 10,000 updates per task:
 Source: [token-product100k-summary.json](experiments/token-product100k-summary.json).
 The sigmoid and no-normalization follow-ups performed substantially worse on
 recall; retain normalization and GELU as the current overall choice.
-This conditioned model has not yet been trained to 30k or 50k updates, and no
-speed benchmark has been run for it.
+The conditioned model now has three-seed results at 1k/10k/30k/50k updates in
+[the current comparison](experiments/current64-50k/summary.txt). At 50k, accuracy
+is 99.99% ± 0.01 copying, 98.31% ± 0.91 single-query recall, 99.37% ± 0.30
+multi-query recall, and 46.91% ± 0.27 language, with perplexity 7.61 ± 0.22.
+No speed benchmark has been run for it.
 
 ## Current Transformer reference
 
@@ -51,7 +54,11 @@ speed benchmark has been run for it.
   learned 78.80% ± 36.72. Source: `experiments/tf-positions-multi-10k-summary.json`.
 - Other sinusoidal 10k results have only seed 0: copying 100%, single-query
   recall 28.16%, language accuracy 43.21%, perplexity 7.32. Source:
-  `experiments/tf-positions-10k-seed-0.json`. No sinusoidal 30k/50k results yet.
+  `experiments/tf-positions-10k-seed-0.json`. These are now supplemented by
+  three-seed results for all four tasks at 1k/10k/30k/50k in
+  `experiments/current64-50k/summary.txt`. At 50k, sinusoidal accuracy is
+  100.00% ± 0.00 copying, 29.93% ± 0.39 single-query recall, 100.00% ± 0.01
+  multi-query recall, and 46.63% ± 0.42 language, with perplexity 6.79 ± 0.20.
 - Implementation: `experiments/depth_100k_test.py`; longer training uses
   `experiments/longer_training_100k.py --architecture transformer`.
 
@@ -68,8 +75,8 @@ sinusoidal default.
 
 Source: [longer-transformer100k-summary.txt](experiments/longer-transformer100k-summary.txt).
 The historical learned-position Transformer has the best language perplexity in this comparison at the
-reported 30k milestone; do not imply that the conditioned pooling model has
-been evaluated at that training duration.
+reported 30k milestone; the new conditioned-pooling and sinusoidal comparison at that duration is
+reported separately in `experiments/current64-50k/summary.txt`.
 
 ## Shared training and evaluation context
 

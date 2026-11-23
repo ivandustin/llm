@@ -1,0 +1,626 @@
+{
+  "configs": {
+    "token_product": [
+      {
+        "architecture": "token_product",
+        "seed": 0,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 576,
+          "single": 576,
+          "multi": 576,
+          "language": 576
+        },
+        "hidden_layers": 1,
+        "blocks": 0,
+        "residual": false,
+        "final_norm": false,
+        "positions": "learned",
+        "pooled_norm": "non-learned epsilon1e-5",
+        "activation": "GELU",
+        "parameters": {
+          "query": 100000,
+          "language": 81153
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+        "parameter_budget": null
+      },
+      {
+        "architecture": "token_product",
+        "seed": 1,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 576,
+          "single": 576,
+          "multi": 576,
+          "language": 576
+        },
+        "hidden_layers": 1,
+        "blocks": 0,
+        "residual": false,
+        "final_norm": false,
+        "positions": "learned",
+        "pooled_norm": "non-learned epsilon1e-5",
+        "activation": "GELU",
+        "parameters": {
+          "query": 100000,
+          "language": 81153
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+        "parameter_budget": null
+      },
+      {
+        "architecture": "token_product",
+        "seed": 2,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 576,
+          "single": 576,
+          "multi": 576,
+          "language": 576
+        },
+        "hidden_layers": 1,
+        "blocks": 0,
+        "residual": false,
+        "final_norm": false,
+        "positions": "learned",
+        "pooled_norm": "non-learned epsilon1e-5",
+        "activation": "GELU",
+        "parameters": {
+          "query": 100000,
+          "language": 81153
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "pooling": "sum(position[i] * token[i] * token[last]) for i < last; normalize then GELU MLP",
+        "parameter_budget": null
+      }
+    ],
+    "transformer": [
+      {
+        "architecture": "transformer",
+        "seed": 0,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 200,
+          "single": 200,
+          "multi": 200,
+          "language": 200
+        },
+        "hidden_layers": 1,
+        "blocks": 2,
+        "residual": true,
+        "final_norm": true,
+        "positions": "sinusoidal",
+        "pooled_norm": "not applicable",
+        "activation": "GELU",
+        "parameters": {
+          "query": 98032,
+          "language": 94033
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "heads": 4,
+        "parameter_budget": null
+      },
+      {
+        "architecture": "transformer",
+        "seed": 1,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 200,
+          "single": 200,
+          "multi": 200,
+          "language": 200
+        },
+        "hidden_layers": 1,
+        "blocks": 2,
+        "residual": true,
+        "final_norm": true,
+        "positions": "sinusoidal",
+        "pooled_norm": "not applicable",
+        "activation": "GELU",
+        "parameters": {
+          "query": 98032,
+          "language": 94033
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "heads": 4,
+        "parameter_budget": null
+      },
+      {
+        "architecture": "transformer",
+        "seed": 2,
+        "steps": 50000,
+        "checkpoints": [
+          1000,
+          10000,
+          30000,
+          50000
+        ],
+        "batch": 64,
+        "lr": 0.001,
+        "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+        "width": 64,
+        "hidden": {
+          "position": 200,
+          "single": 200,
+          "multi": 200,
+          "language": 200
+        },
+        "hidden_layers": 1,
+        "blocks": 2,
+        "residual": true,
+        "final_norm": true,
+        "positions": "sinusoidal",
+        "pooled_norm": "not applicable",
+        "activation": "GELU",
+        "parameters": {
+          "query": 98032,
+          "language": 94033
+        },
+        "tasks": [
+          "position",
+          "single",
+          "multi",
+          "language"
+        ],
+        "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+        "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+        "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+        "baseline": null,
+        "heads": 4,
+        "parameter_budget": null
+      }
+    ]
+  },
+  "rows": [
+    {
+      "architecture": "token_product",
+      "task": "position",
+      "step": 1000,
+      "accuracy_mean": 0.7552286783854166,
+      "accuracy_sd": 0.0053420001356843,
+      "loss_mean": 0.746475083520636,
+      "loss_sd": 0.01523174511723951,
+      "perplexity_mean": 2.1097135783537992,
+      "perplexity_sd": 0.031993798510552264
+    },
+    {
+      "architecture": "token_product",
+      "task": "position",
+      "step": 10000,
+      "accuracy_mean": 0.9955240885416666,
+      "accuracy_sd": 0.007542062007876081,
+      "loss_mean": 0.012569086131406948,
+      "loss_sd": 0.020825358150446522,
+      "perplexity_mean": 1.0127953934365133,
+      "perplexity_sd": 0.021216781246476073
+    },
+    {
+      "architecture": "token_product",
+      "task": "position",
+      "step": 30000,
+      "accuracy_mean": 0.9999796549479166,
+      "accuracy_sd": 3.523866389096837e-05,
+      "loss_mean": 2.2605837633212406e-05,
+      "loss_sd": 2.9397366428695885e-05,
+      "perplexity_mean": 1.0000226063812232,
+      "perplexity_sd": 2.9398234694077285e-05
+    },
+    {
+      "architecture": "token_product",
+      "task": "position",
+      "step": 50000,
+      "accuracy_mean": 0.9999186197916666,
+      "accuracy_sd": 0.00014095465556387347,
+      "loss_mean": 0.0001724306542503958,
+      "loss_sd": 0.00029732623129740077,
+      "perplexity_mean": 1.0001724749956675,
+      "perplexity_sd": 0.00029740303197612006
+    },
+    {
+      "architecture": "token_product",
+      "task": "single",
+      "step": 1000,
+      "accuracy_mean": 0.3116861979166667,
+      "accuracy_sd": 0.007101180975261318,
+      "loss_mean": 1.613636006290714,
+      "loss_sd": 0.01152192780481302,
+      "perplexity_mean": 5.021256632185794,
+      "perplexity_sd": 0.05779494349715295
+    },
+    {
+      "architecture": "token_product",
+      "task": "single",
+      "step": 10000,
+      "accuracy_mean": 0.95208740234375,
+      "accuracy_sd": 0.03482059676011739,
+      "loss_mean": 0.12913833748704442,
+      "loss_sd": 0.08883253963349388,
+      "perplexity_mean": 1.140841878264453,
+      "perplexity_sd": 0.10121307173822501
+    },
+    {
+      "architecture": "token_product",
+      "task": "single",
+      "step": 30000,
+      "accuracy_mean": 0.9807535807291666,
+      "accuracy_sd": 0.009797109078871382,
+      "loss_mean": 0.0517964013464128,
+      "loss_sd": 0.02701396915021905,
+      "perplexity_mean": 1.0534161693908584,
+      "perplexity_sd": 0.02823235051354244
+    },
+    {
+      "architecture": "token_product",
+      "task": "single",
+      "step": 50000,
+      "accuracy_mean": 0.9830729166666666,
+      "accuracy_sd": 0.009059626792486859,
+      "loss_mean": 0.0453647940933782,
+      "loss_sd": 0.025296199588640038,
+      "perplexity_mean": 1.0466317188134293,
+      "perplexity_sd": 0.02629418865385742
+    },
+    {
+      "architecture": "token_product",
+      "task": "multi",
+      "step": 1000,
+      "accuracy_mean": 0.37018501362763345,
+      "accuracy_sd": 0.030450264656979163,
+      "loss_mean": 1.2748925446843107,
+      "loss_sd": 0.031056109318170957,
+      "perplexity_mean": 3.579461113655423,
+      "perplexity_sd": 0.11023918398790698
+    },
+    {
+      "architecture": "token_product",
+      "task": "multi",
+      "step": 10000,
+      "accuracy_mean": 0.9809434879571199,
+      "accuracy_sd": 0.011552019771118726,
+      "loss_mean": 0.05180838494804144,
+      "loss_sd": 0.030739067839241817,
+      "perplexity_mean": 1.0535037032177306,
+      "perplexity_sd": 0.03209271846414319
+    },
+    {
+      "architecture": "token_product",
+      "task": "multi",
+      "step": 30000,
+      "accuracy_mean": 0.9917195852225026,
+      "accuracy_sd": 0.003911704022070052,
+      "loss_mean": 0.021948686286577868,
+      "loss_sd": 0.010220583168186883,
+      "perplexity_mean": 1.0222268789700228,
+      "perplexity_sd": 0.010427856437492203
+    },
+    {
+      "architecture": "token_product",
+      "task": "multi",
+      "step": 50000,
+      "accuracy_mean": 0.9936523645495375,
+      "accuracy_sd": 0.0030071469804533344,
+      "loss_mean": 0.016647743134247623,
+      "loss_sd": 0.007690098275459437,
+      "perplexity_mean": 1.0168071060757837,
+      "perplexity_sd": 0.0078037800674914505
+    },
+    {
+      "architecture": "token_product",
+      "task": "language",
+      "step": 1000,
+      "accuracy_mean": 0.34619140625,
+      "accuracy_sd": 0.003996754283140845,
+      "loss_mean": 2.316580343991518,
+      "loss_sd": 0.015277737269610478,
+      "perplexity_mean": 10.141724774220918,
+      "perplexity_sd": 0.15474144777337592
+    },
+    {
+      "architecture": "token_product",
+      "task": "language",
+      "step": 10000,
+      "accuracy_mean": 0.436767578125,
+      "accuracy_sd": 0.003284576183367605,
+      "loss_mean": 2.025475968917211,
+      "loss_sd": 0.01870514656886496,
+      "perplexity_mean": 7.580600212437772,
+      "perplexity_sd": 0.14140144550385808
+    },
+    {
+      "architecture": "token_product",
+      "task": "language",
+      "step": 30000,
+      "accuracy_mean": 0.462890625,
+      "accuracy_sd": 0.0021283686247757197,
+      "loss_mean": 2.0174754597246647,
+      "loss_sd": 0.013960823573008709,
+      "perplexity_mean": 7.519807950827284,
+      "perplexity_sd": 0.10539697577977752
+    },
+    {
+      "architecture": "token_product",
+      "task": "language",
+      "step": 50000,
+      "accuracy_mean": 0.4690755208333333,
+      "accuracy_sd": 0.0027440942871235947,
+      "loss_mean": 2.029084287583828,
+      "loss_sd": 0.029080777611158366,
+      "perplexity_mean": 7.609252260300279,
+      "perplexity_sd": 0.21977668297225975
+    },
+    {
+      "architecture": "transformer",
+      "task": "position",
+      "step": 1000,
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_mean": 0.002644405913694451,
+      "loss_sd": 0.00010799445278047827,
+      "perplexity_mean": 1.0026479093369451,
+      "perplexity_sd": 0.00010828024135068191
+    },
+    {
+      "architecture": "transformer",
+      "task": "position",
+      "step": 10000,
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_mean": 4.114408511668444e-06,
+      "loss_sd": 2.6654311853881527e-07,
+      "perplexity_mean": 1.0000041144169995,
+      "perplexity_sd": 2.665442270426468e-07
+    },
+    {
+      "architecture": "transformer",
+      "task": "position",
+      "step": 30000,
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_mean": 0.0,
+      "loss_sd": 0.0,
+      "perplexity_mean": 1.0,
+      "perplexity_sd": 0.0
+    },
+    {
+      "architecture": "transformer",
+      "task": "position",
+      "step": 50000,
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_mean": 0.0,
+      "loss_sd": 0.0,
+      "perplexity_mean": 1.0,
+      "perplexity_sd": 0.0
+    },
+    {
+      "architecture": "transformer",
+      "task": "single",
+      "step": 1000,
+      "accuracy_mean": 0.2864990234375,
+      "accuracy_sd": 0.00022006538546533137,
+      "loss_mean": 1.6271641987065475,
+      "loss_sd": 0.018763781613379035,
+      "perplexity_mean": 5.090019442803471,
+      "perplexity_sd": 0.09562001856437861
+    },
+    {
+      "architecture": "transformer",
+      "task": "single",
+      "step": 10000,
+      "accuracy_mean": 0.2862955729166667,
+      "accuracy_sd": 0.004274349703415719,
+      "loss_mean": 1.484717403538525,
+      "loss_sd": 0.0065987091309452385,
+      "perplexity_mean": 4.413782079134532,
+      "perplexity_sd": 0.02918051842557065
+    },
+    {
+      "architecture": "transformer",
+      "task": "single",
+      "step": 30000,
+      "accuracy_mean": 0.3002726236979167,
+      "accuracy_sd": 0.003998773277447892,
+      "loss_mean": 1.4671175889670849,
+      "loss_sd": 0.0032269154170061084,
+      "perplexity_mean": 4.336731969704538,
+      "perplexity_sd": 0.014007142475986282
+    },
+    {
+      "architecture": "transformer",
+      "task": "single",
+      "step": 50000,
+      "accuracy_mean": 0.2992960611979167,
+      "accuracy_sd": 0.0038767335254603435,
+      "loss_mean": 1.4666800554841757,
+      "loss_sd": 0.002931995636843085,
+      "perplexity_mean": 4.334832283410196,
+      "perplexity_sd": 0.01270650906715797
+    },
+    {
+      "architecture": "transformer",
+      "task": "multi",
+      "step": 1000,
+      "accuracy_mean": 0.3249511826628198,
+      "accuracy_sd": 0.003169587760954573,
+      "loss_mean": 1.4672765079885721,
+      "loss_sd": 0.0063778705391218365,
+      "perplexity_mean": 4.3374650055332475,
+      "perplexity_sd": 0.027695250023883716
+    },
+    {
+      "architecture": "transformer",
+      "task": "multi",
+      "step": 10000,
+      "accuracy_mean": 1.0,
+      "accuracy_sd": 0.0,
+      "loss_mean": 6.120502768898935e-05,
+      "loss_sd": 7.857373798846557e-05,
+      "perplexity_mean": 1.0000612089588559,
+      "perplexity_sd": 7.858032047225845e-05
+    },
+    {
+      "architecture": "transformer",
+      "task": "multi",
+      "step": 30000,
+      "accuracy_mean": 0.9999932184194525,
+      "accuracy_sd": 1.1746042063876403e-05,
+      "loss_mean": 1.639627074467853e-05,
+      "loss_sd": 2.1112502600990276e-05,
+      "perplexity_mean": 1.0000163965537465,
+      "perplexity_sd": 2.111295181083773e-05
+    },
+    {
+      "architecture": "transformer",
+      "task": "multi",
+      "step": 50000,
+      "accuracy_mean": 0.9999660919420421,
+      "accuracy_sd": 5.87304791690516e-05,
+      "loss_mean": 0.00013486493667864396,
+      "loss_sd": 0.00021552848950648983,
+      "perplexity_mean": 1.0001348895182636,
+      "perplexity_sd": 0.00021557082703940072
+    },
+    {
+      "architecture": "transformer",
+      "task": "language",
+      "step": 1000,
+      "accuracy_mean": 0.3373209635416667,
+      "accuracy_sd": 0.004273042185164413,
+      "loss_mean": 2.319700390100479,
+      "loss_sd": 0.0151239054840486,
+      "perplexity_mean": 10.173400728141651,
+      "perplexity_sd": 0.15358315815213347
+    },
+    {
+      "architecture": "transformer",
+      "task": "language",
+      "step": 10000,
+      "accuracy_mean": 0.4296875,
+      "accuracy_sd": 0.00465790625691868,
+      "loss_mean": 1.9772813965876896,
+      "loss_sd": 0.02093051397216252,
+      "perplexity_mean": 7.224130799564351,
+      "perplexity_sd": 0.15042131550496438
+    },
+    {
+      "architecture": "transformer",
+      "task": "language",
+      "step": 30000,
+      "accuracy_mean": 0.45458984375,
+      "accuracy_sd": 0.004638671875,
+      "loss_mean": 1.9155112902323406,
+      "loss_sd": 0.03004979577265524,
+      "perplexity_mean": 6.792463910281459,
+      "perplexity_sd": 0.20559360167145133
+    },
+    {
+      "architecture": "transformer",
+      "task": "language",
+      "step": 50000,
+      "accuracy_mean": 0.46630859375,
+      "accuracy_sd": 0.004235681536351922,
+      "loss_mean": 1.915546430895726,
+      "loss_sd": 0.029414642473928027,
+      "perplexity_mean": 6.79261697587021,
+      "perplexity_sd": 0.2012985162268668
+    }
+  ]
+}

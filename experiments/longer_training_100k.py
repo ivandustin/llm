@@ -72,6 +72,7 @@ def main():
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--chunk',type=int,default=1000)
+    parser.add_argument('--checkpoints',type=int,nargs='+',help='Evaluation milestones, in multiples of 1000; final step is always included')
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
     parser.add_argument('--width',type=int,default=64,help='Token-product or Transformer embedding width')
     parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
@@ -89,7 +90,9 @@ def main():
     chars=sorted(set(text));enc={c:i for i,c in enumerate(chars)}
     data=np.array([enc[c] for c in text],np.int32)
     train,val,test=np.split(data,[int(len(data)*.8),int(len(data)*.9)])
-    checkpoints=sorted({s for s in [10000,30000,args.steps] if s<=args.steps})
+    if args.checkpoints is not None and any(s < 1000 or s > args.steps or s % 1000 for s in args.checkpoints):
+        parser.error('checkpoints must be multiples of 1000 between 1000 and steps')
+    checkpoints=sorted(set(args.checkpoints+[args.steps]) if args.checkpoints is not None else {s for s in [10000,30000,args.steps] if s<=args.steps})
     transformer=args.architecture=='transformer'
     sigmoid_norm=args.architecture=='token_product_sigmoid_norm'
     sigmoid=args.architecture in ['sigmoid','token_product_sigmoid','token_product_sigmoid_norm']
