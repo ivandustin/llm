@@ -147,6 +147,51 @@ Language perplexity & P & 13.51 & 7.95 & 7.29 & 7.20\\
 
 At 0.0003, both models' mean language accuracy and perplexity improve at each reported milestone.
 
+\subsection{Concatenating the last token after pooling}
+We replace \(m(x)\odot q(x)\) in Equation~\ref{eq:pool} with
+\([m(x);q(x)]\), then apply the same parameter-free normalization and GELU
+readout. Both models use width-64 embeddings, Adam at 0.0003, batch size 64,
+and the same training streams and held-out samples for seeds 0--2.
+The concatenated input doubles the readout input width. To match parameter
+counts, we reduce the hidden width from 576 to 412 for retrieval and 385 for
+language. This yields 99,964 and 80,963 parameters, respectively.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Last-token conditioning after 10,000 updates. Values are means
+$\pm$ sample standard deviations across three seeds. Accuracies are percentages.}
+\label{tab:last-token-concat}
+\begin{tabular}{lrr}
+\toprule
+Metric & Multiplication & Concatenation\\
+\midrule
+Position copying & \(\sd{98.86}{0.91}\) & \(\sd{70.73}{1.20}\)\\
+Single-query recall & \(\sd{77.09}{5.28}\) & \(\sd{30.03}{0.30}\)\\
+Multi-query recall & \(\sd{93.11}{2.92}\) & \(\sd{34.82}{0.06}\)\\
+Next-character accuracy & \(\sd{40.35}{0.32}\) & \(\sd{41.72}{0.20}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.95}{0.18}\) & \(\sd{7.25}{0.06}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Concatenation scores lower on all three retrieval tasks and improves both
+language metrics at 10k (Table~\ref{tab:last-token-concat}). In a seed-0
+control with 576 hidden units and 136,864 parameters, concatenation reaches
+29.78\% single-query and 34.66\% multi-query recall, close to its
+budget-matched scores of 29.69\% and 34.76\% for that seed.
+
+To measure query dependence, we take 16,384 fresh single-query memories and
+hold each memory fixed while querying each of its five keys. Across seeds,
+concatenation gives the same answer to all five keys on
+\(\sd{46.90}{1.11}\%\) of memories, compared with \(\sd{0.13}{0.10}\%\)
+for multiplication. Its prediction is among the most frequent stored
+values on \(\sd{97.30}{0.97}\%\) of queries, compared with
+\(\sd{75.13}{1.08}\%\) for multiplication. Multiplication lets the query
+rescale each memory channel directly. Concatenation leaves the readout to
+learn how to combine the two inputs, and the probe indicates that it
+largely learns to favor frequent values by 10k. These results apply to the
+width-64 raw pooling models at the tested training budget.
+
 \subsection{Wider pooling with a second interaction statistic}
 \label{sec:raw-gelu}
 Let \(x_i=p_i\odot e_{t_i}\odot e_{t_{\mathrm{last}}}\) be the conditioned interaction at each preceding position. An exploratory follow-up uses embedding width 128 and pools two statistics,
@@ -348,6 +393,8 @@ This runs both architectures for seeds 0--2 and summarizes the declared mileston
 python -m experiments.run_current64_50k --lr .0003 --summarize-only
 \end{verbatim}
 Width-64 inference and training timing medians and trial ranges are in \path{experiments/current64-50k/speed-summary.txt}. The benchmark implementation is \path{experiments/current_speed.py}.
+
+The last-token concatenation results, query-swap measurements, and training commands are in \path{experiments/last-token-concat-10k/summary.md}.
 
 The width-128 follow-up is in \path{experiments/raw-gelu-all-50k/summary.txt}, with per-seed results in the same directory. The single-query controls are in \path{experiments/raw-gelu-single/summary.txt}. To reproduce the four-task width-128 results, run the following with \texttt{SEED} set to 0, 1, and 2:
 \begin{verbatim}

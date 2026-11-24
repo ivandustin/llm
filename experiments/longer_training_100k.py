@@ -24,7 +24,7 @@ from experiments.budget_sweep import hidden_for_budget
 
 
 class TokenProductModel(nnx.Module):
-    """Shared last-token multiplication for every task; no task-specific retrieval."""
+    """Shared last-token conditioning for every task."""
     def __init__(self, task, seed, sigmoid_no_norm=False, gelu_no_norm=False,
                  sigmoid_norm=False, variant='token_product', width=64, hidden=576, hidden_layers=1):
         if sum([sigmoid_no_norm, gelu_no_norm, sigmoid_norm]) > 1:
@@ -68,7 +68,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid','token_product_last_concat'],default='deep')
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
@@ -116,7 +116,8 @@ def main():
         'token_product_raw_gelu_add':'sum(x) + sum(GELU(x))',
         'token_product_raw_gelu_mul':'sum(x) * sum(GELU(x))',
     }.get(args.architecture)
-    concatenated=second_pool is not None
+    last_concat=args.architecture=='token_product_last_concat'
+    concatenated=second_pool is not None or last_concat
     token_product=args.architecture.startswith('token_product')
     shallow=token_product or args.architecture in ['shallow','sigmoid']
     prefix='token-product-sigmoid-norm100k' if sigmoid_norm else 'token-product-gelu-no-norm100k' if gelu_no_norm else 'token-product-sigmoid100k' if token_product and sigmoid else 'token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
@@ -138,6 +139,8 @@ def main():
     if pre_norm:
         readout='GELU MLP' if gelu_no_norm else 'normalize then GELU MLP'
         config['pooling']=f'sum(normalize(position[i] * token[i] * token[last])) for i < last; {readout}'
+    elif last_concat:
+        config['pooling']='concat(sum(position[i] * token[i] for i < last), token[last]); normalize then GELU MLP'
     elif concatenated:
         config['pooling']=f'concat(sum(x), {second_pool}) for x = position[i] * token[i] * token[last], i < last; normalize then GELU MLP'
     elif combined_pool:

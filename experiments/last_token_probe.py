@@ -60,8 +60,9 @@ class TokenInteraction(nnx.Module):
     query initialized to ones. Other variants exclude the final token from
     memory. token_position_product multiplies the last token and its position
     to form the query, reusing the existing embedding tables.
-    previous_pool is the no-query control. token_product_gelu pools GELU
-    interactions, while token_product_raw_gelu pools both raw and GELU
+    previous_pool is the no-query control. token_product_last_concat
+    appends the last-token embedding to the pooled memory. token_product_gelu
+    pools GELU interactions, while token_product_raw_gelu pools both raw and GELU
     interactions. token_product_raw_half replaces the GELU sum with half the
     raw sum. token_product_pre_norm normalizes each interaction across its
     channels before summing. Readout activation and pooled normalization can
@@ -75,7 +76,8 @@ class TokenInteraction(nnx.Module):
         self.activation = activation
         self.pooled_norm = pooled_norm
         self.base = BatchedCandidate(context, vocab, width, hidden, seed, layers).model
-        if variant in ('token_product_raw_gelu', 'token_product_raw_half', 'token_product_raw_sigmoid'):
+        if variant in ('token_product_raw_gelu', 'token_product_raw_half', 'token_product_raw_sigmoid',
+                       'token_product_last_concat'):
             self.base.fn.a = nnx.Linear(2 * width, hidden, rngs=nnx.Rngs(seed + 100000))
         if variant == 'global_query':
             self.query = nnx.Param(jnp.ones(width))
@@ -89,7 +91,7 @@ class TokenInteraction(nnx.Module):
                 memory = memory * self.query[...]
             elif self.variant == 'token_position_product':
                 memory = memory * (e[0, -1] * e[1, -1])
-            elif self.variant != 'previous_pool':
+            elif self.variant not in ('previous_pool', 'token_product_last_concat'):
                 memory = memory * e[1, -1]
             if self.variant == 'token_product_gelu':
                 memory = jax.nn.gelu(memory)
@@ -98,7 +100,9 @@ class TokenInteraction(nnx.Module):
                     memory.var(axis=-1, keepdims=True) + 1e-5
                 )
             pooled = memory.sum(axis=0)
-            if self.variant == 'token_product_raw_gelu':
+            if self.variant == 'token_product_last_concat':
+                pooled = jnp.concatenate([pooled, e[1, -1]])
+            elif self.variant == 'token_product_raw_gelu':
                 pooled = jnp.concatenate([pooled, jax.nn.gelu(memory).sum(axis=0)])
             elif self.variant == 'token_product_raw_gelu_add':
                 pooled = pooled + jax.nn.gelu(memory).sum(axis=0)
