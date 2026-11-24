@@ -13,7 +13,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Can a small sequence model retrieve stored associations using a single pooled vector? We study last-token-conditioned position--token pooling: learned position and token embeddings are multiplied elementwise, multiplied by the final token's embedding, and summed over preceding positions. A parameter-free normalization and a one-hidden-layer GELU network produce the prediction. At width 64, the model has 100,000 parameters for retrieval and 81,153 for character prediction. In a matched comparison using Adam at a learning rate of 0.0003 across three seeds and 50,000 updates, it achieves $100.00\%$ copying accuracy, $98.33\%$ single-query recall, and $99.17\%$ multi-query recall on short synthetic tasks. A two-block sinusoidal Transformer achieves $100.00\%$ on all three retrieval tasks. On Tiny Shakespeare, pooling reaches $45.67\%$ accuracy and perplexity 7.20, compared with $46.63\%$ and 6.69 for the Transformer. These results establish feasibility at short contexts and small budgets, while leaving long-context capacity and broader language performance unresolved.
+Can a small sequence model retrieve stored associations using a single pooled vector? We study last-token-conditioned position--token pooling: learned position and token embeddings are multiplied elementwise, multiplied by the final token's embedding, and summed over preceding positions. A parameter-free normalization and a one-hidden-layer GELU network produce the prediction. At width 64, the model has 100,000 parameters for retrieval and 81,153 for character prediction. In a matched comparison using Adam at a learning rate of 0.0003 across three seeds and 50,000 updates, it achieves $100.00\%$ copying accuracy, $98.33\%$ single-query recall, and $99.17\%$ multi-query recall on short synthetic tasks. A two-block sinusoidal Transformer achieves $100.00\%$ on all three retrieval tasks. On Tiny Shakespeare, pooling reaches $45.67\%$ accuracy and perplexity 7.20, compared with $46.63\%$ and 6.69 for the Transformer. On one CPU, the pooling implementation runs 2.63--4.54 times as fast in warmed inference. These results establish feasibility at short contexts and small budgets, while leaving long-context capacity and broader language performance unresolved.
 
 \end{abstract}
 
@@ -147,6 +147,32 @@ Language perplexity & P & 13.51 & 7.95 & 7.29 & 7.20\\
 
 At 0.0003, both models' mean language accuracy and perplexity improve at each reported milestone.
 
+\section{CPU inference measurements}
+We measure FP32 forward-pass latency on an Intel Core Ultra 7 155H with JAX 0.10.1, using seed-0 weights from the 50k checkpoints available when the benchmark was run. Each of seven alternating trials uses 20 warmup requests and 500 timed requests, with synchronization after each request. Inputs are resident on device. Compilation, data generation, and host transfers are excluded. Neither model uses a key/value cache.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Median CPU inference latency in milliseconds per request across seven trials. P: pooling. T: Transformer. The ratio is T/P. Multi-query requests produce three causal answers.}
+\label{tab:speed}
+\begin{tabular}{llrrr}
+\toprule
+Task & Mode & P (ms) & T (ms) & Ratio\\
+\midrule
+Copy & Inference, batch 1 & 0.440 & 1.234 & 2.80\\
+Single & Inference, batch 1 & 0.457 & 1.292 & 2.83\\
+Multi & Inference, batch 1 & 0.495 & 1.303 & 2.63\\
+Language & Inference, batch 1 & 0.494 & 1.370 & 2.77\\
+\midrule
+Copy & Inference, batch 64 & 0.662 & 2.344 & 3.54\\
+Single & Inference, batch 64 & 0.652 & 2.398 & 3.68\\
+Multi & Inference, batch 64 & 1.062 & 2.878 & 2.71\\
+Language & Inference, batch 64 & 0.904 & 4.107 & 4.54\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:speed} shows that pooling runs 2.63--2.83 times as fast at batch size 1 and 2.71--4.54 times as fast at batch size 64 on this CPU. The measurements include dispatch and synchronization costs for these short-context implementations.
+
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses 32 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
@@ -171,6 +197,8 @@ This runs both architectures for seeds 0--2 and summarizes the declared mileston
 \begin{verbatim}
 python -m experiments.run_current64_50k --lr .0003 --summarize-only
 \end{verbatim}
+Inference timing medians and trial ranges are in \path{experiments/current64-50k/speed-summary.txt}. The benchmark implementation is \path{experiments/current_speed.py}.
+
 The Tiny Shakespeare source file is \path{data/shakespeare.txt}, with SHA-256:
 \begin{center}\small\texttt{86c4e6aa9db7c042ec79f339dcb96d42b}\par
 \texttt{0075e16b8fc2e86bf0ca57e2dc565ed}.\end{center}
