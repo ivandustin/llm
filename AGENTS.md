@@ -5,11 +5,24 @@ Transformer (TF) reference. Results below are means across three seeds;
 ± values are sample standard deviations. Check the linked result files when
 new experiments are available.
 
-## Our pooling model
+## Current pooling references
 
-Our strongest pooling model overall so far is `token_product`:
-last-token-conditioned position–token pooling, embedding width 64, one GELU
-hidden layer of width 576, and parameter-free pooled normalization.
+- **Retrieval at 30k:** Width-256 additive raw + GELU
+  (`token_product_raw_gelu_add`) has our strongest overall pooling results
+  across the three retrieval tasks at this checkpoint. See
+  [the additive model and results](#additive-raw--gelu-pooling).
+- **Language accuracy:** Width-128 concatenated raw + GELU
+  (`token_product_raw_gelu`) has our highest three-seed mean next-character
+  accuracy, 47.00% ± 0.22 at 50k, with perplexity 7.09 ± 0.07.
+  Additive width 256 reaches 46.29% ± 0.51 with perplexity 6.98 ± 0.14
+  at 30k. The unequal update counts leave the language ranking open.
+  [Concatenated results](experiments/raw-gelu-all-50k/summary.txt)
+
+## Width-64 token-product baseline
+
+`token_product` uses last-token-conditioned position–token pooling,
+embedding width 64, one GELU hidden layer of width 576, and parameter-free
+pooled normalization.
 Learned position and token embeddings interact by elementwise multiplication:
 
 ```text
