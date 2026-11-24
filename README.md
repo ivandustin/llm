@@ -2,16 +2,69 @@
 
 Standalone Flax NNX implementations and reproducible experiments for small
 position–token pooling models and causal Transformers. All model and experiment
-code lives in this repository. The latest experiment conditions the pooled
-representation on the final token with no additional trainable parameters.
+code lives in this repository. The [paper](paper/paper.pdf) describes
+the models, experiments, and limitations.
 
-New training runs default to Adam learning rate **0.0003**. Use `--lr 0.001`
-to reproduce the historical results below. The single-query investigation
-keeps its original 0.001 diagnostic baseline.
+## Matched 50,000-update results
 
-## Latest results: last-token-conditioned pooling
+All models used Adam at **0.0003** (the training default), batch size 64, and
+three seeds. Values are means ± sample standard deviations at the final
+checkpoint. Retrieval uses 16,384 held-out sequences, with multi-query recall
+scored per answer on its causal prefix. Language uses 4,096 Tiny Shakespeare
+test windows at context length 32 from a contiguous 80/10/10 split.
 
-The new variant multiplies each previous position–token vector by the final
+| Metric | Token-product pooling (64) | Concat + GELU pooling (128) | Sinusoidal Transformer (64) |
+|---|---:|---:|---:|
+| Position copying accuracy | 100.00% ± 0.00 | 100.00% ± 0.00 | 100.00% ± 0.00 |
+| Single-query recall accuracy | 98.33% ± 1.27 | 99.98% ± 0.02 | 100.00% ± 0.00 |
+| Multi-query recall accuracy | 99.17% ± 0.66 | 99.98% ± 0.02 | 100.00% ± 0.00 |
+| Next-character accuracy | 45.67% ± 0.41 | 47.00% ± 0.22 | 46.63% ± 0.72 |
+| Language perplexity ↓ | 7.20 ± 0.20 | 7.09 ± 0.07 | 6.69 ± 0.12 |
+| Parameters (retrieval / language) | 100,000 / 81,153 | 99,858 / 99,743 | 98,032 / 94,033 |
+
+The wider pooling variant (`token_product_raw_gelu`) concatenates the sum of
+raw position–token–query products and the sum of their elementwise GELU
+transforms. It applies parameter-free normalization and a one-hidden-layer
+GELU readout to the concatenated vector. The run uses a 100,000-parameter
+ceiling per task. See the [wider pooling results](experiments/raw-gelu-all-50k/summary.txt)
+and [matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt).
+
+The earlier [Adam 0.001 comparison](experiments/current64-50k/summary.txt)
+covers the same width-64 models and all four tasks through 50k updates. At
+50k, Transformer single-query recall rose from 29.93% ± 0.39 at 0.001 to
+100.00% ± 0.00 at 0.0003. Width-64 pooling learned more slowly early on at
+the lower rate. See the [learning-rate comparison](experiments/current64-lr0.0003-50k/comparison.txt).
+
+## Short-budget language context screen
+
+At 3,000 updates, concat + GELU pooling had the lowest mean test perplexity
+at both context lengths. Each configuration used three seeds and Adam at
+0.001, selected on a separate validation seed. This screen uses matched
+target positions across context lengths and a separate sampling protocol
+from the 50k comparison.
+
+| Context length | Token-product pooling | Concat + GELU pooling | Sinusoidal Transformer |
+|---|---:|---:|---:|
+| 32 | 8.21 ± 0.05 | 7.92 ± 0.02 | 8.28 ± 0.19 |
+| 128 | 8.94 ± 0.12 | 8.35 ± 0.11 | 8.60 ± 0.40 |
+
+The [context screen summary](experiments/language-context-screen/summary.txt)
+includes test accuracy, training times, and batch-one inference latency.
+
+## Width-64 CPU timings
+
+On an Intel Core Ultra 7 155H, token-product pooling ran 2.63–2.83× as fast
+as the sinusoidal Transformer for batch-one inference, 2.71–4.54× for
+batch-64 inference, and 2.68–8.35× for compiled batch-64 Adam updates across
+the four tasks. These are medians from seven alternating warmed JAX trials
+using seed-0 50k checkpoints and resident inputs. Timings exclude compilation,
+input generation, and transfers. Time to reach the same quality also depends
+on how many updates each model needs. See the
+[CPU benchmark](experiments/current64-50k/speed-summary.txt).
+
+## Width-64 token-product pooling
+
+Token-product pooling multiplies each previous position–token vector by the final
 token's embedding, then sums, normalizes, and predicts with one GELU hidden
 layer. The final token supplies the conditioning vector and is excluded from
 the sum. The same rule applies to all four tasks.
@@ -26,7 +79,6 @@ can move outside the sum, requiring only 64 extra multiplications per example
 at embedding width 64. The experiment implements the per-token form above;
 the factored form can differ slightly in floating-point rounding. No activation
 is applied before summation, and normalization has no learned scale or bias.
-No speed benchmark has been run for this variant.
 
 After **10,000 updates per task**, batch size 64, and three seeds:
 
@@ -63,17 +115,11 @@ The multiplication variant gets all three answers correct in 68.74% of
 sequences, distinct from its per-answer accuracy. Earlier experiments that
 concatenated the final-token embedding with the pool showed no short-run gain.
 
-The new variant has not been trained to 30k or 50k updates. Historical shallow
-models use a different initialization layout, so comparisons with them do not
-isolate the interaction alone. The previous six-layer CPU speed measurements
-also do not measure this variant.
-
 See the [10k summary](experiments/token-product100k-summary.json), raw runs for
 [seed 0](experiments/token-product100k-seed-0.json),
 [seed 1](experiments/token-product100k-seed-1.json), and
 [seed 2](experiments/token-product100k-seed-2.json), and the
 [3k diagnostic](experiments/token-interaction-shallow-probe.json).
-The [paper PDF](paper/paper.pdf) and [source](paper/paper.tex) include these results.
 
 ## Install
 
@@ -103,8 +149,8 @@ The experiments run on CPU with JAX JIT compilation. A GPU is not required.
 The original package default is learned position/token embeddings, elementwise product,
 sum over positions, parameter-free normalization, six GELU hidden layers, and
 an output linear layer. It has no residuals, query gate, or final normalization.
-The original single-hidden-layer sigmoid baseline is also retained. The latest
-last-token-conditioned variant is currently an experimental implementation in
+The original single-hidden-layer sigmoid baseline is also retained. The
+last-token-conditioned pooling variants are implemented in
 [`TokenInteraction`](experiments/last_token_probe.py), with the standard-task
 wrapper `TokenProductModel` in
 [`longer_training_100k.py`](experiments/longer_training_100k.py). The package
@@ -130,47 +176,64 @@ names and initialization order are preserved for existing `.npz` checkpoints.
 
 ## Current Transformer positional encoding
 
-The current two-block Transformer now defaults to fixed sinusoidal positions
-(base 10,000), added to token embeddings. Width 64, four heads, FF width 200,
-normalization and residuals are unchanged. It has 98,032 trainable parameters
-for retrieval and 94,033 for language. Pooling still uses learned positions.
+The two-block Transformer defaults to fixed sinusoidal positions (base 10,000),
+added to token embeddings. It uses embedding width 64, four attention heads, a
+width-200 GELU feed-forward layer per block, learned pre-LayerNorm, and residual
+connections. It has 98,032 trainable parameters for retrieval and 94,033 for
+language. Pooling uses learned positions.
 
 At 10,000 updates, multi-query recall across seeds 0–2 is **100.00% ± 0.00**
 with sinusoidal positions versus **78.80% ± 36.72** with learned positions
 (sample standard deviations). See [results](experiments/tf-positions-multi-10k-summary.json).
-Other sinusoidal tasks currently have only seed 0; language perplexity was 7.32
-versus 7.09 learned. No sinusoidal 30k/50k results exist yet. Historical tables
-below retain their original positional encodings and results.
+The [matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt)
+cover all four tasks at 1k, 10k, 30k, and 50k updates across three seeds.
 
 `longer_training_100k.py --architecture transformer` uses sinusoidal positions
 and writes `longer-transformer-sinusoidal100k-*` artifacts. Add
-`--positions learned` to reproduce historical learned-position runs.
+`--positions learned --lr 0.001` to reproduce historical learned-position runs.
 `depth_100k_test.py` writes new runs under `depth100k-sinusoidal-*`.
 
 ## Reproduce experiments
 
-Run experiment scripts from `experiments/` after installing the project with
-`python -m pip install -e .` from the repository root. Results, logs, and
-checkpoint directories live alongside these scripts, so new runs keep the root clean.
-The commands in the historical experiment log also use this working directory. Tiny Shakespeare is included at
-`data/shakespeare.txt`; its source and split protocol are documented below.
+Install the project from the repository root with `python -m pip install -e .`.
+Run the following commands from the root. Tiny Shakespeare is included at
+`data/shakespeare.txt`.
+
+```sh
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+
+# Matched width-64 comparison at 1k, 10k, 30k, and 50k updates.
+python -m experiments.run_current64_50k --lr 0.0003
+
+# Width-128 concat + GELU comparison.
+for seed in 0 1 2; do
+  python -m experiments.longer_training_100k --architecture token_product_raw_gelu --width 128 --hidden-layers 1 --budget 100000 --lr 0.0003 --steps 50000 --checkpoints 10000 30000 50000 --seed "$seed" --output-prefix experiments/raw-gelu-all-50k/d128-n1
+done
+
+# Short-budget language context screen.
+JAX_PLATFORMS=cpu python -m experiments.language_context_compare --output experiments/language-context-screen/results.json
+```
+
+These commands write to the published experiment paths. Use another output
+path to keep a reproduction alongside the checked-in results. Run the
+following historical 10k commands from `experiments/`.
 
 ```sh
 cd experiments
 
 # Last-token-conditioned pooling: four tasks, 10k updates, three seeds.
 for seed in 0 1 2; do
-  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --steps 10000 --seed "$seed"
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --steps 10000 --lr 0.001 --seed "$seed"
 done
 
 # 16-dimensional token-product pooling, <=10k parameters per task.
 for seed in 0 1 2; do
-  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --width 16 --budget 10000 --steps 10000 --seed "$seed" --output-prefix token-product-d16-10k
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture token_product --width 16 --budget 10000 --steps 10000 --lr 0.001 --seed "$seed" --output-prefix token-product-d16-10k
 done
 
 # 16-dimensional two-block sinusoidal Transformer, <=10k parameters per task.
 for seed in 0 1 2; do
-  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture transformer --width 16 --budget 10000 --steps 10000 --seed "$seed" --output-prefix transformer-d16-10k
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture transformer --width 16 --budget 10000 --steps 10000 --lr 0.001 --seed "$seed" --output-prefix transformer-d16-10k
 done
 
 # Six-layer, approximately 100k-parameter pooling model, four tasks, one seed.
@@ -238,11 +301,10 @@ Vocabulary is enumerated from the complete text; no held-out frequencies or
 labels enter training. Data checksum and exact split lengths are in results.json.
 This is a character-level feasibility test, not a word-token benchmark.
 
-Run from this directory after installing the project dependencies:
+Run from `experiments/` after installing the project dependencies:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt -o data/shakespeare.txt
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark.py --steps 10000 --seeds 3 > run.log 2>&1
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark.py --steps 10000 --lr 0.001 --seeds 3 > run.log 2>&1
 ```
 
 `results.json` contains metrics, parameter counts, training timings and generated
