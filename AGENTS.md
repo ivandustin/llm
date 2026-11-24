@@ -60,6 +60,43 @@ failure but slows pooling's early learning; it is not a universal improvement
 for both models. Original Adam-0.001 reference results are retained. The default Adam learning
 rate for new training runs is now 0.0003; use `--lr 0.001` for historical reproduction.
 
+## Additive raw + GELU pooling
+
+The experimental `token_product_raw_gelu_add` variant combines the raw and
+GELU sums by elementwise addition. It uses the same last-token conditioning
+as `token_product`:
+
+```text
+x[i] = position[i] * token[i] * token[last] for i < last
+pooled = sum(x) + sum(GELU(x))
+logits = Linear(GELU(Linear(normalize(pooled))))
+```
+
+The pooled vector has the embedding width. The readout uses parameter-free
+pooled normalization and one GELU hidden layer. At width 256 under the
+100,000-parameter ceiling, the hidden widths are 201 for retrieval and 233
+for language, with 99,721 and 99,923 parameters respectively. With Adam
+0.0003 and batch size 64, seeds 0–2 give these held-out results:
+
+| Metric | 10k updates | 30k updates |
+|---|---:|---:|
+| Position copying accuracy | 99.99% ± 0.01 | 99.99% ± 0.00 |
+| Single-query recall accuracy | 98.33% ± 1.12 | 99.99% ± 0.01 |
+| Multi-query recall accuracy | 99.90% ± 0.01 | 100.00% ± 0.00 |
+| Next-character accuracy | 43.29% ± 0.47 | 46.29% ± 0.51 |
+| Language perplexity ↓ | 7.32 ± 0.11 | 6.98 ± 0.14 |
+
+The 30k multi-query mean rounds to 100.00%, with one missed answer across
+the three seeds. The width-256 result files are local under
+`experiments/raw-gelu-add-d256-30k/`. Reproduce seed 0 with
+`python -m experiments.longer_training_100k --architecture token_product_raw_gelu_add --width 256 --budget 100000 --lr 0.0003 --steps 30000 --checkpoints 10000 30000 --seed 0`. Repeat with seeds 1 and 2.
+
+The checked-in width-128 [additive](experiments/raw-gelu-combine-50k/add-seed-0.json)
+and [multiplicative](experiments/raw-gelu-combine-50k/mul-seed-0.json) runs
+match parameter counts and use seed 0. At 30k, addition scores 99.95% on
+single-query recall and 100.00% on multi-query recall, versus 71.19% and
+79.12% for multiplication. Language perplexity is 6.79 versus 7.29.
+
 ## Current Transformer reference
 
 - Two causal Transformer blocks, embedding width 64, four attention heads.
