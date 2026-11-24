@@ -48,6 +48,17 @@ alternating trials on an Intel Core Ultra 7 155H show token-product speedups of
 seed-0 50k checkpoints, resident inputs, and exclude compilation/data generation;
 CPU implementation timings do not measure time to equal quality.
 
+A matched Adam-0.0003 follow-up now covers both current models and all four
+tasks at 1k/10k/30k/50k updates across three seeds. See
+`experiments/current64-lr0.0003-50k/comparison.txt` and `summary.json`.
+At 50k, pooling accuracy is 100.00% ± 0.00 copying, 98.33% ± 1.27
+single-query recall, 99.17% ± 0.66 multi-query recall, and 45.67% ± 0.41
+language, with perplexity 7.20 ± 0.20. The sinusoidal Transformer scores
+100.00% ± 0.00 on each retrieval task and 46.63% ± 0.72 language accuracy,
+with perplexity 6.69 ± 0.12. The lower rate fixes the Transformer single-query
+failure but slows pooling's early learning; it is not a universal improvement
+for both models. Original Adam-0.001 reference results and defaults are retained.
+
 ## Current Transformer reference
 
 - Two causal Transformer blocks, embedding width 64, four attention heads.

@@ -71,6 +71,7 @@ def main():
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
+    parser.add_argument('--lr',type=float,default=.001)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--checkpoints',type=int,nargs='+',help='Evaluation milestones, in multiples of 1000; final step is always included')
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
@@ -78,6 +79,8 @@ def main():
     parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
     parser.add_argument('--output-prefix',help='Output path prefix, excluding seed suffix')
     args=parser.parse_args()
+    if not np.isfinite(args.lr) or args.lr <= 0:
+        parser.error('learning rate must be finite and positive')
     if args.width < 1 or (args.budget is not None and args.budget < 1):
         parser.error('width and budget must be positive')
     if (args.width != 64 or args.budget is not None) and not (args.architecture.startswith('token_product') or args.architecture=='transformer'):
@@ -103,7 +106,10 @@ def main():
     if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     if transformer and args.positions=='sinusoidal':baseline=None
-    config=dict(architecture=args.architecture,seed=args.seed,steps=args.steps,checkpoints=checkpoints,batch=64,lr=.001,
+    if args.lr != .001:
+        prefix=f'{prefix}-lr{args.lr}'
+        baseline=None
+    config=dict(architecture=args.architecture,seed=args.seed,steps=args.steps,checkpoints=checkpoints,batch=64,lr=args.lr,
         optimizer='Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay',
         width=64,hidden=200 if transformer else 576 if shallow else 120,hidden_layers=1 if shallow or transformer else 6,blocks=2 if transformer else 0,residual=transformer,final_norm=transformer,
         positions=args.positions if transformer else 'learned',pooled_norm='not applicable' if transformer else 'none' if (sigmoid and not sigmoid_norm) or gelu_no_norm else 'non-learned epsilon1e-5',activation='sigmoid' if sigmoid else 'GELU',
@@ -145,7 +151,7 @@ def main():
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)
-        state,run=compiled_training(model,optax.adam(.001))
+        state,run=compiled_training(model,optax.adam(args.lr))
         history=[];checkpoints_out=[]
         result=dict(task=task,seed=args.seed,parameters=count(model),history=history,checkpoints=checkpoints_out,complete=False)
         runs.append(result)

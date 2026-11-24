@@ -1,0 +1,58 @@
+Current d64 models, Adam learning rate .0003, three seeds.
+All four tasks; predeclared final milestones 1k/10k/30k/50k.
+Mean +/- sample standard deviation; accuracy in percent.
+Identical data streams and evaluation samples across models and learning rates.
+Continuous model and Adam state; batch64; no schedule or weight decay.
+Pooling:100000 retrieval/81153 language parameters; Transformer:98032/94033.
+Retrieval:16384 examples. Language:Tiny Shakespeare,80/10/10 split,context32,4096 test windows.
+Equal updates are not equal compute. No best-step selection.
+
+1000 updates: pooling | Transformer
+
+position accuracy: 59.89% +/- 2.01 | 99.98% +/- 0.02
+single accuracy: 22.59% +/- 2.05 | 30.25% +/- 0.13
+multi accuracy: 34.41% +/- 0.46 | 31.65% +/- 0.75
+language accuracy: 28.18% +/- 0.22 | 31.06% +/- 0.73
+language perplexity: 13.51 +/- 0.15 | 11.37 +/- 0.14
+
+10000 updates: pooling | Transformer
+
+position accuracy: 98.86% +/- 0.91 | 100.00% +/- 0.00
+single accuracy: 77.09% +/- 5.28 | 100.00% +/- 0.00
+multi accuracy: 93.11% +/- 2.92 | 100.00% +/- 0.00
+language accuracy: 40.35% +/- 0.32 | 41.65% +/- 0.59
+language perplexity: 7.95 +/- 0.18 | 7.41 +/- 0.04
+
+30000 updates: pooling | Transformer
+
+position accuracy: 100.00% +/- 0.00 | 100.00% +/- 0.00
+single accuracy: 96.98% +/- 2.23 | 99.95% +/- 0.09
+multi accuracy: 98.56% +/- 1.08 | 100.00% +/- 0.00
+language accuracy: 44.29% +/- 0.54 | 45.02% +/- 0.30
+language perplexity: 7.29 +/- 0.18 | 6.77 +/- 0.06
+
+50000 updates: pooling | Transformer
+
+position accuracy: 100.00% +/- 0.00 | 100.00% +/- 0.00
+single accuracy: 98.33% +/- 1.27 | 100.00% +/- 0.00
+multi accuracy: 99.17% +/- 0.66 | 100.00% +/- 0.00
+language accuracy: 45.67% +/- 0.41 | 46.63% +/- 0.72
+language perplexity: 7.20 +/- 0.20 | 6.69 +/- 0.12
+
+50k change from LR .001 to .0003 (accuracy percentage points):
+
+token_product / position: +0.01
+token_product / single: +0.02
+token_product / multi: -0.20
+token_product / language: -1.24
+transformer / position: +0.00
+transformer / single: +70.07
+transformer / multi: +0.00
+transformer / language: +0.00
+
+comparison.json also evaluates every single-query checkpoint on investigation sample seed2026112403.
+These are exploratory benchmarks; evaluation samples have been reused across experiments.
+
+Reproduce from the repository root:
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.run_current64_50k --lr .0003
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.compare_current64_lr
