@@ -13,7 +13,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Can a small sequence model retrieve stored associations using a single pooled vector? We study last-token-conditioned position--token pooling: learned position and token embeddings are multiplied elementwise, multiplied by the final token's embedding, and summed over preceding positions. A parameter-free normalization and a one-hidden-layer GELU network produce the prediction. At width 64, the model has 100,000 parameters for retrieval and 81,153 for character prediction. In a matched Adam-0.0003 comparison across three seeds and 50,000 updates, it achieves $100.00\%$ copying accuracy, $98.33\%$ single-query recall, and $99.17\%$ multi-query recall on short synthetic tasks. A two-block sinusoidal Transformer achieves $100.00\%$ on all three retrieval tasks. On Tiny Shakespeare, pooling reaches $45.67\%$ accuracy and perplexity 7.20, compared with $46.63\%$ and 6.69 for the Transformer. An earlier Adam-0.001 comparison left Transformer single-query recall near $30\%$; diagnostics identify a value-frequency shortcut, and changing only the learning rate removes this failure. A controlled 3,000-update ablation at 0.001 increases pooling multi-query accuracy from $34.24\%$ without conditioning to $88.25\%$ with conditioning. Measurements of the original checkpoints show lower CPU cost for the pooling implementation, without establishing faster training to equal quality. These results establish feasibility at short contexts and small budgets, while leaving long-context capacity, competitive language modeling, and general efficiency unresolved.
+Can a small sequence model retrieve stored associations using a single pooled vector? We study last-token-conditioned position--token pooling: learned position and token embeddings are multiplied elementwise, multiplied by the final token's embedding, and summed over preceding positions. A parameter-free normalization and a one-hidden-layer GELU network produce the prediction. At width 64, the model has 100,000 parameters for retrieval and 81,153 for character prediction. In a matched comparison using Adam at a learning rate of 0.0003 across three seeds and 50,000 updates, it achieves $100.00\%$ copying accuracy, $98.33\%$ single-query recall, and $99.17\%$ multi-query recall on short synthetic tasks. A two-block sinusoidal Transformer achieves $100.00\%$ on all three retrieval tasks. On Tiny Shakespeare, pooling reaches $45.67\%$ accuracy and perplexity 7.20, compared with $46.63\%$ and 6.69 for the Transformer. These results establish feasibility at short contexts and small budgets, while leaving long-context capacity and broader language performance unresolved.
 
 \end{abstract}
 
@@ -22,9 +22,7 @@ A sequence predictor must preserve useful information from its context and expos
 
 We investigate a minimal conditioning mechanism for this pooled representation. The final input token multiplies the features accumulated from preceding positions. This changes the representation presented to the nonlinear readout without adding a query projection or any trainable parameters. The same computation serves position copying, associative recall, and next-character prediction. For recall, the final input token is a query key; for language prediction, it is the most recent observed character.
 
-Our contribution is an empirical study of this specific small architecture, rather than a claim that pooling replaces attention. First, a controlled ablation isolates the final-token product and finds a large improvement on a short multi-query recall task. Second, we compare the conditioned model with a two-block causal Transformer over three seeds and four declared training milestones. Third, we report warmed CPU inference and update measurements with explicit implementation and quality qualifications.
-
-The results depend on optimization as well as task. An initial Adam-0.001 comparison favored pooling on single-query recall because the Transformer learned a value-frequency shortcut. Lowering the learning rate to 0.0003 lets the same Transformer solve the task, and the matched follow-up is the main comparison reported here. At 50k it ties pooling on copying, has higher recall accuracy, and has higher mean language accuracy and lower perplexity. The lower rate slows early pooling learning and is not a universal improvement for both architectures.
+We compare the conditioned model with a two-block causal Transformer over three seeds and four training milestones. At 50k the models tie on copying, and the Transformer has higher recall accuracy, higher mean language accuracy, and lower perplexity.
 
 \section{Related work}
 Transformers use attention to mix token representations according to input-dependent scores \cite{transformer}. Our reference retains causal attention, residual connections, and feed-forward blocks, but is a small decoder-style predictor rather than the original translation model. The proposed pooling rule has no attention score matrix or softmax over positions.
@@ -92,12 +90,8 @@ We use the Tiny Shakespeare text distributed with \texttt{char-rnn} \cite{shakes
 \subsection{Transformer reference}
 The reference has two causal pre-LayerNorm Transformer blocks, width 64, four heads, and a GELU feed-forward layer of width 200 in each block. It adds fixed sinusoidal positions with base 10,000 to learned token embeddings. Attention and feed-forward sublayers have residual connections. A learned final LayerNorm and linear vocabulary projection produce logits. Parameter counts are 98,032 for retrieval and 94,033 for language. Thus the budgets are close but not identical, especially for language.
 
-Sinusoidal positions are the current default. Historical learned-position results are not mixed into the main comparison. A separate 10k positional-encoding study gives multi-query recall of $100.00\%\pm0.00$ for sinusoidal positions and $78.80\%\pm36.72$ for learned positions across three seeds. This sensitivity motivates stating the positional encoding explicitly.
-
 \subsection{Optimization, evaluation, and reporting}
-The main matched follow-up uses Adam with learning rate 0.0003, $\beta_1=0.9$, $\beta_2=0.999$, and $\epsilon=10^{-8}$, batch size 64, and no learning-rate schedule or weight decay. Compiled scans contain 1,000 updates and preserve model and optimizer state between chunks. Each task has three runs with seeds 0, 1, and 2. Within a seed, the two architectures receive identical task data streams. Synthetic batches are generated throughout training; language windows are sampled from the training split.
-
-The original comparison used learning rate 0.001. We retain it as a separate optimization-sensitivity control. The lower rate was chosen exploratorily from the single-query seed-0 diagnostic and replicated with seeds 1 and 2 before running the full matched follow-up. It was not selected through an equal-budget hyperparameter search for both architectures. The conditioning and readout ablations and CPU checkpoint measurements retain their original 0.001 setting.
+Both models use Adam with learning rate 0.0003, $\beta_1=0.9$, $\beta_2=0.999$, and $\epsilon=10^{-8}$, batch size 64, and no learning-rate schedule or weight decay. Compiled scans contain 1,000 updates and preserve model and optimizer state between chunks. Each task has three runs with seeds 0, 1, and 2. Within a seed, the two architectures receive identical task data streams. Synthetic batches are generated throughout training; language windows are sampled from the training split.
 
 The primary endpoint is 50,000 updates. We also report the declared 1k, 10k, and 30k milestones without selecting the best checkpoint. Equal updates do not imply equal floating-point work, elapsed time, or supervision across different tasks: multi-query examples contribute three targets, whereas single-query and language examples contribute one.
 
@@ -105,7 +99,7 @@ Retrieval test sets contain 16,384 generated sequences, shared across runs; the 
 
 \section{Results}
 \subsection{Final checkpoint comparison}
-Table~\ref{tab:main} reports the declared 50k endpoint of the Adam-0.0003 follow-up. Pooling solves copying and achieves high recall in both settings. The Transformer scores $100.00\%$ on all three retrieval tasks. It also has higher mean language accuracy and lower perplexity. These are descriptive results for the selected tasks, budgets, and optimizer setting, not a general architecture ranking.
+Table~\ref{tab:main} reports the declared 50k endpoint with Adam at learning rate 0.0003. Pooling solves copying and achieves high recall in both settings. The Transformer scores $100.00\%$ on all three retrieval tasks. It also has higher mean language accuracy and lower perplexity.
 
 \begin{table}[htbp]
 \centering
@@ -151,151 +145,32 @@ Language perplexity & P & 13.51 & 7.95 & 7.29 & 7.20\\
 \end{tabular}
 \end{table}
 
-At 0.0003, both models' mean language accuracy and perplexity improve at each reported milestone. Compared with the original 0.001 runs, pooling learns more slowly early in training and ends with lower language accuracy but better perplexity. Consequently, a rate that resolves a Transformer failure need not improve every pooling metric.
-
-\subsection{Learning-rate sensitivity and single-query diagnosis}
-Table~\ref{tab:original} preserves the original Adam-0.001 endpoint on the same standard evaluation sets. The large single-query gap in that table disappears in the 0.0003 follow-up without changing architecture, initialization seeds, training data streams, batch size, or update count. Pooling's 50k single-query result changes little, whereas the Transformer's rises from $29.93\%$ to $100.00\%$. Language accuracy under 0.0003 is lower for pooling and approximately unchanged in mean for the Transformer; perplexity improves for both.
-
-\begin{table}[htbp]
-\centering
-\caption{Original Adam-0.001 results at 50,000 updates, retained as a sensitivity control. Mean $\pm$ sample SD over three seeds; accuracies are percentages. These are not the main 0.0003 results.}
-\label{tab:original}
-\begin{tabular}{lrr}
-\toprule
-Metric & Conditioned pooling & Sinusoidal Transformer\\
-\midrule
-Position copying & $\sd{99.99}{0.01}$ & $\sd{100.00}{0.00}$\\
-Single-query recall & $\sd{98.31}{0.91}$ & $\sd{29.93}{0.39}$\\
-Multi-query recall & $\sd{99.37}{0.30}$ & $\sd{100.00}{0.01}$\\
-Language accuracy & $\sd{46.91}{0.27}$ & $\sd{46.63}{0.42}$\\
-Language perplexity & $\sd{7.61}{0.22}$ & $\sd{6.79}{0.20}$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Counterfactual queries expose the failed Transformer's shortcut. At the 0.001 50k checkpoints, changing the queried key among all five stored keys leaves its predicted value unchanged in approximately 91--92\% of memories. On a separate 4,096-example probe, it selects a most-frequent stored value in approximately 96--98\% of examples. A query-independent value-frequency oracle has approximately 30.8\% expected accuracy on the 16,384-example diagnostic sample, consistent with the observed plateau. Successful models instead show attention patterns consistent with first-layer key/value binding and second-layer retrieval; these weights are descriptive evidence, not causal attribution.
-
-Independent full-prefix logits and gradients agree with the optimized single-query path, and removing tokens after the query leaves predictions unchanged. Multi-query-trained weights also solve the first query when evaluated on its length-11 prefix. On a separate 16,384-sequence final sample, the 10k Transformer checkpoints score $28.71\%\pm0.22$ at 0.001 and $100.00\%\pm0.00$ at 0.0003. The matched follow-up additionally evaluates every single-query milestone on that sample. These controls support a rate-dependent optimization and shortcut failure, not a demonstrated capacity limit. They do not isolate why multi-query supervision escapes it: label density, query positions, and preceding contexts differ between the two tasks.
-
-\subsection{Controlled final-token ablation}
-We compare three pooling rules at 3,000 updates on multi-query recall. All use Adam at 0.001, identical initialization of their trainable parameters, the same per-seed data, width 64, hidden width 576, pooled normalization, and 100,000 parameters. All exclude the final token from the memory. The unconditioned control pools preceding position--token products; the conditioned variant multiplies them by the final token; a third variant additionally applies GELU to each conditioned memory vector before summation.
-
-\begin{table}[htbp]
-\centering
-\caption{Controlled multi-query ablation at 3,000 updates with Adam 0.001; accuracy in percent, mean $\pm$ sample SD over three seeds.}
-\label{tab:ablation}
-\begin{tabular}{lr}
-\toprule
-Pooling rule & Per-answer accuracy\\
-\midrule
-Previous tokens, no final-token product & $\sd{34.24}{0.28}$\\
-Final-token product & $\sd{88.25}{0.93}$\\
-Final-token product, per-token GELU & $\sd{87.93}{1.62}$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The final-token product improves mean accuracy by 54.01 percentage points in this controlled setting. Adding per-token GELU gives no observed mean improvement. The main conditioned variant answers all three queries correctly in $68.74\%$ of sequences on average, which is distinct from its $88.25\%$ per-answer score. This ablation supports the conditioning mechanism at this budget and training duration, without establishing its value at other lengths or scales.
-
-\subsection{Readout and normalization follow-ups}
-Table~\ref{tab:activation} compares 10k runs with different readout activations and pooled normalization. All retain the final-token interaction, the same dimensions, and the original Adam learning rate 0.001; they are separate from the 0.0003 main comparison. Removing normalization from the GELU model or replacing GELU with sigmoid substantially reduces recall in these runs. Copying remains high in several weakened variants, so success on copying alone would not identify the best overall configuration.
-
-\begin{table}[htbp]
-\centering\small
-\caption{10k follow-ups at Adam 0.001, mean $\pm$ sample SD across three seeds. Accuracies are percentages.}
-\label{tab:activation}
-\begin{tabular}{llrrr}
-\toprule
-Activation & Pool norm & Single recall & Multi recall & Language PPL\\
-\midrule
-GELU & Yes & $\sd{95.21}{3.48}$ & $\sd{98.09}{1.16}$ & $\sd{7.58}{0.14}$\\
-GELU & No & $\sd{30.15}{0.35}$ & $\sd{34.77}{0.17}$ & $\sd{8.19}{0.25}$\\
-Sigmoid & Yes & $\sd{30.16}{0.25}$ & $\sd{41.70}{11.86}$ & $\sd{8.10}{0.13}$\\
-Sigmoid & No & $\sd{30.54}{0.23}$ & $\sd{34.78}{0.12}$ & $\sd{7.99}{0.16}$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-These results motivate retaining normalization and GELU. They do not show that other activations or unnormalized models cannot work after retuning optimization or initialization. The final architecture was selected through exploratory experiments, although the reported checkpoints within runs were fixed in advance.
-
-\section{CPU implementation measurements}
-We benchmark the original Adam-0.001 seed-0 50k checkpoints in FP32 on an Intel Core Ultra 7 155H with JAX 0.10.1 on CPU. Runs use CPU affinity 0--21, \texttt{OMP\_NUM\_THREADS=1}, and \texttt{OPENBLAS\_NUM\_THREADS=1}. Seven warmed trials alternate the two models, with no concurrent benchmark jobs. Inputs are resident on device. Compilation, data generation, and host transfers are excluded; neither model uses a key/value cache. These timings have not been rerun for the 0.0003 checkpoints and must not be read as equal-quality timings for the new main comparison.
-
-Inference trials contain 20 warmups and 500 timed requests, synchronizing each request. Training trials use batch size 64 and 200 Adam updates with fresh optimizer state per trial. A compiled scan preserves model and optimizer state across those updates and synchronizes the complete final state. Five-update comparisons verify loss and complete model/Adam-state agreement with the reference update loop within relative tolerance $10^{-4}$ and absolute tolerance $10^{-5}$. Timing updates are discarded and checkpoint files remain unchanged.
-
-\begin{table}[htbp]
-\centering\small
-\caption{Original Adam-0.001 checkpoints: median CPU milliseconds per request or update across seven trials. P: pooling; T: Transformer. The ratio is T/P. Multi-query requests produce three causal answers.}
-\label{tab:speed}
-\begin{tabular}{llrrr}
-\toprule
-Task & Mode & P (ms) & T (ms) & Ratio\\
-\midrule
-Copy & Inference, batch 1 & 0.440 & 1.234 & 2.80\\
-Single & Inference, batch 1 & 0.457 & 1.292 & 2.83\\
-Multi & Inference, batch 1 & 0.495 & 1.303 & 2.63\\
-Language & Inference, batch 1 & 0.494 & 1.370 & 2.77\\
-\midrule
-Copy & Inference, batch 64 & 0.662 & 2.344 & 3.54\\
-Single & Inference, batch 64 & 0.652 & 2.398 & 3.68\\
-Multi & Inference, batch 64 & 1.062 & 2.878 & 2.71\\
-Language & Inference, batch 64 & 0.904 & 4.107 & 4.54\\
-\midrule
-Copy & Compiled update, batch 64 & 1.111 & 5.707 & 5.14\\
-Single & Compiled update, batch 64 & 1.114 & 5.365 & 4.82\\
-Multi & Compiled update, batch 64 & 2.712 & 7.257 & 2.68\\
-Language & Compiled update, batch 64 & 1.088 & 9.078 & 8.35\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Pooling has lower measured cost in all listed modes. These are measurements of short-context implementations on one CPU, including their dispatch and synchronization behavior, rather than hardware-independent ratios. The models differ in parameter count, internal computation, and achieved quality. In particular, the language update ratio does not establish faster training to the Transformer's perplexity, which pooling does not attain at the reported checkpoints. Full trial ranges and Python-loop update measurements are retained with the raw timing artifacts.
+At 0.0003, both models' mean language accuracy and perplexity improve at each reported milestone.
 
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses 32 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
-The baseline comparison also has limited scope. We compare one Transformer configuration and two shared learning rates, without architecture-specific equal-budget hyperparameter searches or equal-compute training. Diagnosing and resolving the single-query failure demonstrates that the initial ranking was sensitive to optimization. Alternative initialization, attention depth, and the number and placement of supervised queries remain useful controls; the exact dynamics by which each training regime escapes or retains the shortcut have not been isolated.
+The comparison covers one Transformer configuration and one shared learning rate. Architecture-specific hyperparameter searches and comparisons at equal compute remain open.
 
 Three seeds provide a modest view of training variation. Shared evaluation samples, overlapping language windows, and a single language split limit statistical generalization. Rounded values of $100.00\%$ need not imply zero errors, and sample standard deviations are not significance tests. Prior exploratory architecture selection also means that a fixed final checkpoint does not make the whole research process a preregistered comparison.
 
-Teacher-forced multi-query evaluation does not establish reliable autoregressive retrieval. A follow-up should feed predicted earlier answers back into subsequent queries and report both per-answer and all-answers-correct accuracy. More demanding retrieval tests should vary memory size, repeated keys, distractors, query positions, and key/value distributions. Equal-quality timing, GPU measurements, optimized incremental implementations, and comparisons with other simple pooling and recurrent baselines would better characterize practical efficiency.
+Teacher-forced multi-query evaluation does not establish reliable autoregressive retrieval. A follow-up should feed predicted earlier answers back into subsequent queries and report both per-answer and all-answers-correct accuracy. More demanding retrieval tests should vary memory size, repeated keys, distractors, query positions, and key/value distributions. Equal-quality timing and comparisons with other pooling and recurrent baselines would help characterize practical efficiency.
 
 \section{Conclusion}
-Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. A controlled ablation identifies a substantial gain from the final-token product without adding parameters, while follow-ups favor pooled normalization and a GELU readout. The matched Adam-0.0003 comparison removes the initial Transformer's single-query failure: at 50k the Transformer ties pooling on copying, has higher recall accuracy, and has higher mean language accuracy and lower perplexity. Pooling has lower measured CPU cost in the original 0.001 implementation benchmark, without an established equal-quality speed advantage. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
+Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. At 50k updates with Adam at learning rate 0.0003, the models tie on copying, and the Transformer achieves higher recall accuracy and lower language perplexity. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
 
 \appendix
 \section{Reproducibility and artifact map}
-All paths below are relative to the repository root. Main quality results are in \path{experiments/current64-lr0.0003-50k/summary.json} and \path{summary.txt}; per-seed files in that directory retain each task's metrics and checkpoints. Its \path{comparison.json} and \path{comparison.txt} compare learning rates and include the supplementary single-query evaluation. Original 0.001 results remain in \path{experiments/current64-50k/}. The shortcut investigation is documented in \path{experiments/single-query-investigation/summary.txt}, with raw checkpoint probes, attention summaries, and per-seed diagnostics in the same directory. The controlled conditioning ablation is in \path{experiments/token-interaction-shallow-probe.json}. Readout follow-ups are in the \path{token-product100k}, \path{token-product-sigmoid100k}, \path{token-product-sigmoid-norm100k}, and \path{token-product-gelu-no-norm100k} summary JSON files under \path{experiments/}. The separate positional-encoding control is \path{experiments/tf-positions-multi-10k-summary.json}.
-
-Timing methodology, medians, and trial ranges are recorded in \path{experiments/current64-50k/speed-summary.txt}; raw records are \path{speed-position.json}, \path{speed-single.json}, \path{speed-multi.json}, and \path{speed-language.json} in the same directory. Training and evaluation use JAX/Flax NNX. Tested dependencies are JAX/JAXlib 0.10.1, Flax 0.12.7, Optax 0.2.6, and NumPy 2.3.4.
+All paths below are relative to the repository root. Main quality results are in \path{experiments/current64-lr0.0003-50k/summary.json} and \path{summary.txt}; per-seed files in that directory retain each task's metrics and checkpoints. Training and evaluation use JAX/Flax NNX. Tested dependencies are JAX/JAXlib 0.10.1, Flax 0.12.7, Optax 0.2.6, and NumPy 2.3.4.
 
 After installing the project, the main comparison can be reproduced from the repository root with:
 \begin{verbatim}
 python -m experiments.run_current64_50k --lr .0003
-python -m experiments.compare_current64_lr
 \end{verbatim}
 This runs both architectures for seeds 0--2 and summarizes the declared milestones. It performs new training rather than merely rebuilding tables. To summarize existing runs only:
 \begin{verbatim}
 python -m experiments.run_current64_50k --lr .0003 --summarize-only
 \end{verbatim}
-Omitting \texttt{--lr .0003} reproduces the original 0.001 comparison in its separate output directory. The single-query diagnostic is implemented in \path{experiments/investigate_single_query.py}; its summary records reproduction commands and sample seeds.
-
-For the controlled ablation, run from the repository root:
-\begin{verbatim}
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
-python -m experiments.last_token_probe \
-  --layers 1 --hidden 576 --steps 3000 --seeds 3 \
-  --variants previous_pool token_product token_product_gelu \
-  --output experiments/token-interaction-shallow-probe.json
-\end{verbatim}
-For each timing task, use:
-\begin{verbatim}
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
-python -m experiments.current_speed --task language \
-  --output experiments/current64-50k/speed-language.json
-\end{verbatim}
-Replace \texttt{language} with \texttt{position}, \texttt{single}, or \texttt{multi} for the other timing tasks. Saved model-weight files do not contain optimizer state for exact training resumption. Continuous Adam state is maintained within each original training run.
-
 The Tiny Shakespeare source file is \path{data/shakespeare.txt}, with SHA-256:
 \begin{center}\small\texttt{86c4e6aa9db7c042ec79f339dcb96d42b}\par
 \texttt{0075e16b8fc2e86bf0ca57e2dc565ed}.\end{center}
