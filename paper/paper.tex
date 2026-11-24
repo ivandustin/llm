@@ -177,6 +177,25 @@ Language perplexity \(\downarrow\) & \(\sd{7.43}{0.06}\) & \(\sd{7.95}{0.18}\) &
 \end{tabular}
 \end{table}
 
+The longer runs reproduced the 10k results for all four tasks and continued to the checkpoints in Table~\ref{tab:wide-pooling-long}. At 50k the wider model closes most of the recall gap with the Transformer, which reaches \(100.00\%\) on both recall tasks. From 30k to 50k, the wider model's mean character accuracy rises from \(46.03\%\) to \(47.00\%\), while perplexity rises from 7.01 to 7.09. The Transformer follows the opposite perplexity trend, improving from 6.77 to 6.69 over the same interval (Table~\ref{tab:trajectory}).
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out results for the width-128 raw plus GELU model at 30k and 50k updates. Mean \(\pm\) sample SD across three seeds. Accuracies are percentages.}
+\label{tab:wide-pooling-long}
+\begin{tabular}{lrr}
+\toprule
+Metric & 30k updates & 50k updates\\
+\midrule
+Position copying & \(\sd{99.98}{0.01}\) & \(\sd{100.00}{0.00}\)\\
+Single-query recall & \(\sd{99.92}{0.03}\) & \(\sd{99.98}{0.02}\)\\
+Multi-query recall & \(\sd{99.95}{0.07}\) & \(\sd{99.98}{0.02}\)\\
+Next-character accuracy & \(\sd{46.03}{0.25}\) & \(\sd{47.00}{0.22}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.01}{0.09}\) & \(\sd{7.09}{0.07}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{CPU inference measurements}
 We measure FP32 forward-pass latency for the two width-64 reference models on an Intel Core Ultra 7 155H with JAX 0.10.1, using seed-0 weights from the 50k checkpoints available when the benchmark was run. Each of seven alternating trials uses 20 warmup requests and 500 timed requests, with synchronization after each request. Inputs are resident on device. Compilation, data generation, and host transfers are excluded. Neither model uses a key/value cache.
 
@@ -213,7 +232,7 @@ Three seeds provide a modest view of training variation. Shared evaluation sampl
 Teacher-forced multi-query evaluation does not establish reliable autoregressive retrieval. A follow-up should feed predicted earlier answers back into subsequent queries and report both per-answer and all-answers-correct accuracy. More demanding retrieval tests should vary memory size, repeated keys, distractors, query positions, and key/value distributions. Equal-quality timing and comparisons with other pooling and recurrent baselines would help characterize practical efficiency.
 
 \section{Conclusion}
-Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. At 50k updates with Adam at learning rate 0.0003, the models tie on copying, and the Transformer achieves higher recall accuracy and lower language perplexity. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
+Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. At 50k updates the width-128 variant reaches \(99.98\%\) on both recall tasks and \(47.00\%\) character accuracy. The Transformer retains the lowest language perplexity among the tested configurations. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
 
 \appendix
 \section{Reproducibility and artifact map}
@@ -229,12 +248,12 @@ python -m experiments.run_current64_50k --lr .0003 --summarize-only
 \end{verbatim}
 Inference timing medians and trial ranges are in \path{experiments/current64-50k/speed-summary.txt}. The benchmark implementation is \path{experiments/current_speed.py}.
 
-The width-128 follow-up is in \path{experiments/raw-gelu-all/summary.txt}, with per-seed results in the same directory. The single-query controls are in \path{experiments/raw-gelu-single/summary.txt}. To reproduce the four-task width-128 results, run the following with \texttt{SEED} set to 0, 1, and 2:
+The width-128 follow-up is in \path{experiments/raw-gelu-all-50k/summary.txt}, with per-seed results in the same directory. The single-query controls are in \path{experiments/raw-gelu-single/summary.txt}. To reproduce the four-task width-128 results, run the following with \texttt{SEED} set to 0, 1, and 2:
 \begin{verbatim}
 python -m experiments.longer_training_100k \
   --architecture token_product_raw_gelu --width 128 --budget 100000 \
-  --steps 10000 --checkpoints 1000 --seed SEED \
-  --output-prefix experiments/raw-gelu-all/d128-n1
+  --steps 50000 --checkpoints 10000 30000 50000 --seed SEED \
+  --output-prefix experiments/raw-gelu-all-50k/d128-n1
 \end{verbatim}
 
 The Tiny Shakespeare source file is \path{data/shakespeare.txt}, with SHA-256:
