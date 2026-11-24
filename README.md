@@ -32,6 +32,42 @@ three retrieval tasks. Equal update counts do not imply equal compute.
 [Wider pooling results](experiments/raw-gelu-all-50k/summary.txt) ·
 [Matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt)
 
+## Width-256 additive raw + GELU
+
+The additive variant (`token_product_raw_gelu_add`) pools
+`sum(x) + sum(GELU(x))`, where `x` is the last-token-conditioned
+position–token product at each preceding position. Parameter-free
+normalization and a one-hidden-layer GELU readout follow pooling. The model
+has 99,721 retrieval parameters and 99,923 language parameters. It uses the
+same Adam settings, three seeds, and held-out evaluation as the comparison
+above.
+
+| Metric | 10k updates | 30k updates |
+|---|---:|---:|
+| Position copying accuracy | 99.99% ± 0.01 | 99.99% ± 0.00 |
+| Single-query recall accuracy | 98.33% ± 1.12 | 99.99% ± 0.01 |
+| Multi-query recall accuracy | 99.90% ± 0.01 | 100.00% ± 0.00 |
+| Next-character accuracy | 43.29% ± 0.47 | 46.29% ± 0.51 |
+| Language perplexity ↓ | 7.32 ± 0.11 | 6.98 ± 0.14 |
+
+This is our strongest overall pooling result for retrieval at 30k. The
+multi-query mean rounds to 100.00% with one missed answer across the three
+seeds. Width-128 concatenated GELU still has the highest three-seed mean
+next-character accuracy at 50k. The different update counts leave the
+language comparison open.
+
+From the repository root, reproduce both checkpoints for seeds 0–2.
+
+```bash
+for seed in 0 1 2; do
+  python -m experiments.longer_training_100k \
+    --architecture token_product_raw_gelu_add --width 256 --budget 100000 \
+    --lr 0.0003 --steps 30000 --checkpoints 10000 30000 --seed "$seed"
+done
+```
+
+## Width-64 learning-rate comparison
+
 The earlier [Adam 0.001 comparison](experiments/current64-50k/summary.txt)
 covers the same width-64 models and all four tasks through 50k updates. At
 50k, Transformer single-query recall rose from 29.93% ± 0.39 at 0.001 to

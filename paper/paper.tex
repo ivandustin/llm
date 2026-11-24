@@ -218,6 +218,37 @@ Language perplexity \(\downarrow\) & 7.07 & 6.82 & 7.12\\
 
 Addition and concatenation have the same rounded accuracies at 50k (Table~\ref{tab:wide-pooling-combinations}). Addition has lower language perplexity at 10k, 30k, and 50k (7.32, 6.79, and 6.82 versus 7.41, 7.07, and 7.07). Multiplication improves from 57.60 to 78.41\% on single-query recall and from 70.11 to 89.73\% on multi-query recall between 10k and 50k. These single-seed results compare complete architectures at a common parameter budget, with different readout widths.
 
+\subsection{Width-256 additive pooling}
+We evaluate \(r+g\) at embedding width 256 with one GELU hidden layer of width
+201 for retrieval and 233 for language. This gives 99,721 and 99,923 parameters,
+respectively. We use Adam at 0.0003, batch size 64, seeds 0--2, and the same
+held-out evaluation protocol as the main comparison.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out width-256 additive pooling results. Values are means
+$\pm$ sample standard deviations across three seeds. Accuracies are percentages.}
+\label{tab:additive-pooling-256}
+\begin{tabular}{lrr}
+\toprule
+Metric & 10,000 updates & 30,000 updates\\
+\midrule
+Position copying & \(\sd{99.99}{0.01}\) & \(\sd{99.99}{0.00}\)\\
+Single-query recall & \(\sd{98.33}{1.12}\) & \(\sd{99.99}{0.01}\)\\
+Multi-query recall & \(\sd{99.90}{0.01}\) & \(\sd{100.00}{0.00}\)\\
+Next-character accuracy & \(\sd{43.29}{0.47}\) & \(\sd{46.29}{0.51}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.32}{0.11}\) & \(\sd{6.98}{0.14}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Width-256 additive pooling gives the strongest overall pooling results across
+the three retrieval tasks at 30k. The multi-query mean rounds to \(100.00\%\),
+with one missed answer across the three seeds. Width-128 concatenated pooling
+has the highest three-seed mean next-character accuracy at 50k
+(Table~\ref{tab:wide-pooling-long}). The checkpoints differ in update count,
+so they leave the language ranking open.
+
 \section{Short-budget language comparison across context lengths}
 We compare width-64 raw pooling, width-128 raw-plus-GELU pooling, and the sinusoidal Transformer on Tiny Shakespeare at context lengths 32 and 128. All configurations use the same training target positions within each seed and the same 4,096 validation and test targets across context lengths within each split. Each configuration receives 3,000 batch-64 Adam updates for each of seeds 0--2. A separate validation sweep with seed 3 compares learning rates 0.0003 and 0.001 at 1,000 updates and selects 0.001 for all six configurations. The wider pooling model's hidden width decreases from 271 to 233 to keep it within 100,000 parameters as its position table grows.
 
@@ -302,7 +333,7 @@ Three seeds provide a modest view of training variation. Shared evaluation sampl
 Teacher-forced multi-query evaluation does not establish reliable autoregressive retrieval. A follow-up should feed predicted earlier answers back into subsequent queries and report both per-answer and all-answers-correct accuracy. More demanding retrieval tests should vary memory size, repeated keys, distractors, query positions, and key/value distributions. Equal-quality timing and comparisons with other pooling and recurrent baselines would help characterize practical efficiency.
 
 \section{Conclusion}
-Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. At 50k updates the width-128 variant reaches \(99.98\%\) on both recall tasks and \(47.00\%\) character accuracy. The wider pooling model has the lowest mean test perplexity at both lengths after 3,000 updates. The Transformer has the lowest perplexity in the separate 50k-update comparison at length 32. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
+Last-token-conditioned position--token pooling is a compact sequence predictor that achieves high accuracy on short copying and associative-recall tasks. At 30k updates, width-256 additive pooling reaches \(99.99\%\) single-query recall and \(100.00\%\) multi-query recall after rounding. At 50k, width-128 concatenated pooling reaches \(99.98\%\) on both recall tasks and \(47.00\%\) character accuracy. The wider pooling model has the lowest mean test perplexity at both lengths after 3,000 updates. The Transformer has the lowest perplexity in the separate 50k-update comparison at length 32. The evidence supports further study of conditioned pooling as a small-model design, with capacity, optimization, and broader language evaluation remaining open.
 
 \appendix
 \section{Reproducibility and artifact map}
@@ -327,6 +358,13 @@ python -m experiments.longer_training_100k \
 \end{verbatim}
 
 The pooling-combination results at 10k, 30k, and 50k are in \path{experiments/raw-gelu-combine-50k/}. Use the preceding command with seed 0 and architecture labels \path{token_product_raw_gelu}, \path{token_product_raw_gelu_add}, and \path{token_product_raw_gelu_mul}. Set the output prefix to the corresponding \path{concat}, \path{add}, or \path{mul} within that directory.
+
+To reproduce the width-256 additive results, set \texttt{SEED} to 0, 1, and 2:
+\begin{verbatim}
+python -m experiments.longer_training_100k \
+  --architecture token_product_raw_gelu_add --width 256 --budget 100000 \
+  --lr 0.0003 --steps 30000 --checkpoints 10000 30000 --seed SEED
+\end{verbatim}
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
 
