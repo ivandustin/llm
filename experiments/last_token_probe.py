@@ -60,9 +60,12 @@ class TokenInteraction(nnx.Module):
     query initialized to ones. Other variants exclude the final token from
     memory. token_position_product multiplies the last token and its position
     to form the query, reusing the existing embedding tables.
-    previous_pool is the no-query control. Only token_product_gelu applies GELU per
-    token before the sum. Readout activation and pooled normalization can be
-    changed without changing parameter initialization or counts.
+    previous_pool is the no-query control. token_product_gelu pools GELU
+    interactions, while token_product_raw_gelu pools both raw and GELU
+    interactions. token_product_raw_half replaces the GELU sum with half the
+    raw sum. token_product_pre_norm normalizes each interaction across its
+    channels before summing. Readout activation and pooled normalization can
+    be changed without changing parameter initialization or counts.
     """
     def __init__(self, seed, variant, hidden, layers, context=16, vocab=96,
                  activation='gelu', pooled_norm=True, width=64):
@@ -72,6 +75,8 @@ class TokenInteraction(nnx.Module):
         self.activation = activation
         self.pooled_norm = pooled_norm
         self.base = BatchedCandidate(context, vocab, width, hidden, seed, layers).model
+        if variant in ('token_product_raw_gelu', 'token_product_raw_half', 'token_product_raw_sigmoid'):
+            self.base.fn.a = nnx.Linear(2 * width, hidden, rngs=nnx.Rngs(seed + 100000))
         if variant == 'global_query':
             self.query = nnx.Param(jnp.ones(width))
 
@@ -88,11 +93,23 @@ class TokenInteraction(nnx.Module):
                 memory = memory * e[1, -1]
             if self.variant == 'token_product_gelu':
                 memory = jax.nn.gelu(memory)
+            if self.variant == 'token_product_pre_norm':
+                memory = (memory - memory.mean(axis=-1, keepdims=True)) / jnp.sqrt(
+                    memory.var(axis=-1, keepdims=True) + 1e-5
+                )
             pooled = memory.sum(axis=0)
+            if self.variant == 'token_product_raw_gelu':
+                pooled = jnp.concatenate([pooled, jax.nn.gelu(memory).sum(axis=0)])
+            elif self.variant == 'token_product_raw_sigmoid':
+                pooled = jnp.concatenate([pooled, jax.nn.sigmoid(memory).sum(axis=0)])
+            elif self.variant == 'token_product_raw_half':
+                pooled = jnp.concatenate([pooled, 0.5 * pooled])
             if self.pooled_norm:
                 pooled = (pooled - pooled.mean()) / jnp.sqrt(pooled.var() + 1e-5)
             activate = jax.nn.gelu if self.activation == 'gelu' else jax.nn.sigmoid
             h = activate(self.base.fn.a(pooled))
+            if hasattr(self.base, 'extra'):
+                h = activate(self.base.extra(h))
             for layer in getattr(self.base, 'layers', []):
                 h = activate(layer(h))
             return self.base.fn.b(h)

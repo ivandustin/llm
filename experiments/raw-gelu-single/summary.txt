@@ -1,0 +1,136 @@
+Single-query associative recall with raw and per-interaction GELU pooling
+
+Adam 0.0003, batch size 64, seeds 0–2, 16,384 held-out sequences.
+The existing baseline runs use the same training and evaluation data.
+Mean accuracy ± sample standard deviation across seeds. Final checkpoint at 10k.
+Each variant concatenates sum(x) and sum(GELU(x)), then normalizes jointly.
+Here x is position[i] * token[i] * token[last], with i < last.
+
+Model               Embedding  Pooled  Hidden    Params          1k          10k
+Raw baseline                64      64     576   100,000   22.59 ± 2.05%   77.09 ± 5.28%
+Raw + GELU width 32         32      64     598    99,958   14.35 ± 3.00%   43.70 ± 3.27%
+Raw + GELU width 64         64     128     412    99,964   23.49 ± 2.88%   85.60 ± 1.81%
+
+10k accuracy by seed (0, 1, 2):
+Raw baseline: 80.38%, 79.89%, 70.99%
+Raw + GELU width 32: 40.52%, 47.06%, 43.52%
+Raw + GELU width 64: 87.70%, 84.64%, 84.48%
+
+Pre-normalization RMS over held-out sequences and channels, averaged across seeds.
+The residual is sum(GELU(x)) − 0.5 * sum(x), measuring deviation from the linear approximation.
+Width 32, step     0: raw 0.01976, GELU 0.00988, residual 0.00042
+Width 32, step 10000: raw 0.01862, GELU 0.00931, residual 0.00021
+Width 64, step     0: raw 0.00671, GELU 0.00335, residual 0.00005
+Width 64, step 10000: raw 0.01073, GELU 0.00537, residual 0.00007
+
+Reproduce from the repository root (repeat for each width and seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_gelu --width WIDTH --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/dWIDTH
+
+Width-64 linear control, with the same initial parameters as width-64 raw + GELU.
+Second branch is 0.5 * sum(x). Pooled width 128, hidden width 412, 99,964 parameters.
+Same optimizer, seeds, batches, joint normalization and held-out set.
+
+1k accuracy: 23.51% ± 2.86
+10k accuracy: 85.55% ± 1.84
+10k accuracy by seed: 87.66%, 84.67%, 84.33%
+10k GELU minus linear control by seed (percentage points): +0.03, -0.03, +0.15
+10k GELU minus linear control, mean ± sample standard deviation: +0.05 ± 0.09 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_half --width 64 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d64-raw-half
+
+Width-128 raw + GELU under the same 100,000-parameter ceiling.
+Embedding width 128, pooled width 256, hidden width 242, 99,858 parameters.
+Same optimizer, seeds, batches, post-sum joint normalization and held-out set.
+
+1k accuracy: 30.31% ± 0.25
+10k accuracy: 99.04% ± 0.22
+10k accuracy by seed: 98.96%, 99.30%, 98.88%
+10k width 128 minus width 64 by seed (percentage points): +11.26, +14.66, +14.40
+10k width 128 minus width 64, mean ± sample standard deviation: +13.44 ± 1.89 percentage points.
+
+Width-128 raw-only pooling under the same 100,000-parameter ceiling.
+Embedding and pooled width 128, hidden width 380, 99,932 parameters.
+Same optimizer, seeds, batches, post-sum normalization and held-out set.
+
+1k accuracy: 30.11% ± 0.32
+10k accuracy: 98.27% ± 0.83
+10k accuracy by seed: 97.75%, 97.83%, 99.24%
+10k raw-only minus raw + GELU by seed (percentage points): -1.20, -1.46, +0.36
+10k raw-only minus raw + GELU, mean ± sample standard deviation: -0.77 ± 0.99 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product --width 128 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d128-raw
+
+Width-128 GELU-only pooling, sum(GELU(x)) followed by pooled normalization.
+Embedding and pooled width 128, hidden width 380, 99,932 parameters.
+Matches the width-128 raw-only model’s initialization and training protocol.
+
+1k accuracy: 30.48% ± 0.28
+10k accuracy: 94.79% ± 2.02
+10k accuracy by seed: 92.46%, 95.93%, 95.99%
+10k GELU-only minus raw-only by seed (percentage points): -5.29, -1.90, -3.25
+10k GELU-only minus raw-only, mean ± sample standard deviation: -3.48 ± 1.71 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_gelu --width 128 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d128-gelu
+
+Width-64 GELU-only pooling, sum(GELU(x)) followed by pooled normalization.
+Embedding and pooled width 64, hidden width 576, 100,000 parameters.
+Matches the width-64 raw-only model’s initialization and training protocol.
+
+1k accuracy: 23.47% ± 2.01
+10k accuracy: 75.81% ± 6.97
+10k accuracy by seed: 82.18%, 76.87%, 68.37%
+10k GELU-only minus raw-only by seed (percentage points): +1.80, -3.02, -2.62
+10k GELU-only minus raw-only, mean ± sample standard deviation: -1.28 ± 2.67 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_gelu --width 64 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d64-gelu
+
+Width-256 raw + GELU under the same 100,000-parameter ceiling.
+Embedding width 256, pooled width 512, hidden width 116, 99,412 parameters.
+Same optimizer, seeds, batches, post-sum joint normalization and held-out set.
+
+1k accuracy: 30.66% ± 0.10
+10k accuracy: 95.85% ± 0.81
+10k accuracy by seed: 94.99%, 95.96%, 96.59%
+10k width 256 minus width 128 by seed (percentage points): -3.97, -3.34, -2.29
+10k width 256 minus width 128, mean ± sample standard deviation: -3.20 ± 0.85 percentage points.
+
+Width-128 raw + sigmoid pooling. Concatenate sum(x) and sum(sigmoid(x)),
+jointly normalize, then apply the GELU readout. Embedding width 128,
+pooled width 256, hidden width 242, 99,858 parameters.
+Same initialization and training protocol as width-128 raw + GELU.
+
+1k accuracy: 6.32% ± 0.24
+10k accuracy: 29.91% ± 0.55
+10k accuracy by seed: 29.44%, 29.76%, 30.51%
+10k raw + sigmoid minus raw + GELU, mean ± sample standard deviation: -69.14 ± 0.67 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_sigmoid --width 128 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d128-raw-sigmoid
+
+Width-128 raw + GELU with two equal-width GELU FFN hidden layers.
+Pooled width 256, hidden width 164 per layer, 99,384 parameters.
+Same pooling, optimizer, seeds, batches and held-out set as the one-layer run.
+
+1k accuracy: 30.24% ± 0.21
+10k accuracy: 98.56% ± 0.34
+10k accuracy by seed: 98.44%, 98.30%, 98.95%
+10k two layers minus one layer, mean ± sample standard deviation: -0.48 ± 0.54 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_gelu --width 128 --hidden-layers 2 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d128-n2
+
+Width-128 raw + GELU with six equal-width GELU FFN hidden layers.
+Pooled width 256, hidden width 99 per layer, 98,879 parameters.
+Same pooling, optimizer, seeds, batches and held-out set as the one-layer run.
+
+1k accuracy: 23.48% ± 1.51
+10k accuracy: 99.08% ± 0.79
+10k accuracy by seed: 98.18%, 99.41%, 99.66%
+10k six layers minus one layer, mean ± sample standard deviation: +0.04 ± 0.78 percentage points.
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_gelu --width 128 --hidden-layers 6 --budget 100000 --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-single/d128-n6

@@ -1,0 +1,31 @@
+Width-128 raw + GELU pooling with one GELU hidden layer on all standard tasks
+
+Adam 0.0003, batch size 64, seeds 0–2, final checkpoint at 10k.
+Matched training and held-out sampling protocols. Retrieval uses 16,384 sequences;
+language uses 4,096 Tiny Shakespeare test windows.
+Scores are mean ± sample standard deviation. Accuracy in percent.
+References are the matched Adam 0.0003 runs in experiments/current64-lr0.0003-50k.
+
+Parameter counts (retrieval / language):
+Raw + GELU d128: 99,858 / 99,743
+Raw d64: 100,000 / 81,153
+Transformer d64: 98,032 / 94,033
+
+1,000 updates
+Metric                             Raw + GELU d128             Raw d64     Transformer d64
+Position copying                      90.10 ± 0.25        59.89 ± 2.01        99.98 ± 0.02
+Single-query recall                   30.31 ± 0.25        22.59 ± 2.05        30.25 ± 0.13
+Multi-query recall                    35.05 ± 0.04        34.41 ± 0.46        31.65 ± 0.75
+Next-character prediction             30.97 ± 0.68        28.18 ± 0.22        31.06 ± 0.73
+Language perplexity                   11.99 ± 0.17        13.51 ± 0.15        11.37 ± 0.14
+
+10,000 updates
+Metric                             Raw + GELU d128             Raw d64     Transformer d64
+Position copying                      99.72 ± 0.14        98.86 ± 0.91       100.00 ± 0.00
+Single-query recall                   99.04 ± 0.22        77.09 ± 5.28       100.00 ± 0.00
+Multi-query recall                    99.63 ± 0.19        93.11 ± 2.92       100.00 ± 0.00
+Next-character prediction             42.59 ± 0.36        40.35 ± 0.32        41.65 ± 0.59
+Language perplexity                    7.43 ± 0.06         7.95 ± 0.18         7.41 ± 0.04
+
+Reproduce from the repository root (repeat for each seed):
+python -m experiments.longer_training_100k --architecture token_product_raw_gelu --width 128 --hidden-layers 1 --budget 100000 --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/raw-gelu-all/d128-n1

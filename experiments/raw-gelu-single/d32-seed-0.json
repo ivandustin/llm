@@ -1,0 +1,93 @@
+{
+  "config": {
+    "architecture": "token_product_raw_gelu",
+    "seed": 0,
+    "steps": 10000,
+    "checkpoints": [
+      1000,
+      10000
+    ],
+    "batch": 64,
+    "lr": 0.0003,
+    "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+    "width": 32,
+    "hidden": {
+      "position": 598,
+      "single": 598,
+      "multi": 598,
+      "language": 744
+    },
+    "hidden_layers": 1,
+    "blocks": 0,
+    "residual": false,
+    "final_norm": false,
+    "positions": "learned",
+    "pooled_norm": "non-learned epsilon1e-5",
+    "activation": "GELU",
+    "parameters": {
+      "query": 99958,
+      "language": 99889
+    },
+    "tasks": [
+      "single"
+    ],
+    "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+    "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "baseline": null,
+    "pooling": "concat(sum(x), sum(GELU(x))) for x = position[i] * token[i] * token[last], i < last; normalize then GELU MLP",
+    "parameter_budget": 100000
+  },
+  "runs": [
+    {
+      "task": "single",
+      "seed": 0,
+      "parameters": 99958,
+      "history": [
+        {
+          "loss": 2.7288623452186584,
+          "accuracy": 0.11181640625,
+          "step": 1000,
+          "last_train_loss": 2.7490859031677246
+        },
+        {
+          "loss": 1.647226169705391,
+          "accuracy": 0.329833984375,
+          "step": 5000,
+          "last_train_loss": 1.473190188407898
+        },
+        {
+          "loss": 1.3398771546781063,
+          "accuracy": 0.414306640625,
+          "step": 10000,
+          "last_train_loss": 1.2371132373809814
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 1000,
+          "final": {
+            "loss": 2.7367786522954702,
+            "accuracy": 0.10906982421875,
+            "perplexity": 15.437176401085214
+          }
+        },
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.3566701244562864,
+            "accuracy": 0.40521240234375,
+            "perplexity": 3.88324103968437
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.3566701244562864,
+        "accuracy": 0.40521240234375,
+        "perplexity": 3.88324103968437
+      }
+    }
+  ]
+}

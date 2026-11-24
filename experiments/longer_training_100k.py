@@ -20,16 +20,17 @@ from experiments.language_depth_test import evaluate
 from experiments.readout_experiments import metrics,save_weights
 from experiments.speed_benchmark import compiled_training
 from experiments.last_token_probe import TokenInteraction
+from experiments.budget_sweep import hidden_for_budget
 
 
 class TokenProductModel(nnx.Module):
     """Shared last-token multiplication for every task; no task-specific retrieval."""
     def __init__(self, task, seed, sigmoid_no_norm=False, gelu_no_norm=False,
-                 sigmoid_norm=False, variant='token_product', width=64, hidden=576):
+                 sigmoid_norm=False, variant='token_product', width=64, hidden=576, hidden_layers=1):
         if sum([sigmoid_no_norm, gelu_no_norm, sigmoid_norm]) > 1:
             raise ValueError('select only one activation variant')
         self.task = task
-        self.base = TokenInteraction(seed, variant, hidden, 1,
+        self.base = TokenInteraction(seed, variant, hidden, hidden_layers,
                                     32 if task == 'language' else 16,
                                     65 if task == 'language' else 96,
                                     activation='sigmoid' if sigmoid_no_norm or sigmoid_norm else 'gelu',
@@ -67,7 +68,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid'],default='deep')
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
@@ -76,6 +77,8 @@ def main():
     parser.add_argument('--checkpoints',type=int,nargs='+',help='Evaluation milestones, in multiples of 1000; final step is always included')
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
     parser.add_argument('--width',type=int,default=64,help='Token-product or Transformer embedding width')
+    parser.add_argument('--hidden-layers',type=int,choices=range(1,9),default=1,
+                        help='Number of token-product FFN hidden layers')
     parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
     parser.add_argument('--output-prefix',help='Output path prefix, excluding seed suffix')
     args=parser.parse_args()
@@ -85,6 +88,8 @@ def main():
         parser.error('width and budget must be positive')
     if (args.width != 64 or args.budget is not None) and not (args.architecture.startswith('token_product') or args.architecture=='transformer'):
         parser.error('custom width/budget require token-product or transformer')
+    if args.hidden_layers != 1 and not args.architecture.startswith('token_product'):
+        parser.error('custom hidden layers require token-product')
     if args.architecture=='transformer' and args.width%4:
         parser.error('Transformer width must be divisible by four heads')
     if args.steps<10000 or args.steps%1000 or args.chunk!=1000:
@@ -99,10 +104,19 @@ def main():
     transformer=args.architecture=='transformer'
     sigmoid_norm=args.architecture=='token_product_sigmoid_norm'
     sigmoid=args.architecture in ['sigmoid','token_product_sigmoid','token_product_sigmoid_norm']
-    gelu_no_norm=args.architecture=='token_product_gelu_no_norm'
-    token_product=args.architecture in ['token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm']
-    shallow=args.architecture in ['shallow','sigmoid','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm']
+    gelu_pool=args.architecture=='token_product_gelu'
+    pre_norm=args.architecture in ('token_product_pre_norm','token_product_pre_post_norm')
+    gelu_no_norm=args.architecture in ('token_product_gelu_no_norm','token_product_pre_norm')
+    second_pool={
+        'token_product_raw_gelu':'sum(GELU(x))',
+        'token_product_raw_half':'0.5 * sum(x)',
+        'token_product_raw_sigmoid':'sum(sigmoid(x))',
+    }.get(args.architecture)
+    concatenated=second_pool is not None
+    token_product=args.architecture.startswith('token_product')
+    shallow=token_product or args.architecture in ['shallow','sigmoid']
     prefix='token-product-sigmoid-norm100k' if sigmoid_norm else 'token-product-gelu-no-norm100k' if gelu_no_norm else 'token-product-sigmoid100k' if token_product and sigmoid else 'token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
+    if concatenated or pre_norm or gelu_pool:prefix=args.architecture.replace('_','-')+'100k'
     if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     if transformer and args.positions=='sinusoidal':baseline=None
@@ -117,18 +131,33 @@ def main():
         training='compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state',
         evaluation='same fixed samples as original100k runs; predeclared update counts, no best-step selection',
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
-    if token_product:
+    if pre_norm:
+        readout='GELU MLP' if gelu_no_norm else 'normalize then GELU MLP'
+        config['pooling']=f'sum(normalize(position[i] * token[i] * token[last])) for i < last; {readout}'
+    elif concatenated:
+        config['pooling']=f'concat(sum(x), {second_pool}) for x = position[i] * token[i] * token[last], i < last; normalize then GELU MLP'
+    elif gelu_pool:
+        config['pooling']='sum(GELU(position[i] * token[i] * token[last])) for i < last; normalize then GELU MLP'
+    elif token_product:
         config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; ' + ('normalize then sigmoid MLP' if sigmoid_norm else 'sigmoid MLP, no normalization' if sigmoid else 'GELU MLP, no normalization' if gelu_no_norm else 'normalize then GELU MLP')
     hidden_by_task={task:576 for task in TASKS}
     if token_product:
-        from experiments.budget_sweep import hidden_for_budget
+        variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or gelu_pool else 'token_product'
         if args.budget is not None:
-            hidden_by_task={task:hidden_for_budget(32 if task=='language' else 16,65 if task=='language' else 96,args.width,args.budget) for task in TASKS}
+            pooled_width=2*args.width if concatenated else args.width
+            hidden_by_task={
+                task:hidden_for_budget(32,65,args.width,args.budget,args.hidden_layers,pooled_width=pooled_width)
+                if task=='language' else
+                hidden_for_budget(16,96,args.width,args.budget,args.hidden_layers,pooled_width=pooled_width)
+                for task in TASKS
+            }
             if min(hidden_by_task.values())<1:parser.error('budget too small for embeddings and hidden layer')
-        config.update(width=args.width,hidden=hidden_by_task,parameter_budget=args.budget)
-        config['parameters']={key:count(TokenProductModel(task,args.seed,width=args.width,hidden=hidden_by_task[task])) for key,task in [('query','position'),('language','language')]}
+        config.update(width=args.width,hidden=hidden_by_task,hidden_layers=args.hidden_layers,parameter_budget=args.budget)
+        config['parameters']={key:count(TokenProductModel(task,args.seed,variant=variant,width=args.width,hidden=hidden_by_task[task],hidden_layers=args.hidden_layers)) for key,task in [('query','position'),('language','language')]}
         if args.width!=64 or args.budget is not None:
             prefix=f'{prefix}-d{args.width}-budget{args.budget or "custom"}'
+        if args.hidden_layers!=1:
+            prefix=f'{prefix}-n{args.hidden_layers}'
     if transformer:
         hidden_by_task={task:200 for task in TASKS}
         if args.budget is not None:
@@ -147,7 +176,7 @@ def main():
     directory=Path(f'{prefix}-seed-{args.seed}');directory.mkdir(exist_ok=True)
     output=Path(f'{prefix}-seed-{args.seed}.json');runs=[]
     for task in args.tasks:
-        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm,width=args.width,hidden=hidden_by_task[task]) if token_product else TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=hidden_by_task[task]) if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
+        model=TokenProductModel(task,args.seed,sigmoid_no_norm=sigmoid and not sigmoid_norm,gelu_no_norm=gelu_no_norm,sigmoid_norm=sigmoid_norm,variant=variant,width=args.width,hidden=hidden_by_task[task],hidden_layers=args.hidden_layers) if token_product else TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=hidden_by_task[task]) if transformer else SigmoidModel(task,args.seed) if sigmoid else ShallowModel(task,args.seed,'n1') if shallow else DeepModel(task,args.seed,'ours')
         assert count(model)==config['parameters']['language' if task=='language' else 'query']
         rng=np.random.default_rng(args.seed if task=='language' else 10000*args.seed+1601 if task=='position' else 50000+args.seed)
         monitor,heldout=evaluation_data(task,val,test)

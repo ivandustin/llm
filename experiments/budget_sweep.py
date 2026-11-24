@@ -26,11 +26,13 @@ class BatchedCandidate(nnx.Module):
         return nnx.vmap(self.model)(jnp.stack([positions,tokens],axis=1))
 
 
-def hidden_for_budget(context,vocab,width,budget,hidden_layers=1):
-    # Two embedding tables plus Linear(width,hidden) and Linear(hidden,vocab).
-    h=(budget-(context+vocab)*width-vocab)//(width+vocab+1)
+def hidden_for_budget(context,vocab,width,budget,hidden_layers=1,*,pooled_width=None):
+    # Two embedding tables plus the input and output projections.
+    fixed=(context+vocab)*width+vocab
+    per_hidden=(width if pooled_width is None else pooled_width)+vocab+1
+    h=(budget-fixed)//per_hidden
     if hidden_layers>1:
-        while h>0 and (context+vocab)*width+(width+vocab+1)*h+vocab+(hidden_layers-1)*(h*h+h)>budget:
+        while h>0 and fixed+per_hidden*h+(hidden_layers-1)*(h*h+h)>budget:
             h-=1
     return h
 

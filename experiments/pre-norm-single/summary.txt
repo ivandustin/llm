@@ -1,0 +1,21 @@
+Pre-sum normalization of raw token-product interactions on single-query recall
+
+Normalize each position’s interaction across its 64 channels before summing.
+Both normalization stages use (x − mean) / sqrt(variance + 1e-5), without learned parameters.
+The three variants share the 100,000-parameter model and same initialization per seed.
+Adam 0.0003, batch size 64, seeds 0–2, and 16,384 held-out sequences.
+The post-sum-only numbers come from the existing matched baseline runs.
+Accuracy is mean ± sample standard deviation. Final checkpoint at 10k.
+
+Normalization                      1k              10k
+Post-sum only           22.59% ± 2.05    77.09% ± 5.28
+Pre-sum only            19.04% ± 1.89    77.87% ± 3.73
+Pre- and post-sum       21.92% ± 2.00    78.12% ± 4.22
+
+10k accuracy by seed (0, 1, 2):
+Post-sum only: 80.38%, 79.89%, 70.99%
+Pre-sum only: 81.37%, 78.29%, 73.94%
+Pre- and post-sum: 80.91%, 80.18%, 73.27%
+
+Reproduce from the repository root (repeat for each seed and VARIANT=pre_norm or pre_post_norm):
+python -m experiments.longer_training_100k --architecture token_product_VARIANT --tasks single --steps 10000 --checkpoints 1000 --seed SEED --output-prefix experiments/pre-norm-single/VARIANT
