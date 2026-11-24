@@ -1,0 +1,32 @@
+Tiny Shakespeare context-length screen
+
+Three seeds per model at contexts 32 and 128. Each run used 3,000 Adam updates at batch size 64.
+Rates 0.0003 and 0.001 were screened on validation at 1,000 updates using separate seed 3.
+Training and evaluation targets match across models and lengths. The validation and test splits
+each contain 4,096 sampled windows, drawn from the usual contiguous 80/10/10 split.
+Concat + GELU keeps the width-128 architecture and 100k parameter ceiling (hidden widths 271 and 233).
+Token-product keeps width 64 and hidden width 576. The Transformer is the current width-64 reference.
+
+Means ± sample SD across seeds. Training seconds exclude compilation and evaluation.
+Inference is warmed, JIT-compiled batch-one latency with resident inputs on an Intel Core Ultra 7 155H.
+
+Context | Model | Parameters | Adam LR | Test perplexity | Test accuracy (%) | Training (s) | Inference (ms)
+32 | Token-product | 81,153 | 0.001 | 8.21 ± 0.05 | 40.01 ± 0.31 | 3.84 ± 0.48 | 0.081 ± 0.013
+32 | Concat + GELU | 99,743 | 0.001 | 7.92 ± 0.02 | 41.35 ± 0.14 | 7.55 ± 0.69 | 0.086 ± 0.007
+32 | Sinusoidal Transformer | 94,033 | 0.001 | 8.28 ± 0.19 | 38.38 ± 0.41 | 32.32 ± 1.93 | 0.229 ± 0.012
+128 | Token-product | 87,297 | 0.001 | 8.94 ± 0.12 | 36.87 ± 0.23 | 6.46 ± 0.16 | 0.090 ± 0.005
+128 | Concat + GELU | 99,795 | 0.001 | 8.35 ± 0.11 | 39.32 ± 0.40 | 18.10 ± 1.33 | 0.118 ± 0.003
+128 | Sinusoidal Transformer | 94,033 | 0.001 | 8.60 ± 0.40 | 37.53 ± 1.05 | 116.31 ± 1.68 | 0.648 ± 0.005
+
+Context | Model | Test perplexity change vs Transformer | Inference speedup | First measured checkpoint matching each seed's final Transformer validation loss
+32 | Token-product | -0.83% | 2.83x | 3.7s at 3,000, 3.0s at 2,000, 3.4s at 3,000
+32 | Concat + GELU | -4.34% | 2.66x | 4.9s at 2,000, 5.5s at 2,000, 4.7s at 2,000
+128 | Token-product | +4.01% | 7.17x | unreached, 6.5s at 3,000, 6.6s at 3,000
+128 | Concat + GELU | -2.87% | 5.49x | 16.6s at 3,000, 12.4s at 2,000, 12.3s at 2,000
+
+Historical context-32 runs at 50k updates with Adam 0.0003 scored 7.09 ± 0.07 for concat + GELU,
+7.20 ± 0.20 for token-product, and 6.69 ± 0.12 for the Transformer. The 3k screen measures
+early training and uses a different sampling protocol. It does not establish long-run replacement quality.
+
+Reproduce from the repository root:
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 JAX_PLATFORMS=cpu python -m experiments.language_context_compare --output experiments/language-context-screen/results.json
