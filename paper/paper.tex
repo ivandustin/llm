@@ -196,7 +196,8 @@ Language perplexity \(\downarrow\) & \(\sd{7.01}{0.09}\) & \(\sd{7.09}{0.07}\)\\
 \end{tabular}
 \end{table}
 
-\section{CPU inference measurements}
+\section{CPU performance measurements}
+\subsection{Inference latency}
 We measure FP32 forward-pass latency for the two width-64 reference models on an Intel Core Ultra 7 155H with JAX 0.10.1, using seed-0 weights from the 50k checkpoints available when the benchmark was run. Each of seven alternating trials uses 20 warmup requests and 500 timed requests, with synchronization after each request. Inputs are resident on device. Compilation, data generation, and host transfers are excluded. Neither model uses a key/value cache.
 
 \begin{table}[htbp]
@@ -222,6 +223,27 @@ Language & Inference, batch 64 & 0.904 & 4.107 & 4.54\\
 
 Table~\ref{tab:speed} shows that pooling runs 2.63--2.83 times as fast at batch size 1 and 2.71--4.54 times as fast at batch size 64 on this CPU. The measurements include dispatch and synchronization costs for these short-context implementations.
 
+\subsection{Training throughput}
+We compare the two width-64 models on the same CPU using seed-0 checkpoints after 50,000 updates. Each of seven alternating trials times a warmed JAX-compiled scan of 200 FP32 updates with batch size 64. Both models receive the same resident batches, and the final state and losses are synchronized before the timer stops. Timing excludes compilation, batch generation, and host transfers.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Median milliseconds per compiled batch-64 training update over seven trials. Speedup is Transformer time divided by pooling time.}
+\label{tab:raw-training-speed}
+\begin{tabular}{lrrr}
+\toprule
+Task & Raw pooling (64) & Transformer (64) & Speedup\\
+\midrule
+Position copying & 1.111 & 5.707 & 5.14\\
+Single-query recall & 1.114 & 5.365 & 4.82\\
+Multi-query recall & 2.712 & 7.257 & 2.68\\
+Next-character prediction & 1.088 & 9.078 & 8.35\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:raw-training-speed} gives a 2.68--8.35$\times$ per-update speedup for raw pooling on this CPU. Time to reach a common quality threshold also depends on how many updates each model needs.
+
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses 32 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
@@ -246,7 +268,7 @@ This runs both architectures for seeds 0--2 and summarizes the declared mileston
 \begin{verbatim}
 python -m experiments.run_current64_50k --lr .0003 --summarize-only
 \end{verbatim}
-Inference timing medians and trial ranges are in \path{experiments/current64-50k/speed-summary.txt}. The benchmark implementation is \path{experiments/current_speed.py}.
+Width-64 inference and training timing medians and trial ranges are in \path{experiments/current64-50k/speed-summary.txt}. The benchmark implementation is \path{experiments/current_speed.py}.
 
 The width-128 follow-up is in \path{experiments/raw-gelu-all-50k/summary.txt}, with per-seed results in the same directory. The single-query controls are in \path{experiments/raw-gelu-single/summary.txt}. To reproduce the four-task width-128 results, run the following with \texttt{SEED} set to 0, 1, and 2:
 \begin{verbatim}
