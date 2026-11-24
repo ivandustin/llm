@@ -122,7 +122,7 @@ def main():
     p.add_argument('--output',default='capabilities-results.json')
     p.add_argument('--models',nargs='+',choices=['cube','transformer'],default=['cube','transformer'])
     p.add_argument('--width',type=int,default=16)
-    p.add_argument('--lr',type=float,default=.001)
+    p.add_argument('--lr',type=float,default=.0003)
     p.add_argument('--seed-start',type=int,default=0)
     p.add_argument('--resume',action='store_true')
     p.add_argument('--depth',type=int,choices=[1,2],default=2)

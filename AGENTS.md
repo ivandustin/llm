@@ -57,7 +57,8 @@ language, with perplexity 7.20 ± 0.20. The sinusoidal Transformer scores
 100.00% ± 0.00 on each retrieval task and 46.63% ± 0.72 language accuracy,
 with perplexity 6.69 ± 0.12. The lower rate fixes the Transformer single-query
 failure but slows pooling's early learning; it is not a universal improvement
-for both models. Original Adam-0.001 reference results and defaults are retained.
+for both models. Original Adam-0.001 reference results are retained. The default Adam learning
+rate for new training runs is now 0.0003; use `--lr 0.001` for historical reproduction.
 
 ## Current Transformer reference
 
@@ -107,7 +108,8 @@ reported separately in `experiments/current64-50k/summary.txt`.
 
 ## Shared training and evaluation context
 
-Both references use Adam at learning rate 0.001, batch size 64, without a
+The historical references use Adam at learning rate 0.001; new training runs
+default to 0.0003. Both use batch size 64, without a
 learning-rate schedule or weight decay. Model and optimizer state remain
 continuous across 1,000-update compiled chunks. Report predeclared final
 checkpoints, without best-step selection.

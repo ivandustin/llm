@@ -79,7 +79,7 @@ def main():
     parser.add_argument('--seeds', type=int, default=3)
     parser.add_argument('--context', type=int, default=32)
     parser.add_argument('--batch', type=int, default=64)
-    parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--lr', type=float, default=0.0003)
     parser.add_argument('--output', default='results.json')
     parser.add_argument('--models', nargs='+', choices=['cube','transformer'], default=['cube','transformer'])
     parser.add_argument('--cube-variant', choices=['original','norm_gelu'], default='original')

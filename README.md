@@ -5,6 +5,10 @@ position–token pooling models and causal Transformers. All model and experimen
 code lives in this repository. The latest experiment conditions the pooled
 representation on the final token with no additional trainable parameters.
 
+New training runs default to Adam learning rate **0.0003**. Use `--lr 0.001`
+to reproduce the historical results below. The single-query investigation
+keeps its original 0.001 diagnostic baseline.
+
 ## Latest results: last-token-conditioned pooling
 
 The new variant multiplies each previous position–token vector by the final

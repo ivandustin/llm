@@ -71,7 +71,7 @@ def main():
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
-    parser.add_argument('--lr',type=float,default=.001)
+    parser.add_argument('--lr',type=float,default=.0003)
     parser.add_argument('--chunk',type=int,default=1000)
     parser.add_argument('--checkpoints',type=int,nargs='+',help='Evaluation milestones, in multiples of 1000; final step is always included')
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)

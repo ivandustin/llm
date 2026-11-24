@@ -9,10 +9,10 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'experiments/current64-50k'
+OUT = ROOT / 'experiments/current64-lr0.0003-50k'
 STEPS = [1000, 10000, 30000, 50000]
 ARCHES = ['token_product', 'transformer']
-LR = .001
+LR = .0003
 
 
 def run_seed(seed):
@@ -70,7 +70,7 @@ def summarize():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--lr', type=float, default=.001)
+    parser.add_argument('--lr', type=float, default=.0003)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--summarize-only', action='store_true')
     args = parser.parse_args()
