@@ -196,6 +196,28 @@ Language perplexity \(\downarrow\) & \(\sd{7.01}{0.09}\) & \(\sd{7.09}{0.07}\)\\
 \end{tabular}
 \end{table}
 
+\subsection{Elementwise combinations of raw and GELU pooling}
+Let \(r=\sum_{i<\mathrm{last}}x_i\) and \(g=\sum_{i<\mathrm{last}}\operatorname{GELU}(x_i)\). We compare concatenation with elementwise addition \(r+g\) and multiplication \(r\odot g\) before pooled normalization. All three use embedding width 128, one GELU hidden layer, and the same 100,000-parameter ceiling. Addition and multiplication reduce the pooled width from 256 to 128, allowing 380 retrieval and 451 language hidden units (99,932 and 99,975 parameters, respectively).
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out results after 50,000 updates with Adam at 0.0003 and seed 0. Accuracies are percentages.}
+\label{tab:wide-pooling-combinations}
+\begin{tabular}{lrrr}
+\toprule
+Metric & Concatenation & Addition & Multiplication\\
+\midrule
+Position copying & 100.00 & 100.00 & 100.00\\
+Single-query recall & 99.96 & 99.96 & 78.41\\
+Multi-query recall & 99.99 & 99.99 & 89.73\\
+Next-character accuracy & 47.24 & 47.24 & 44.78\\
+Language perplexity \(\downarrow\) & 7.07 & 6.82 & 7.12\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Addition and concatenation have the same rounded accuracies at 50k (Table~\ref{tab:wide-pooling-combinations}). Addition has lower language perplexity at 10k, 30k, and 50k (7.32, 6.79, and 6.82 versus 7.41, 7.07, and 7.07). Multiplication improves from 57.60 to 78.41\% on single-query recall and from 70.11 to 89.73\% on multi-query recall between 10k and 50k. These single-seed results compare complete architectures at a common parameter budget, with different readout widths.
+
 \section{Short-budget language comparison across context lengths}
 We compare width-64 raw pooling, width-128 raw-plus-GELU pooling, and the sinusoidal Transformer on Tiny Shakespeare at context lengths 32 and 128. All configurations use the same training target positions within each seed and the same 4,096 validation and test targets across context lengths within each split. Each configuration receives 3,000 batch-64 Adam updates for each of seeds 0--2. A separate validation sweep with seed 3 compares learning rates 0.0003 and 0.001 at 1,000 updates and selects 0.001 for all six configurations. The wider pooling model's hidden width decreases from 271 to 233 to keep it within 100,000 parameters as its position table grows.
 
@@ -303,6 +325,8 @@ python -m experiments.longer_training_100k \
   --steps 50000 --checkpoints 10000 30000 50000 --seed SEED \
   --output-prefix experiments/raw-gelu-all-50k/d128-n1
 \end{verbatim}
+
+The pooling-combination results at 10k, 30k, and 50k are in \path{experiments/raw-gelu-combine-50k/}. Use the preceding command with seed 0 and architecture labels \path{token_product_raw_gelu}, \path{token_product_raw_gelu_add}, and \path{token_product_raw_gelu_mul}. Set the output prefix to the corresponding \path{concat}, \path{add}, or \path{mul} within that directory.
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
 

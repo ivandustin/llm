@@ -100,6 +100,10 @@ class TokenInteraction(nnx.Module):
             pooled = memory.sum(axis=0)
             if self.variant == 'token_product_raw_gelu':
                 pooled = jnp.concatenate([pooled, jax.nn.gelu(memory).sum(axis=0)])
+            elif self.variant == 'token_product_raw_gelu_add':
+                pooled = pooled + jax.nn.gelu(memory).sum(axis=0)
+            elif self.variant == 'token_product_raw_gelu_mul':
+                pooled = pooled * jax.nn.gelu(memory).sum(axis=0)
             elif self.variant == 'token_product_raw_sigmoid':
                 pooled = jnp.concatenate([pooled, jax.nn.sigmoid(memory).sum(axis=0)])
             elif self.variant == 'token_product_raw_half':

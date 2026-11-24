@@ -68,7 +68,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid'],default='deep')
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
@@ -92,8 +92,8 @@ def main():
         parser.error('custom hidden layers require token-product')
     if args.architecture=='transformer' and args.width%4:
         parser.error('Transformer width must be divisible by four heads')
-    if args.steps<10000 or args.steps%1000 or args.chunk!=1000:
-        parser.error('use >=10000 steps, a multiple of1000, and chunk1000 for this protocol')
+    if args.steps<1000 or args.steps%1000 or args.chunk!=1000:
+        parser.error('steps must be a positive multiple of 1000 and chunk must be 1000')
     raw=(Path(__file__).resolve().parents[1] / 'data/shakespeare.txt').read_bytes();text=raw.decode()
     chars=sorted(set(text));enc={c:i for i,c in enumerate(chars)}
     data=np.array([enc[c] for c in text],np.int32)
@@ -112,11 +112,15 @@ def main():
         'token_product_raw_half':'0.5 * sum(x)',
         'token_product_raw_sigmoid':'sum(sigmoid(x))',
     }.get(args.architecture)
+    combined_pool={
+        'token_product_raw_gelu_add':'sum(x) + sum(GELU(x))',
+        'token_product_raw_gelu_mul':'sum(x) * sum(GELU(x))',
+    }.get(args.architecture)
     concatenated=second_pool is not None
     token_product=args.architecture.startswith('token_product')
     shallow=token_product or args.architecture in ['shallow','sigmoid']
     prefix='token-product-sigmoid-norm100k' if sigmoid_norm else 'token-product-gelu-no-norm100k' if gelu_no_norm else 'token-product-sigmoid100k' if token_product and sigmoid else 'token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
-    if concatenated or pre_norm or gelu_pool:prefix=args.architecture.replace('_','-')+'100k'
+    if concatenated or combined_pool or pre_norm or gelu_pool:prefix=args.architecture.replace('_','-')+'100k'
     if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     if transformer and args.positions=='sinusoidal':baseline=None
@@ -136,13 +140,15 @@ def main():
         config['pooling']=f'sum(normalize(position[i] * token[i] * token[last])) for i < last; {readout}'
     elif concatenated:
         config['pooling']=f'concat(sum(x), {second_pool}) for x = position[i] * token[i] * token[last], i < last; normalize then GELU MLP'
+    elif combined_pool:
+        config['pooling']=f'{combined_pool} for x = position[i] * token[i] * token[last], i < last; normalize then GELU MLP'
     elif gelu_pool:
         config['pooling']='sum(GELU(position[i] * token[i] * token[last])) for i < last; normalize then GELU MLP'
     elif token_product:
         config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; ' + ('normalize then sigmoid MLP' if sigmoid_norm else 'sigmoid MLP, no normalization' if sigmoid else 'GELU MLP, no normalization' if gelu_no_norm else 'normalize then GELU MLP')
     hidden_by_task={task:576 for task in TASKS}
     if token_product:
-        variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or gelu_pool else 'token_product'
+        variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or combined_pool or gelu_pool else 'token_product'
         if args.budget is not None:
             pooled_width=2*args.width if concatenated else args.width
             hidden_by_task={
