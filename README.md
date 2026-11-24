@@ -1,15 +1,15 @@
-# Last-Token-Conditioned Position–Token Pooling for Small Sequence Models
+# Last-Token-Conditioned Pooling for Associative Recall and Language Prediction
 
-Standalone Flax NNX implementations and reproducible experiments for small
-position–token pooling models and causal Transformers. All model and experiment
-code lives in this repository. The [paper](paper/paper.pdf) describes
-the models, experiments, and limitations.
+Flax NNX implementations and reproducible comparisons of last-token-conditioned
+position–token pooling and small causal Transformers on position copying,
+associative recall, and Tiny Shakespeare next-character prediction. The paper
+describes the models, experiments, and limitations. [Paper (PDF)](paper/paper.pdf)
 
 ## Matched 50,000-update results
 
-All models used Adam at **0.0003** (the training default), batch size 64, and
-three seeds. Values are means ± sample standard deviations at the final
-checkpoint. Retrieval uses 16,384 held-out sequences, with multi-query recall
+All models used Adam at **0.0003** (the default for longer training), batch
+size 64, and three seeds. Values are means ± sample standard deviations at the
+final checkpoint. Retrieval uses 16,384 held-out sequences, with multi-query recall
 scored per answer on its causal prefix. Language uses 4,096 Tiny Shakespeare
 test windows at context length 32 from a contiguous 80/10/10 split.
 
@@ -26,8 +26,11 @@ The wider pooling variant (`token_product_raw_gelu`) concatenates the sum of
 raw position–token–query products and the sum of their elementwise GELU
 transforms. It applies parameter-free normalization and a one-hidden-layer
 GELU readout to the concatenated vector. The run uses a 100,000-parameter
-ceiling per task. See the [wider pooling results](experiments/raw-gelu-all-50k/summary.txt)
-and [matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt).
+ceiling per task. At 50k it has the highest mean next-character accuracy,
+and the Transformer has the lowest mean perplexity and reaches 100% on all
+three retrieval tasks. Equal update counts do not imply equal compute.
+[Wider pooling results](experiments/raw-gelu-all-50k/summary.txt) ·
+[Matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt)
 
 The earlier [Adam 0.001 comparison](experiments/current64-50k/summary.txt)
 covers the same width-64 models and all four tasks through 50k updates. At
@@ -57,8 +60,9 @@ On an Intel Core Ultra 7 155H, token-product pooling ran 2.63–2.83× as fast
 as the sinusoidal Transformer for batch-one inference, 2.71–4.54× for
 batch-64 inference, and 2.68–8.35× for compiled batch-64 Adam updates across
 the four tasks. These are medians from seven alternating warmed JAX trials
-using seed-0 50k checkpoints and resident inputs. Timings exclude compilation,
-input generation, and transfers. Time to reach the same quality also depends
+using seed-0 50k checkpoints from the Adam 0.001 comparison and resident
+inputs. Timings exclude compilation, input generation, and transfers.
+Time to reach the same quality also depends
 on how many updates each model needs. See the
 [CPU benchmark](experiments/current64-50k/speed-summary.txt).
 
@@ -144,7 +148,7 @@ The experiments run on CPU with JAX JIT compilation. A GPU is not required.
 - `data/`: input datasets.
 - `paper/`: paper source and PDF.
 
-## Model
+## Reusable package model
 
 The original package default is learned position/token embeddings, elementwise product,
 sum over positions, parameter-free normalization, six GELU hidden layers, and
@@ -189,9 +193,11 @@ The [matched width-64 results](experiments/current64-lr0.0003-50k/summary.txt)
 cover all four tasks at 1k, 10k, 30k, and 50k updates across three seeds.
 
 `longer_training_100k.py --architecture transformer` uses sinusoidal positions
-and writes `longer-transformer-sinusoidal100k-*` artifacts. Add
-`--positions learned --lr 0.001` to reproduce historical learned-position runs.
-`depth_100k_test.py` writes new runs under `depth100k-sinusoidal-*`.
+and writes `longer-transformer-sinusoidal100k-lr0.0003-seed-*` artifacts by
+default. For historical learned-position training, use
+`--positions learned --lr 0.001` from `experiments/`, where the script can find
+its reference files. The standalone 10k `depth_100k_test.py` Transformer run
+uses Adam 0.001 and writes `depth100k-sinusoidal-transformer-seed-*` artifacts.
 
 ## Reproduce experiments
 
@@ -215,8 +221,9 @@ JAX_PLATFORMS=cpu python -m experiments.language_context_compare --output experi
 ```
 
 These commands write to the published experiment paths. Use another output
-path to keep a reproduction alongside the checked-in results. Run the
-following historical 10k commands from `experiments/`.
+path to keep a reproduction alongside the checked-in results. The following
+historical 10k commands also start at the repository root, then switch to
+`experiments/` to write artifacts there. Run them after the editable install.
 
 ```sh
 cd experiments
@@ -236,10 +243,9 @@ for seed in 0 1 2; do
   OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m experiments.longer_training_100k --architecture transformer --width 16 --budget 10000 --steps 10000 --lr 0.001 --seed "$seed" --output-prefix transformer-d16-10k
 done
 
-# Six-layer, approximately 100k-parameter pooling model, four tasks, one seed.
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python benchmark_100k.py --architecture ours --seed 0
-# Current two-block Transformer reference on the same tasks and data.
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python depth_100k_test.py --architecture transformer --seed 0
+# Six-layer pool and sinusoidal Transformer at Adam 0.001, four tasks, one seed.
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python -m experiments.benchmark_100k --architecture ours --seed 0
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=4 python -m experiments.depth_100k_test --architecture transformer --seed 0
 ```
 
 Repeat with seeds 1 and 2 for the reported three-seed protocol. These commands
@@ -274,7 +280,7 @@ Statements about weak associative recall or a paused paper describe those
 historical configurations and stages. The latest conditioned-pooling results
 and current paper are linked above.
 
-# Original language benchmark
+### Original language benchmark
 
 The original sigmoid baseline is implemented locally in `position_token_pooling/base.py`:
 
@@ -322,7 +328,7 @@ Runtime checks confirmed that reversing tokens changes the pooling model predict
 and that vectorized batch results equal independently evaluated examples.
 Standalone regression checks are in `tests/test_standalone.py`.
 
-## Results
+#### Results
 
 Means ± sample standard deviations across three seeds.
 
