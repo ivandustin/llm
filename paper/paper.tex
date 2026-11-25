@@ -334,8 +334,39 @@ Both variants attain near-perfect retrieval at 30k and 50k
 (Table~\ref{tab:precondition-norm}). The parameter-free multi-query model
 misses two of 49,152 answers at each of those checkpoints; the learned model
 misses none. Learned normalization has lower language perplexity at each
-checkpoint in this seed. These exploratory single-seed results do not establish
-a reliable ranking, including against the three-seed additive reference.
+checkpoint in this seed. This single-seed comparison does not establish a
+reliable ranking.
+
+We subsequently trained the learned-norm variant with seeds 1 and 2 under the
+same protocol. Table~\ref{tab:learned-norm-three-seed} reports all three seeds
+at each declared checkpoint; the parameter-free variant remains a seed-0
+comparison. At 50k the learned-norm model has 46.93\% mean character accuracy
+and 6.92 mean perplexity, compared with 46.63\% and 6.69 for the sinusoidal
+Transformer (Table~\ref{tab:trajectory}). The Transformer reaches 100\% on
+all retrieval tasks at 50k. Equal updates do not imply equal compute, and three
+seeds are insufficient to establish a reliable language accuracy ranking.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out results for width-256 learned pre-conditioning and pooled
+normalization. Mean \(\pm\) sample standard deviation across three seeds;
+accuracies are percentages.}
+\label{tab:learned-norm-three-seed}
+\begin{tabular}{lrrr}
+\toprule
+Metric & 10k & 30k & 50k\\
+\midrule
+Position copying & \(\sd{99.99}{0.00}\) & \(\sd{99.98}{0.01}\) & \(\sd{99.99}{0.01}\)\\
+Single-query recall & \(\sd{99.76}{0.17}\) & \(\sd{99.99}{0.02}\) & \(\sd{99.99}{0.01}\)\\
+Multi-query recall & \(\sd{99.98}{0.01}\) & \(\sd{100.00}{0.00}\) & \(\sd{100.00}{0.00}\)\\
+Next-character accuracy & \(\sd{41.14}{0.48}\) & \(\sd{45.63}{0.38}\) & \(\sd{46.93}{0.62}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.77}{0.09}\) & \(\sd{7.05}{0.13}\) & \(\sd{6.92}{0.13}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The learned-norm multi-query mean rounds to 100.00\% at both 30k and 50k;
+two and one answers were missed across the three seeds, respectively.
 
 \subsection{Position contribution ablation}
 We evaluate the three width-256 additive single-query checkpoints at 30k on 4,096 fresh generated memories (sample seed 2026112501). For each example, we subtract one position's raw contribution, GELU contribution, or both from the pool, then recompute normalization and the readout. We measure the decrease in the correct value's logit margin over the highest-scoring other class. Unmodified predictions agree with the model forward pass and achieve at least 99.95\% accuracy per seed.
@@ -479,14 +510,14 @@ python -m experiments.longer_training_100k \
 
 The pre-conditioning normalization results are in the directories
 \path{experiments/norm-query-d256-50k/} and
-\path{experiments/norm-query-learned-d256-50k/}, each in
-\path{seed-seed-0.json}. Reproduce either with seed 0, using the architecture
-label for the parameter-free or learned variant:
+\path{experiments/norm-query-learned-d256-50k/}. The parameter-free results
+use seed 0; learned-norm results use seeds 0--2. Reproduce with the appropriate
+architecture label and seed:
 \begin{verbatim}
 # ARCH: token_product_norm_query or token_product_norm_query_learned
 python -m experiments.longer_training_100k --architecture ARCH \
   --width 256 --budget 100000 --lr 0.0003 --steps 50000 \
-  --checkpoints 10000 30000 50000 --seed 0
+  --checkpoints 10000 30000 50000 --seed SEED
 \end{verbatim}
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
