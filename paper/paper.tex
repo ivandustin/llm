@@ -425,6 +425,38 @@ Other value & $-1.81$ & $-1.03$ & $-2.14$\\
 
 Removing the matching key or associated value sharply reduces the margin, whereas removing an unrelated value improves it on average (Table~\ref{tab:contribution-ablation}). Both branches contribute. Their effects need not add because normalization and the readout are nonlinear. These interventions create artificial internal states; they do not establish how a fixed position's contribution changes across swapped queries or prove a specific channel-level retrieval mechanism. The diagnostic is reproducible with \path{python -m experiments.probe_query_contributions}.
 
+\section{Comparison under a 25,000-parameter ceiling}
+We also tested one fixed configuration per architecture across all four tasks,
+using seed 0 and Adam at 0.0003 for 30,000 updates. Learned-normalization
+pooling uses embedding width 128 and a GELU readout hidden width of 40;
+the two-block sinusoidal Transformer uses width 32, four heads, and
+feed-forward width 76. Pooling has 23,944 retrieval and 20,753 language
+parameters, while the Transformer has 24,952 and 22,937, respectively.
+The counts differ because the architectures and task vocabularies differ.
+
+\begin{table}[ht]
+\centering
+\caption{Held-out results at 30,000 updates under a 25,000-parameter ceiling, seed 0. Accuracies are percentages.}
+\label{tab:25k-comparison}
+\begin{tabular}{lrr}
+\toprule
+Metric & Learned-norm pooling & Transformer\\
+\midrule
+Position copying & 100.00 & 100.00\\
+Single-query recall & 98.16 & 100.00\\
+Multi-query recall & 98.71 & 100.00\\
+Next-character accuracy & 41.21 & 41.70\\
+Language perplexity $\downarrow$ & 7.90 & 7.74\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Transformer performs better on both recall tasks and on language in this
+single run (Table~\ref{tab:25k-comparison}). The parameter counts are not
+identical, especially for language, and equal update counts do not imply equal
+compute. This one-seed, one-configuration comparison does not establish a
+general ranking at this budget.
+
 \section{Short-budget language comparison across context lengths}
 We compare width-64 raw pooling, width-128 raw-plus-GELU pooling, and the sinusoidal Transformer on Tiny Shakespeare at context lengths 32 and 128. All configurations use the same training target positions within each seed and the same 4,096 validation and test targets across context lengths within each split. Each configuration receives 3,000 batch-64 Adam updates for each of seeds 0--2. A separate validation sweep with seed 3 compares learning rates 0.0003 and 0.001 at 1,000 updates and selects 0.001 for all six configurations. The wider pooling model's hidden width decreases from 271 to 233 to keep it within 100,000 parameters as its position table grows.
 
@@ -502,7 +534,7 @@ Table~\ref{tab:raw-training-speed} gives a 2.68--8.35$\times$ per-update speedup
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses contexts of 32 or 128 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
-We compare against one Transformer configuration. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
+We compare against one Transformer configuration at each of the 100,000- and 25,000-parameter ceilings. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
 
 Three seeds provide a modest view of training variation. Shared evaluation samples, overlapping language windows, and a single language split limit statistical generalization. Rounded values of $100.00\%$ need not imply zero errors, and sample standard deviations are not significance tests. Prior exploratory architecture selection also means that a fixed final checkpoint does not make the whole research process a preregistered comparison.
 
@@ -561,6 +593,17 @@ The 10k raw and learned-norm additive screen results are in
 \path{experiments/norm-query-learned-add-d256-10k/}, respectively. Reproduce
 with the preceding command, seed 0, 10,000 steps and architecture
 \texttt{token\_product} or \texttt{token\_product\_norm\_query\_learned\_add}.
+
+The 25k comparison results are in \path{experiments/fixed-25k/}. Reproduce the
+two seed-0 runs with:
+\begin{verbatim}
+python -m experiments.longer_training_100k \
+  --architecture token_product_norm_query_learned --width 128 \
+  --fixed-hidden 40 --steps 30000 --checkpoints 1000 10000 30000 --seed 0
+python -m experiments.longer_training_100k \
+  --architecture transformer --width 32 --fixed-hidden 76 \
+  --steps 30000 --checkpoints 1000 10000 30000 --seed 0
+\end{verbatim}
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
 

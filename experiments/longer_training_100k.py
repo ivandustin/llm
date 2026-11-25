@@ -77,6 +77,7 @@ def main():
     parser.add_argument('--checkpoints',type=int,nargs='+',help='Evaluation milestones, in multiples of 1000; final step is always included')
     parser.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
     parser.add_argument('--width',type=int,default=64,help='Token-product or Transformer embedding width')
+    parser.add_argument('--fixed-hidden',type=int,help='Use the same hidden width for every task')
     parser.add_argument('--hidden-layers',type=int,choices=range(1,9),default=1,
                         help='Number of token-product FFN hidden layers')
     parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
@@ -86,6 +87,8 @@ def main():
         parser.error('learning rate must be finite and positive')
     if args.width < 1 or (args.budget is not None and args.budget < 1):
         parser.error('width and budget must be positive')
+    if args.fixed_hidden is not None and (args.fixed_hidden < 1 or args.budget is not None):
+        parser.error('fixed hidden width must be positive and cannot be combined with budget')
     if (args.width != 64 or args.budget is not None) and not (args.architecture.startswith('token_product') or args.architecture=='transformer'):
         parser.error('custom width/budget require token-product or transformer')
     if args.hidden_layers != 1 and not args.architecture.startswith('token_product'):
@@ -161,6 +164,7 @@ def main():
         config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; ' + ('normalize then sigmoid MLP' if sigmoid_norm else 'sigmoid MLP, no normalization' if sigmoid else 'GELU MLP, no normalization' if gelu_no_norm else 'normalize then GELU MLP')
     hidden_by_task={task:576 for task in TASKS}
     if token_product:
+        if args.fixed_hidden is not None: hidden_by_task={task:args.fixed_hidden for task in TASKS}
         variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or combined_pool or gelu_pool or args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned', 'token_product_norm_query_learned_add') else 'token_product'
         if args.budget is not None:
             pooled_width=2*args.width if concatenated else args.width
@@ -179,7 +183,7 @@ def main():
         if args.hidden_layers!=1:
             prefix=f'{prefix}-n{args.hidden_layers}'
     if transformer:
-        hidden_by_task={task:200 for task in TASKS}
+        hidden_by_task={task:args.fixed_hidden or 200 for task in TASKS}
         if args.budget is not None:
             for task in TASKS:
                 base=count(TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=1))
