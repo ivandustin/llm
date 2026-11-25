@@ -1,0 +1,189 @@
+{
+  "config": {
+    "architecture": "transformer",
+    "seed": 1,
+    "steps": 10000,
+    "checkpoints": [
+      10000
+    ],
+    "batch": 64,
+    "lr": 0.0003,
+    "optimizer": "Adam beta1=.9 beta2=.999 epsilon1e-8; no schedule/weight decay",
+    "width": 256,
+    "hidden": {
+      "position": 536,
+      "single": 536,
+      "multi": 536,
+      "language": 536
+    },
+    "hidden_layers": 1,
+    "blocks": 1,
+    "residual": true,
+    "final_norm": true,
+    "positions": "sinusoidal",
+    "pooled_norm": "not applicable",
+    "activation": "GELU",
+    "parameters": {
+      "query": 589176,
+      "language": 573273
+    },
+    "tasks": [
+      "position",
+      "single",
+      "multi",
+      "language"
+    ],
+    "training": "compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state",
+    "evaluation": "same fixed samples as original100k runs; predeclared update counts, no best-step selection",
+    "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+    "baseline": null,
+    "heads": 4,
+    "parameter_budget": null
+  },
+  "runs": [
+    {
+      "task": "position",
+      "seed": 1,
+      "parameters": 589176,
+      "history": [
+        {
+          "loss": 4.4162850826978683e-05,
+          "accuracy": 1.0,
+          "step": 5000,
+          "last_train_loss": 6.3285231590271e-05
+        },
+        {
+          "loss": 3.850320354104042e-06,
+          "accuracy": 1.0,
+          "step": 10000,
+          "last_train_loss": 4.276633262634277e-06
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 3.806839231401682e-06,
+            "accuracy": 1.0,
+            "perplexity": 1.0000038068464774
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 3.806839231401682e-06,
+        "accuracy": 1.0,
+        "perplexity": 1.0000038068464774
+      }
+    },
+    {
+      "task": "single",
+      "seed": 1,
+      "parameters": 589176,
+      "history": [
+        {
+          "loss": 1.5058143585920334,
+          "accuracy": 0.29248046875,
+          "step": 5000,
+          "last_train_loss": 1.4480409622192383
+        },
+        {
+          "loss": 1.4853216595947742,
+          "accuracy": 0.283447265625,
+          "step": 10000,
+          "last_train_loss": 1.4422736167907715
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.4799773376435041,
+            "accuracy": 0.29461669921875,
+            "perplexity": 4.39284612754573
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.4799773376435041,
+        "accuracy": 0.29461669921875,
+        "perplexity": 4.39284612754573
+      }
+    },
+    {
+      "task": "multi",
+      "seed": 1,
+      "parameters": 589176,
+      "history": [
+        {
+          "loss": 1.4632252641022205,
+          "accuracy": 0.3068033941090107,
+          "step": 5000,
+          "last_train_loss": 1.4753267765045166
+        },
+        {
+          "loss": 1.4601403325796127,
+          "accuracy": 0.30737305618822575,
+          "step": 10000,
+          "last_train_loss": 1.471736192703247
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 1.4601349858567119,
+            "accuracy": 0.30548096681013703,
+            "perplexity": 4.306540811212707
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 1.4601349858567119,
+        "accuracy": 0.30548096681013703,
+        "perplexity": 4.306540811212707
+      }
+    },
+    {
+      "task": "language",
+      "seed": 1,
+      "parameters": 573273,
+      "history": [
+        {
+          "loss": 2.1209293380379677,
+          "accuracy": 0.37353515625,
+          "step": 5000,
+          "last_train_loss": 2.1128005981445312
+        },
+        {
+          "loss": 1.9166356176137924,
+          "accuracy": 0.4306640625,
+          "step": 10000,
+          "last_train_loss": 1.9830245971679688
+        }
+      ],
+      "checkpoints": [
+        {
+          "step": 10000,
+          "final": {
+            "loss": 2.021562959998846,
+            "accuracy": 0.4150390625,
+            "perplexity": 7.550116246266145
+          }
+        }
+      ],
+      "complete": true,
+      "updates_completed": 10000,
+      "final": {
+        "loss": 2.021562959998846,
+        "accuracy": 0.4150390625,
+        "perplexity": 7.550116246266145
+      }
+    }
+  ]
+}

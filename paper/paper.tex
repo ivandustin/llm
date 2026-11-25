@@ -402,6 +402,50 @@ perplexity (Table~\ref{tab:one-block-comparison}). The Transformers also
 differ in feed-forward width, so this comparison does not isolate depth or
 establish a capacity limit; equal updates do not imply equal compute.
 
+\subsection{Matching representation width}
+We additionally compare all three models at width 256 for 10k updates, with
+the same optimizer, data streams, evaluation sets, and three seeds. The
+Transformers retain four heads, sinusoidal positions, and feed-forward widths
+536 and 200 in the one- and two-block configurations, respectively. These
+choices preserve the preceding Transformer feed-forward widths, but increase
+the parameter counts substantially: pooling has 99,686 retrieval and 99,981
+language parameters; the one-block Transformer has 589,176 and 573,273; and
+the two-block Transformer has 783,856 and 767,953.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Width-256 comparison at 10k updates. Mean \(\pm\) sample standard
+deviation across three seeds; accuracies are percentages. Transformer parameter
+counts exceed the 100,000-parameter ceiling.}
+\label{tab:same-width-comparison}
+\begin{tabular}{lrrr}
+\toprule
+Metric & Learned norm & One-block TF & Two-block TF\\
+\midrule
+Position copying & \(\sd{99.99}{0.00}\) & \(\sd{100.00}{0.00}\) & \(\sd{100.00}{0.00}\)\\
+Single-query recall & \(\sd{99.76}{0.17}\) & \(\sd{29.31}{0.59}\) & \(\sd{28.23}{0.38}\)\\
+Multi-query recall & \(\sd{99.98}{0.01}\) & \(\sd{31.88}{2.31}\) & \(\sd{78.18}{37.79}\)\\
+Next-character accuracy & \(\sd{41.14}{0.48}\) & \(\sd{41.14}{0.32}\) & \(\sd{39.75}{1.26}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.77}{0.09}\) & \(\sd{7.56}{0.08}\) & \(\sd{7.70}{0.34}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pooling uses channel-wise products and can retain width 256 within this budget;
+standard attention includes four dense width-by-width projections per block,
+whose weights alone total 262,144 at width 256. Even a one-block Transformer
+with feed-forward width one would exceed 100,000 parameters in these tasks.
+Thus matching both representation width and the parameter ceiling is not
+possible for this standard Transformer configuration.
+
+In Table~\ref{tab:same-width-comparison}, pooling achieves higher mean recall,
+while the one-block Transformer has lower mean language perplexity. The
+two-block multi-query results vary substantially: two seeds reach 100\% and
+one reaches 34.55\%. These are fixed-learning-rate, short-budget results;
+the wider Transformer's optimization may require different settings. The
+comparison neither isolates representation width nor establishes a capacity
+limit or general efficiency advantage.
+
 \subsection{Combining pre-conditioning normalization and additive pooling}
 We test whether adding the GELU sum to the learned-norm model improves the
 result. With \(x_i=\operatorname{Norm}_{\mathrm{in}}(p_i\odot t_i)\odot
@@ -572,7 +616,7 @@ Table~\ref{tab:raw-training-speed} gives a 2.68--8.35$\times$ per-update speedup
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses contexts of 32 or 128 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
-We compare against one- and two-block Transformer configurations at the 100,000-parameter ceiling and one configuration at 25,000 parameters. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
+We compare against one- and two-block Transformer configurations at the 100,000-parameter ceiling and one configuration at 25,000 parameters. The width-matched Transformer configurations exceed the 100,000-parameter ceiling. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
 
 Three seeds provide a modest view of training variation. Shared evaluation samples, overlapping language windows, and a single language split limit statistical generalization. Rounded values of $100.00\%$ need not imply zero errors, and sample standard deviations are not significance tests. Prior exploratory architecture selection also means that a fixed final checkpoint does not make the whole research process a preregistered comparison.
 
@@ -639,6 +683,16 @@ The one-block comparison results and summary are in
 python -m experiments.longer_training_100k --architecture transformer \
   --transformer-blocks 1 --width 64 --fixed-hidden 536 --lr 0.0003 \
   --steps 10000 --seed SEED
+\end{verbatim}
+
+The width-256 comparison results and summary are in
+\path{experiments/same-width-256-10k/}. Reproduce each Transformer run with
+\texttt{SEED} set to 0, 1, and 2, using \texttt{BLOCKS} and \texttt{HIDDEN}
+as either 1 and 536 or 2 and 200, respectively:
+\begin{verbatim}
+python -m experiments.longer_training_100k --architecture transformer \
+  --transformer-blocks BLOCKS --width 256 --fixed-hidden HIDDEN \
+  --lr 0.0003 --steps 10000 --seed SEED
 \end{verbatim}
 
 The 25k comparison results are in \path{experiments/fixed-25k/}. Reproduce the

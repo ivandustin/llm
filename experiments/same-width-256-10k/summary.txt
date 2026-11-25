@@ -1,0 +1,22 @@
+10,000 updates; three seeds; mean +/- sample standard deviation.
+Adam 0.0003, batch 64; held-out retrieval 16,384 sequences; language 4,096 windows.
+All models width 256; Transformers four heads, sinusoidal positions.
+Existing pooling runs reused at their 10k checkpoints.
+
+Learned-norm pooling:
+  position: 99.99% +/- 0.00
+  single: 99.76% +/- 0.17
+  multi: 99.98% +/- 0.01
+  language: 41.14% +/- 0.48, perplexity 7.77 +/- 0.09
+
+One-block Transformer:
+  position: 100.00% +/- 0.00
+  single: 29.31% +/- 0.59
+  multi: 31.88% +/- 2.31
+  language: 41.14% +/- 0.32, perplexity 7.56 +/- 0.08
+
+Two-block Transformer:
+  position: 100.00% +/- 0.00
+  single: 28.23% +/- 0.38
+  multi: 78.18% +/- 37.79
+  language: 39.75% +/- 1.26, perplexity 7.70 +/- 0.34

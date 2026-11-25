@@ -37,13 +37,14 @@ def transformer_outputs(model,tokens,task):
  positions=jnp.array([10] if task=='single' else [10,12,14] if task=='multi' else [length-1])
  x=model.token(tokens)+model.position(jnp.arange(length))
  block=model.blocks[0]
- qkv=block.qkv(block.n1(x)).reshape(batch,length,3,4,16)
+ width=model.token.embedding.shape[-1];head_width=width//4
+ qkv=block.qkv(block.n1(x)).reshape(batch,length,3,4,head_width)
  q=jnp.take(qkv[:,:,0],positions,axis=1).transpose(0,2,1,3)
  k=qkv[:,:,1].transpose(0,2,1,3);v=qkv[:,:,2].transpose(0,2,1,3)
- scores=(q@k.swapaxes(-1,-2))/4.
+ scores=(q@k.swapaxes(-1,-2))/jnp.sqrt(float(head_width))
  mask=jnp.arange(length)[None,:]<=positions[:,None]
  weights=jax.nn.softmax(jnp.where(mask,scores,-1e9),axis=-1)
- attended=(weights@v).transpose(0,2,1,3).reshape(batch,len(positions),64)
+ attended=(weights@v).transpose(0,2,1,3).reshape(batch,len(positions),width)
  h=jnp.take(x,positions,axis=1)+block.proj(attended)
  h=h+block.down(jax.nn.gelu(block.up(block.n2(h))))
  logits=model.head(model.norm(h))

@@ -49,8 +49,6 @@ TASKS=['position','single','multi','language']
 
 class OneBlockTransformer(nnx.Module):
     def __init__(self, task, seed, architecture, positions='sinusoidal', width=64, ff_hidden=536):
-        if width != 64:
-            raise ValueError('one-block output implementation requires width 64')
         self.task = task
         self.base = ProbeTransformer(65 if task == 'language' else 96,
                                      32 if task == 'language' else 16, width,
@@ -103,8 +101,8 @@ def main():
     args=parser.parse_args()
     global TransformerModel
     if args.transformer_blocks == 1:
-        if args.architecture != 'transformer' or args.width != 64:
-            parser.error('one-block Transformer requires architecture transformer and width 64')
+        if args.architecture != 'transformer':
+            parser.error('one-block Transformer requires architecture transformer')
         TransformerModel = OneBlockTransformer
     if not np.isfinite(args.lr) or args.lr <= 0:
         parser.error('learning rate must be finite and positive')
