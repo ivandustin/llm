@@ -294,6 +294,27 @@ has the highest three-seed mean next-character accuracy at 50k
 (Table~\ref{tab:wide-pooling-long}). The checkpoints differ in update count,
 so they leave the language ranking open.
 
+\subsection{Position contribution ablation}
+We evaluate the three width-256 additive single-query checkpoints at 30k on 4,096 fresh generated memories (sample seed 2026112501). For each example, we subtract one position's raw contribution, GELU contribution, or both from the pool, then recompute normalization and the readout. We measure the decrease in the correct value's logit margin over the highest-scoring other class. Unmodified predictions agree with the model forward pass and achieve at least 99.95\% accuracy per seed.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Mean decrease in correct-answer logit margin after removing one position contribution, averaged across examples and three seeds. Negative values indicate that removal improves the margin. Other positions are averaged over the four unrelated pairs.}
+\label{tab:contribution-ablation}
+\begin{tabular}{lrrr}
+\toprule
+Position & Raw & GELU & Both\\
+\midrule
+Matching key & 15.1 & 7.2 & 21.1\\
+Associated value & 22.7 & 8.2 & 38.9\\
+Other key & $-0.24$ & $-0.17$ & $-0.19$\\
+Other value & $-1.81$ & $-1.03$ & $-2.14$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Removing the matching key or associated value sharply reduces the margin, whereas removing an unrelated value improves it on average (Table~\ref{tab:contribution-ablation}). Both branches contribute. Their effects need not add because normalization and the readout are nonlinear. These interventions create artificial internal states; they do not establish how a fixed position's contribution changes across swapped queries or prove a specific channel-level retrieval mechanism. The diagnostic is reproducible with \path{python -m experiments.probe_query_contributions}.
+
 \section{Short-budget language comparison across context lengths}
 We compare width-64 raw pooling, width-128 raw-plus-GELU pooling, and the sinusoidal Transformer on Tiny Shakespeare at context lengths 32 and 128. All configurations use the same training target positions within each seed and the same 4,096 validation and test targets across context lengths within each split. Each configuration receives 3,000 batch-64 Adam updates for each of seeds 0--2. A separate validation sweep with seed 3 compares learning rates 0.0003 and 0.001 at 1,000 updates and selects 0.001 for all six configurations. The wider pooling model's hidden width decreases from 271 to 233 to keep it within 100,000 parameters as its position table grows.
 
