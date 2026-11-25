@@ -7,6 +7,10 @@ new experiments are available.
 
 ## Current pooling references
 
+- **Simple all-around candidate at 50k:** Width-256 learned-normalization
+  pooling (`token_product_norm_query_learned`) has near-perfect retrieval and
+  46.93% ± 0.62 language accuracy with perplexity 6.92 ± 0.13 across three
+  seeds. See [the model and results](#learned-normalization-pooling).
 - **Retrieval at 30k:** Width-256 additive raw + GELU
   (`token_product_raw_gelu_add`) has our strongest overall pooling results
   across the three retrieval tasks at this checkpoint. See
@@ -17,6 +21,46 @@ new experiments are available.
   Additive width 256 reaches 46.29% ± 0.51 with perplexity 6.98 ± 0.14
   at 30k. The unequal update counts leave the language ranking open.
   [Concatenated results](experiments/raw-gelu-all-50k/summary.txt)
+
+## Learned-normalization pooling
+
+`token_product_norm_query_learned` normalizes each position–token product,
+multiplies it by the final-token embedding, sums over earlier positions, and
+normalizes the result before the GELU readout:
+
+```text
+pooled = norm(sum(norm(position[i] * token[i]) * token[last] for i < last))
+logits = Linear(GELU(Linear(pooled)))
+```
+
+Both normalizations operate across channels with epsilon 1e-5 and learned
+per-channel scales and biases (1,024 parameters total at width 256). The final
+token conditions the sum and is excluded from it. Compared with additive raw
++ GELU pooling, the pooling rule uses one sum and no GELU branch; it applies
+two learned normalizations instead of one parameter-free pooled normalization.
+Both models retain a GELU hidden readout. With the 100,000-parameter ceiling,
+the learned-norm model uses hidden widths 198 for retrieval and 230 for
+language, with 99,686 and 99,981 parameters respectively.
+
+With Adam 0.0003, batch size 64, and seeds 0–2, held-out results are:
+
+| Metric | 30k updates | 50k updates |
+|---|---:|---:|
+| Position copying accuracy | 99.98% ± 0.01 | 99.99% ± 0.01 |
+| Single-query recall accuracy | 99.99% ± 0.02 | 99.99% ± 0.01 |
+| Multi-query recall accuracy | 100.00% ± 0.00 | 100.00% ± 0.00 |
+| Next-character accuracy | 45.63% ± 0.38 | 46.93% ± 0.62 |
+| Language perplexity ↓ | 7.05 ± 0.13 | 6.92 ± 0.13 |
+
+The rounded multi-query scores conceal two missed answers at 30k and one at
+50k across all three seeds. At the matched 30k checkpoint, additive pooling has
+better mean language accuracy and perplexity; it has not been evaluated across
+three seeds at 50k. At 50k the width-128 concatenated model has slightly higher
+mean language accuracy (47.00%), while learned norm has lower mean perplexity.
+These small three-seed comparisons do not establish a definitive ranking. No
+speed comparison has been measured for the learned-norm model. Results and
+checkpoints are under `experiments/norm-query-learned-d256-50k/`; the three
+result files are `seed-seed-{0,1,2}.json`.
 
 ## Width-64 token-product baseline
 
