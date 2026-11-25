@@ -81,6 +81,11 @@ class TokenInteraction(nnx.Module):
             self.base.fn.a = nnx.Linear(2 * width, hidden, rngs=nnx.Rngs(seed + 100000))
         if variant == 'global_query':
             self.query = nnx.Param(jnp.ones(width))
+        if variant == 'token_product_norm_query_learned':
+            self.memory_scale = nnx.Param(jnp.ones(width))
+            self.memory_bias = nnx.Param(jnp.zeros(width))
+            self.pool_scale = nnx.Param(jnp.ones(width))
+            self.pool_bias = nnx.Param(jnp.zeros(width))
 
     def __call__(self, tokens):
         positions = jnp.broadcast_to(jnp.arange(tokens.shape[-1]), tokens.shape)
@@ -91,6 +96,14 @@ class TokenInteraction(nnx.Module):
                 memory = memory * self.query[...]
             elif self.variant == 'token_position_product':
                 memory = memory * (e[0, -1] * e[1, -1])
+            elif self.variant in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned'):
+                memory = (memory - memory.mean(axis=-1, keepdims=True)) / jnp.sqrt(
+                    memory.var(axis=-1, keepdims=True) + 1e-5
+                )
+                if self.variant == 'token_product_norm_query_learned':
+                    memory = memory * self.memory_scale[...] + self.memory_bias[...]
+                query = jax.nn.softmax(e[1, -1], axis=-1) if self.variant == 'token_product_norm_softmax' else e[1, -1]
+                memory = memory * query
             elif self.variant not in ('previous_pool', 'token_product_last_concat'):
                 memory = memory * e[1, -1]
             if self.variant == 'token_product_gelu':
@@ -114,6 +127,8 @@ class TokenInteraction(nnx.Module):
                 pooled = jnp.concatenate([pooled, 0.5 * pooled])
             if self.pooled_norm:
                 pooled = (pooled - pooled.mean()) / jnp.sqrt(pooled.var() + 1e-5)
+                if self.variant == 'token_product_norm_query_learned':
+                    pooled = pooled * self.pool_scale[...] + self.pool_bias[...]
             activate = jax.nn.gelu if self.activation == 'gelu' else jax.nn.sigmoid
             h = activate(self.base.fn.a(pooled))
             if hasattr(self.base, 'extra'):

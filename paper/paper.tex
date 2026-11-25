@@ -294,6 +294,49 @@ has the highest three-seed mean next-character accuracy at 50k
 (Table~\ref{tab:wide-pooling-long}). The checkpoints differ in update count,
 so they leave the language ranking open.
 
+\subsection{Normalizing position--token products before conditioning}
+We also test a width-256 alternative that normalizes each position--token
+product before multiplying by the final-token embedding:
+\[
+ m=\operatorname{Norm}_{\mathrm{out}}\!\left(
+ \sum_{i<\mathrm{last}}\operatorname{Norm}_{\mathrm{in}}(p_i\odot t_i)
+ \odot t_{\mathrm{last}}\right).
+\]
+Both normalizations operate across channels with epsilon \(10^{-5}\); the
+same one-hidden-layer GELU readout follows. We compare parameter-free norms
+with learned per-channel scales and biases at both sites. The latter add 1,024
+parameters, initialized to unit scales and zero biases. Under the 100,000
+parameter ceiling, the learned variant uses hidden widths 198 and 230 for
+retrieval and language (99,686 and 99,981 parameters), versus 201 and 233
+(99,721 and 99,923 parameters) for the parameter-free variant. Thus this is
+a budget-matched comparison of complete models, not an isolated norm ablation.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out results for pre-conditioning normalization at width 256.
+Seed 0 only; Adam 0.0003, batch size 64. Accuracies are percentages.}
+\label{tab:precondition-norm}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{10k} & \multicolumn{2}{c}{30k} & \multicolumn{2}{c}{50k}\\
+Metric & Free & Learned & Free & Learned & Free & Learned\\
+\midrule
+Position copying & 100.00 & 99.99 & 100.00 & 100.00 & 99.99 & 99.98\\
+Single-query recall & 99.49 & 99.57 & 100.00 & 100.00 & 100.00 & 100.00\\
+Multi-query recall & 99.97 & 99.98 & 100.00 & 100.00 & 100.00 & 100.00\\
+Next-character accuracy & 41.06 & 41.21 & 44.80 & 45.21 & 46.31 & 47.31\\
+Language perplexity \(\downarrow\) & 8.06 & 7.69 & 7.10 & 7.00 & 7.18 & 6.95\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both variants attain near-perfect retrieval at 30k and 50k
+(Table~\ref{tab:precondition-norm}). The parameter-free multi-query model
+misses two of 49,152 answers at each of those checkpoints; the learned model
+misses none. Learned normalization has lower language perplexity at each
+checkpoint in this seed. These exploratory single-seed results do not establish
+a reliable ranking, including against the three-seed additive reference.
+
 \subsection{Position contribution ablation}
 We evaluate the three width-256 additive single-query checkpoints at 30k on 4,096 fresh generated memories (sample seed 2026112501). For each example, we subtract one position's raw contribution, GELU contribution, or both from the pool, then recompute normalization and the readout. We measure the decrease in the correct value's logit margin over the highest-scoring other class. Unmodified predictions agree with the model forward pass and achieve at least 99.95\% accuracy per seed.
 
@@ -432,6 +475,18 @@ To reproduce the width-256 additive results, set \texttt{SEED} to 0, 1, and 2:
 python -m experiments.longer_training_100k \
   --architecture token_product_raw_gelu_add --width 256 --budget 100000 \
   --lr 0.0003 --steps 30000 --checkpoints 10000 30000 --seed SEED
+\end{verbatim}
+
+The pre-conditioning normalization results are in the directories
+\path{experiments/norm-query-d256-50k/} and
+\path{experiments/norm-query-learned-d256-50k/}, each in
+\path{seed-seed-0.json}. Reproduce either with seed 0, using the architecture
+label for the parameter-free or learned variant:
+\begin{verbatim}
+# ARCH: token_product_norm_query or token_product_norm_query_learned
+python -m experiments.longer_training_100k --architecture ARCH \
+  --width 256 --budget 100000 --lr 0.0003 --steps 50000 \
+  --checkpoints 10000 30000 50000 --seed 0
 \end{verbatim}
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
