@@ -368,6 +368,40 @@ Language perplexity \(\downarrow\) & \(\sd{7.77}{0.09}\) & \(\sd{7.05}{0.13}\) &
 The learned-norm multi-query mean rounds to 100.00\% at both 30k and 50k;
 two and one answers were missed across the three seeds, respectively.
 
+\subsection{One-block Transformer comparison}
+We also compare learned-norm pooling with a one-block sinusoidal Transformer
+at 10k updates. Both Transformers have width 64 and four heads; the one-block
+model uses a feed-forward width of 536 and the two-block reference uses 200
+per block. The one-block model has 98,616 parameters for retrieval and 94,617
+for language, compared with 98,032 and 94,033 for the two-block model. The
+width-256 pooling model has 99,686 and 99,981 parameters, respectively.
+All use the same training and evaluation protocol and seeds; the pooling and
+two-block results reuse the existing 10k checkpoints.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Held-out comparison at 10k updates. Mean \(\pm\) sample standard
+deviation across three seeds; accuracies are percentages.}
+\label{tab:one-block-comparison}
+\begin{tabular}{lrrr}
+\toprule
+Metric & Learned norm & One-block TF & Two-block TF\\
+\midrule
+Position copying & \(\sd{99.99}{0.00}\) & \(\sd{100.00}{0.00}\) & \(\sd{100.00}{0.00}\)\\
+Single-query recall & \(\sd{99.76}{0.17}\) & \(\sd{29.52}{0.29}\) & \(\sd{100.00}{0.00}\)\\
+Multi-query recall & \(\sd{99.98}{0.01}\) & \(\sd{32.20}{1.36}\) & \(\sd{100.00}{0.00}\)\\
+Next-character accuracy & \(\sd{41.14}{0.48}\) & \(\sd{41.29}{0.77}\) & \(\sd{41.65}{0.59}\)\\
+Language perplexity \(\downarrow\) & \(\sd{7.77}{0.09}\) & \(\sd{7.51}{0.06}\) & \(\sd{7.41}{0.04}\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The one-block Transformer performs substantially worse on both recall tasks
+in this setting, while the two-block model has the lowest mean language
+perplexity (Table~\ref{tab:one-block-comparison}). The Transformers also
+differ in feed-forward width, so this comparison does not isolate depth or
+establish a capacity limit; equal updates do not imply equal compute.
+
 \subsection{Combining pre-conditioning normalization and additive pooling}
 We test whether adding the GELU sum to the learned-norm model improves the
 result. With \(x_i=\operatorname{Norm}_{\mathrm{in}}(p_i\odot t_i)\odot
@@ -538,7 +572,7 @@ Table~\ref{tab:raw-training-speed} gives a 2.68--8.35$\times$ per-update speedup
 \section{Limitations and next experiments}
 The most direct limitation is scale. Retrieval uses five stored pairs and contexts no longer than 16 tokens; language uses contexts of 32 or 128 characters from one small corpus. We do not measure generalization to more pairs, unseen positions, new vocabularies, or substantially longer contexts. A fixed-width pool can suffer interference, and learned absolute positions do not supply a tested length-generalization mechanism.
 
-We compare against one Transformer configuration at each of the 100,000- and 25,000-parameter ceilings. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
+We compare against one- and two-block Transformer configurations at the 100,000-parameter ceiling and one configuration at 25,000 parameters. The short-budget screen tests two learning rates. Broader hyperparameter searches and comparisons at equal compute remain open.
 
 Three seeds provide a modest view of training variation. Shared evaluation samples, overlapping language windows, and a single language split limit statistical generalization. Rounded values of $100.00\%$ need not imply zero errors, and sample standard deviations are not significance tests. Prior exploratory architecture selection also means that a fixed final checkpoint does not make the whole research process a preregistered comparison.
 
@@ -597,6 +631,15 @@ The 10k raw and learned-norm additive screen results are in
 \path{experiments/norm-query-learned-add-d256-10k/}, respectively. Reproduce
 with the preceding command, seed 0, 10,000 steps and architecture
 \texttt{token\_product} or \texttt{token\_product\_norm\_query\_learned\_add}.
+
+The one-block comparison results and summary are in
+\path{experiments/one-block-current-10k/}. Reproduce each one-block run with
+\texttt{SEED} set to 0, 1, and 2:
+\begin{verbatim}
+python -m experiments.longer_training_100k --architecture transformer \
+  --transformer-blocks 1 --width 64 --fixed-hidden 536 --lr 0.0003 \
+  --steps 10000 --seed SEED
+\end{verbatim}
 
 The 25k comparison results are in \path{experiments/fixed-25k/}. Reproduce the
 two configurations with \texttt{SEED} set to 0, 1, and 2:

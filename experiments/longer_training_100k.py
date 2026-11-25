@@ -14,6 +14,9 @@ from experiments.benchmark_100k import Model as DeepModel
 from experiments.parallel_mixture_100k import Model as ShallowModel
 from experiments.sigmoid_no_norm import Model as SigmoidModel
 from experiments.depth_100k_test import Model as TransformerModel
+from experiments.capabilities import ProbeTransformer
+from experiments.positional_encoding import SinusoidalPositions
+from experiments.benchmark_100k import transformer_outputs
 from experiments.capabilities import generate
 from experiments.mqar_test import generate as associative
 from experiments.language_depth_test import evaluate
@@ -44,6 +47,20 @@ class TokenProductModel(nnx.Module):
 
 TASKS=['position','single','multi','language']
 
+class OneBlockTransformer(nnx.Module):
+    def __init__(self, task, seed, architecture, positions='sinusoidal', width=64, ff_hidden=536):
+        if width != 64:
+            raise ValueError('one-block output implementation requires width 64')
+        self.task = task
+        self.base = ProbeTransformer(65 if task == 'language' else 96,
+                                     32 if task == 'language' else 16, width,
+                                     nnx.Rngs(seed), depth=1, ff_hidden=ff_hidden)
+        if positions == 'sinusoidal':
+            self.base.position = SinusoidalPositions(width)
+
+    def __call__(self, x):
+        return transformer_outputs(self.base, x, self.task)
+
 def training_batch(task,rng,train):
     if task=='language':return batch(train,rng.integers(0,len(train)-32,size=64),32)
     if task=='position':return generate('indexed_copy',16,64,rng)[:2]
@@ -71,6 +88,7 @@ def main():
     parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid','token_product_last_concat','token_product_norm_softmax','token_product_norm_query','token_product_norm_query_learned','token_product_norm_query_learned_add'],default='deep')
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
+    parser.add_argument('--transformer-blocks', type=int, choices=[1, 2], default=2)
     parser.add_argument('--steps',type=int,default=50000)
     parser.add_argument('--lr',type=float,default=.0003)
     parser.add_argument('--chunk',type=int,default=1000)
@@ -83,6 +101,11 @@ def main():
     parser.add_argument('--budget',type=int,help='Per-task parameter ceiling; chooses hidden width')
     parser.add_argument('--output-prefix',help='Output path prefix, excluding seed suffix')
     args=parser.parse_args()
+    global TransformerModel
+    if args.transformer_blocks == 1:
+        if args.architecture != 'transformer' or args.width != 64:
+            parser.error('one-block Transformer requires architecture transformer and width 64')
+        TransformerModel = OneBlockTransformer
     if not np.isfinite(args.lr) or args.lr <= 0:
         parser.error('learning rate must be finite and positive')
     if args.width < 1 or (args.budget is not None and args.budget < 1):
@@ -128,6 +151,7 @@ def main():
     if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     if transformer and args.positions=='sinusoidal':baseline=None
+    if transformer and args.transformer_blocks == 1:baseline=None
     if args.lr != .001:
         prefix=f'{prefix}-lr{args.lr}'
         baseline=None
@@ -183,11 +207,12 @@ def main():
         if args.hidden_layers!=1:
             prefix=f'{prefix}-n{args.hidden_layers}'
     if transformer:
+        config['blocks'] = args.transformer_blocks
         hidden_by_task={task:args.fixed_hidden or 200 for task in TASKS}
         if args.budget is not None:
             for task in TASKS:
                 base=count(TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=1))
-                hidden_by_task[task]=1+(args.budget-base)//(2*(2*args.width+1))
+                hidden_by_task[task]=1+(args.budget-base)//(args.transformer_blocks*(2*args.width+1))
             if min(hidden_by_task.values())<1:parser.error('budget too small for Transformer')
         config.update(width=args.width,hidden=hidden_by_task,heads=4,parameter_budget=args.budget)
         config['parameters']={key:count(TransformerModel(task,args.seed,'transformer',positions=args.positions,width=args.width,ff_hidden=hidden_by_task[task])) for key,task in [('query','position'),('language','language')]}
