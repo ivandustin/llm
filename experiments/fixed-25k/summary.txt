@@ -1,0 +1,23 @@
+25k parameter ceiling: held-out mean ± sample SD across seeds 0–2
+Adam 0.0003, batch 64; fixed configurations; updates per task.
+
+1000 updates
+position accuracy: pooling 73.32 ± 1.24 (seeds: 71.94, 73.68, 74.35); transformer 24.73 ± 2.69 (seeds: 24.88, 27.35, 21.97)
+single accuracy: pooling 23.58 ± 1.02 (seeds: 24.70, 23.33, 22.72); transformer 27.97 ± 0.36 (seeds: 28.33, 27.60, 27.97)
+multi accuracy: pooling 34.41 ± 0.19 (seeds: 34.52, 34.51, 34.19); transformer 29.57 ± 0.49 (seeds: 30.06, 29.57, 29.08)
+language accuracy: pooling 26.96 ± 0.31 (seeds: 26.66, 26.95, 27.27); transformer 28.34 ± 1.54 (seeds: 29.59, 28.81, 26.61)
+language perplexity: pooling 14.74 ± 0.18 (seeds: 14.90, 14.54, 14.78); transformer 14.02 ± 0.58 (seeds: 13.71, 13.67, 14.69)
+
+10000 updates
+position accuracy: pooling 99.98 ± 0.02 (seeds: 100.00, 99.98, 99.97); transformer 100.00 ± 0.00 (seeds: 100.00, 100.00, 100.00)
+single accuracy: pooling 31.81 ± 2.05 (seeds: 30.65, 34.17, 30.59); transformer 53.62 ± 40.05 (seeds: 30.23, 99.87, 30.77)
+multi accuracy: pooling 86.38 ± 1.72 (seeds: 84.50, 86.75, 87.88); transformer 80.52 ± 18.19 (seeds: 77.59, 100.00, 63.98)
+language accuracy: pooling 37.38 ± 0.15 (seeds: 37.33, 37.26, 37.55); transformer 37.76 ± 0.21 (seeds: 37.96, 37.77, 37.55)
+language perplexity: pooling 8.96 ± 0.07 (seeds: 8.89, 9.01, 9.00); transformer 8.41 ± 0.11 (seeds: 8.40, 8.30, 8.53)
+
+30000 updates
+position accuracy: pooling 100.00 ± 0.00 (seeds: 100.00, 99.99, 100.00); transformer 100.00 ± 0.00 (seeds: 100.00, 100.00, 100.00)
+single accuracy: pooling 97.64 ± 0.53 (seeds: 98.16, 97.67, 97.09); transformer 76.90 ± 40.01 (seeds: 100.00, 100.00, 30.71)
+multi accuracy: pooling 99.19 ± 0.43 (seeds: 98.71, 99.30, 99.55); transformer 100.00 ± 0.00 (seeds: 100.00, 100.00, 100.00)
+language accuracy: pooling 41.39 ± 0.47 (seeds: 41.21, 41.04, 41.92); transformer 41.19 ± 0.57 (seeds: 41.70, 40.58, 41.28)
+language perplexity: pooling 7.95 ± 0.16 (seeds: 7.90, 8.13, 7.83); transformer 7.77 ± 0.10 (seeds: 7.74, 7.69, 7.88)
