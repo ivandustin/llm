@@ -1,0 +1,110 @@
+{
+  "lr": 0.0003,
+  "batch": 64,
+  "results": [
+    {
+      "task": "position",
+      "model": "reference",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 198,
+      "parameters": 99686,
+      "final": {
+        "loss": 0.0003936871071346104,
+        "accuracy": 0.99993896484375,
+        "perplexity": 1.0003937646120744
+      }
+    },
+    {
+      "task": "position",
+      "model": "residual",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 42,
+      "parameters": 98996,
+      "final": {
+        "loss": 0.000862131651956588,
+        "accuracy": 0.99981689453125,
+        "perplexity": 1.0008625033942717
+      }
+    },
+    {
+      "task": "single",
+      "model": "reference",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 198,
+      "parameters": 99686,
+      "final": {
+        "loss": 0.01905693265143782,
+        "accuracy": 0.99566650390625,
+        "perplexity": 1.0192396749827424
+      }
+    },
+    {
+      "task": "single",
+      "model": "residual",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 42,
+      "parameters": 98996,
+      "final": {
+        "loss": 0.05806717503583059,
+        "accuracy": 0.98614501953125,
+        "perplexity": 1.0597861844941223
+      }
+    },
+    {
+      "task": "multi",
+      "model": "reference",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 198,
+      "parameters": 99686,
+      "final": {
+        "loss": 0.002481122910467093,
+        "accuracy": 0.9997558631002903,
+        "perplexity": 1.0024842034431154
+      }
+    },
+    {
+      "task": "multi",
+      "model": "residual",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 42,
+      "parameters": 98996,
+      "final": {
+        "loss": 0.0042532766947260825,
+        "accuracy": 0.9991251723840833,
+        "perplexity": 1.0042623347135808
+      }
+    },
+    {
+      "task": "language",
+      "model": "reference",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 230,
+      "parameters": 99981,
+      "final": {
+        "loss": 2.039286457002163,
+        "accuracy": 0.412109375,
+        "perplexity": 7.685123575882723
+      }
+    },
+    {
+      "task": "language",
+      "model": "residual",
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 54,
+      "parameters": 99501,
+      "final": {
+        "loss": 2.1252047307789326,
+        "accuracy": 0.4013671875,
+        "perplexity": 8.374611853437615
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "lr": 0.0003,
+  "batch": 64,
+  "results": [
+    {
+      "task": "position",
+      "model": "residual",
+      "blocks": 1,
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 87,
+      "parameters": 99767,
+      "final": {
+        "loss": 0.0006822773721069098,
+        "accuracy": 0.99981689453125,
+        "perplexity": 1.0006825101762558
+      }
+    },
+    {
+      "task": "single",
+      "model": "residual",
+      "blocks": 1,
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 87,
+      "parameters": 99767,
+      "final": {
+        "loss": 0.0038975216448307037,
+        "accuracy": 0.99957275390625,
+        "perplexity": 1.003905126859603
+      }
+    },
+    {
+      "task": "multi",
+      "model": "residual",
+      "blocks": 1,
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 87,
+      "parameters": 99767,
+      "final": {
+        "loss": 0.0003272681582302539,
+        "accuracy": 0.999959310516715,
+        "perplexity": 1.0003273217162965
+      }
+    },
+    {
+      "task": "language",
+      "model": "residual",
+      "blocks": 1,
+      "seed": 0,
+      "steps": 10000,
+      "hidden": 110,
+      "parameters": 99759,
+      "final": {
+        "loss": 2.111135073006153,
+        "accuracy": 0.406982421875,
+        "perplexity": 8.257608956146846
+      }
+    }
+  ]
+}
