@@ -368,6 +368,42 @@ Language perplexity \(\downarrow\) & \(\sd{7.77}{0.09}\) & \(\sd{7.05}{0.13}\) &
 The learned-norm multi-query mean rounds to 100.00\% at both 30k and 50k;
 two and one answers were missed across the three seeds, respectively.
 
+\subsection{Combining pre-conditioning normalization and additive pooling}
+We test whether adding the GELU sum to the learned-norm model improves the
+result. With \(x_i=\operatorname{Norm}_{\mathrm{in}}(p_i\odot t_i)\odot
+t_{\mathrm{last}}\), the pooled vector becomes
+\(\operatorname{Norm}_{\mathrm{out}}(\sum_i x_i+\sum_i\operatorname{GELU}(x_i))\).
+The two branches share \(x_i\); there is no extra normalization before GELU.
+Both norms have learned scales and biases. This model has the same hidden
+widths and parameter counts as the learned-norm model without the GELU sum.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Width-256 pooling screen at 10k updates, seed 0 only. Free norm:
+parameter-free pre-conditioning and pooled normalization; learned norm: both
+normalizations learned; additive: raw plus GELU sums. Accuracies are percent.}
+\label{tab:norm-additive-screen}
+\begin{tabular}{lrrrrr}
+\toprule
+Metric & Raw & Free norm & Additive & Learned & Learned + add.\\
+\midrule
+Position copying & 99.98 & 100.00 & 99.98 & 99.99 & 99.99\\
+Single-query recall & 95.48 & 99.49 & 97.14 & 99.57 & 99.41\\
+Multi-query recall & 99.77 & 99.97 & 99.90 & 99.98 & 99.99\\
+Next-character accuracy & 42.94 & 41.06 & 42.75 & 41.21 & 41.21\\
+Language perplexity \(\downarrow\) & 7.40 & 8.06 & 7.37 & 7.69 & 7.68\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All five use the same seed, Adam 0.0003, batch size 64 and a 100,000-parameter
+ceiling. The raw and free-norm models have identical parameter counts and
+readout widths, as do the two learned-norm models. At 10k the learned-norm
+models have similar language results and near-perfect retrieval; adding the
+GELU sum does not substantially change these seed-0 outcomes. Raw and
+additive pooling have better language scores in this screen. Longer training
+and more seeds are needed to assess whether these differences persist.
+
 \subsection{Position contribution ablation}
 We evaluate the three width-256 additive single-query checkpoints at 30k on 4,096 fresh generated memories (sample seed 2026112501). For each example, we subtract one position's raw contribution, GELU contribution, or both from the pool, then recompute normalization and the readout. We measure the decrease in the correct value's logit margin over the highest-scoring other class. Unmodified predictions agree with the model forward pass and achieve at least 99.95\% accuracy per seed.
 
@@ -519,6 +555,12 @@ python -m experiments.longer_training_100k --architecture ARCH \
   --width 256 --budget 100000 --lr 0.0003 --steps 50000 \
   --checkpoints 10000 30000 50000 --seed SEED
 \end{verbatim}
+
+The 10k raw and learned-norm additive screen results are in
+\path{experiments/raw-query-d256-10k/} and
+\path{experiments/norm-query-learned-add-d256-10k/}, respectively. Reproduce
+with the preceding command, seed 0, 10,000 steps and architecture
+\texttt{token\_product} or \texttt{token\_product\_norm\_query\_learned\_add}.
 
 The context-length screen is implemented in \path{experiments/language_context_compare.py}. Per-seed validation curves, held-out scores, and CPU timings are in \path{experiments/language-context-screen/results.json}. The reproduction command is in the accompanying \path{summary.txt}.
 

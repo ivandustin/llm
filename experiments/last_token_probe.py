@@ -81,7 +81,7 @@ class TokenInteraction(nnx.Module):
             self.base.fn.a = nnx.Linear(2 * width, hidden, rngs=nnx.Rngs(seed + 100000))
         if variant == 'global_query':
             self.query = nnx.Param(jnp.ones(width))
-        if variant == 'token_product_norm_query_learned':
+        if variant in ('token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
             self.memory_scale = nnx.Param(jnp.ones(width))
             self.memory_bias = nnx.Param(jnp.zeros(width))
             self.pool_scale = nnx.Param(jnp.ones(width))
@@ -96,11 +96,11 @@ class TokenInteraction(nnx.Module):
                 memory = memory * self.query[...]
             elif self.variant == 'token_position_product':
                 memory = memory * (e[0, -1] * e[1, -1])
-            elif self.variant in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned'):
+            elif self.variant in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
                 memory = (memory - memory.mean(axis=-1, keepdims=True)) / jnp.sqrt(
                     memory.var(axis=-1, keepdims=True) + 1e-5
                 )
-                if self.variant == 'token_product_norm_query_learned':
+                if self.variant in ('token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
                     memory = memory * self.memory_scale[...] + self.memory_bias[...]
                 query = jax.nn.softmax(e[1, -1], axis=-1) if self.variant == 'token_product_norm_softmax' else e[1, -1]
                 memory = memory * query
@@ -117,7 +117,7 @@ class TokenInteraction(nnx.Module):
                 pooled = jnp.concatenate([pooled, e[1, -1]])
             elif self.variant == 'token_product_raw_gelu':
                 pooled = jnp.concatenate([pooled, jax.nn.gelu(memory).sum(axis=0)])
-            elif self.variant == 'token_product_raw_gelu_add':
+            elif self.variant in ('token_product_raw_gelu_add', 'token_product_norm_query_learned_add'):
                 pooled = pooled + jax.nn.gelu(memory).sum(axis=0)
             elif self.variant == 'token_product_raw_gelu_mul':
                 pooled = pooled * jax.nn.gelu(memory).sum(axis=0)
@@ -127,7 +127,7 @@ class TokenInteraction(nnx.Module):
                 pooled = jnp.concatenate([pooled, 0.5 * pooled])
             if self.pooled_norm:
                 pooled = (pooled - pooled.mean()) / jnp.sqrt(pooled.var() + 1e-5)
-                if self.variant == 'token_product_norm_query_learned':
+                if self.variant in ('token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
                     pooled = pooled * self.pool_scale[...] + self.pool_bias[...]
             activate = jax.nn.gelu if self.activation == 'gelu' else jax.nn.sigmoid
             h = activate(self.base.fn.a(pooled))

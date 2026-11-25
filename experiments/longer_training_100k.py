@@ -68,7 +68,7 @@ def evaluation_data(task,val,test):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--seed',type=int,default=0)
-    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid','token_product_last_concat','token_product_norm_softmax','token_product_norm_query','token_product_norm_query_learned'],default='deep')
+    parser.add_argument('--architecture',choices=['deep','shallow','sigmoid','transformer','token_product','token_product_sigmoid','token_product_gelu_no_norm','token_product_sigmoid_norm','token_product_raw_gelu','token_product_raw_gelu_add','token_product_raw_gelu_mul','token_product_raw_half','token_product_pre_norm','token_product_pre_post_norm','token_product_gelu','token_product_raw_sigmoid','token_product_last_concat','token_product_norm_softmax','token_product_norm_query','token_product_norm_query_learned','token_product_norm_query_learned_add'],default='deep')
     parser.add_argument('--positions', choices=['sinusoidal','learned'], default='sinusoidal',
                         help='Transformer positions; pooling always uses learned positions')
     parser.add_argument('--steps',type=int,default=50000)
@@ -121,7 +121,7 @@ def main():
     token_product=args.architecture.startswith('token_product')
     shallow=token_product or args.architecture in ['shallow','sigmoid']
     prefix='token-product-sigmoid-norm100k' if sigmoid_norm else 'token-product-gelu-no-norm100k' if gelu_no_norm else 'token-product-sigmoid100k' if token_product and sigmoid else 'token-product100k' if token_product else 'longer-transformer100k' if transformer else 'longer-sigmoid100k' if sigmoid else 'longer-shallow100k' if shallow else 'longer100k'
-    if concatenated or combined_pool or pre_norm or gelu_pool or args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned'):prefix=args.architecture.replace('_','-')+'100k'
+    if concatenated or combined_pool or pre_norm or gelu_pool or args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned', 'token_product_norm_query_learned_add'):prefix=args.architecture.replace('_','-')+'100k'
     if transformer and args.positions=='sinusoidal':prefix='longer-transformer-sinusoidal100k'
     baseline='depth100k-transformer-seed-{seed}.json' if transformer else None if sigmoid or token_product else 'mixture100k-n1-seed-{seed}.json' if shallow else 'large-ours-seed-{seed}.json'
     if transformer and args.positions=='sinusoidal':baseline=None
@@ -136,12 +136,14 @@ def main():
         training='compiled scans of1000 updates; batches generated/loaded per scan; continuous model/Adam state',
         evaluation='same fixed samples as original100k runs; predeclared update counts, no best-step selection',
         dataset_sha256=hashlib.sha256(raw).hexdigest(),baseline=baseline)
-    if args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned'):
+    if args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
         query = 'softmax(token[last])' if args.architecture == 'token_product_norm_softmax' else 'token[last]'
         config['pooling']=f'normalize(sum(normalize(position[i] * token[i]) * {query} for i < last)); GELU MLP; normalization across channels'
         if args.architecture == 'token_product_norm_softmax':
             config['pooling'] += '; softmax across channels'
-        if args.architecture == 'token_product_norm_query_learned':
+        if args.architecture == 'token_product_norm_query_learned_add':
+            config['pooling']='normalize(sum(x) + sum(GELU(x))) for x = normalize(position[i] * token[i]) * token[last], i < last; GELU MLP'
+        if args.architecture in ('token_product_norm_query_learned', 'token_product_norm_query_learned_add'):
             config['pooling'] += '; both normalizations have learned per-channel scale and bias'
             config['pooled_norm'] = 'learned scale and bias; epsilon1e-5'
     elif pre_norm:
@@ -159,10 +161,10 @@ def main():
         config['pooling']='sum(position[i] * token[i] * token[last]) for i < last; ' + ('normalize then sigmoid MLP' if sigmoid_norm else 'sigmoid MLP, no normalization' if sigmoid else 'GELU MLP, no normalization' if gelu_no_norm else 'normalize then GELU MLP')
     hidden_by_task={task:576 for task in TASKS}
     if token_product:
-        variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or combined_pool or gelu_pool or args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned') else 'token_product'
+        variant='token_product_pre_norm' if pre_norm else args.architecture if concatenated or combined_pool or gelu_pool or args.architecture in ('token_product_norm_softmax', 'token_product_norm_query', 'token_product_norm_query_learned', 'token_product_norm_query_learned_add') else 'token_product'
         if args.budget is not None:
             pooled_width=2*args.width if concatenated else args.width
-            model_budget=args.budget - (4 * args.width if args.architecture == 'token_product_norm_query_learned' else 0)
+            model_budget=args.budget - (4 * args.width if args.architecture in ('token_product_norm_query_learned', 'token_product_norm_query_learned_add') else 0)
             hidden_by_task={
                 task:hidden_for_budget(32,65,args.width,model_budget,args.hidden_layers,pooled_width=pooled_width)
                 if task=='language' else
